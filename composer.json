@@ -1,0 +1,33 @@
+{
+    "name": "developeritsme/fiscal-service",
+    "description": "Montenegro Fiscal Service",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Albert Suntic",
+            "email": "albert@developer.its.me"
+        }
+    ],
+    "require": {
+        "php": "^7.3|^8.0",
+        "ext-xmlwriter": "*",
+        "ext-dom": "*",
+        "nesbot/carbon": "^2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "DeveloperItsMe\\FiscalService\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
