@@ -2,8 +2,18 @@
 
 namespace DeveloperItsMe\FiscalService\Traits;
 
-trait GeneratesUUID
+trait HasUUID
 {
+    /** @var string */
+    protected $uuid;
+
+    public function setUuid($uuid): self
+    {
+        $this->uuid = $uuid;
+
+        return $this;
+    }
+
     public function generateUUID(): string
     {
         return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',

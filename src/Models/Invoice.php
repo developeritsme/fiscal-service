@@ -3,19 +3,18 @@
 namespace DeveloperItsMe\FiscalService\Models;
 
 use Carbon\Carbon;
-use DeveloperItsMe\FiscalService\Traits\GeneratesUUID;
+use DeveloperItsMe\FiscalService\Traits\HasSoftwareCode;
+use DeveloperItsMe\FiscalService\Traits\HasUUID;
 use DeveloperItsMe\FiscalService\Traits\HasXmlWriter;
 
 class Invoice extends Model
 {
     use HasXmlWriter;
-    use GeneratesUUID;
+    use HasUUID;
+    use HasSoftwareCode;
 
     public const TYPE_CASH = 'CASH';
     public const TYPE_NONCASH = 'NONCASH';
-
-    /** @var string */
-    protected $uuid;
 
     /** @var Carbon */
     protected $dateTime;
@@ -38,9 +37,6 @@ class Invoice extends Model
     /** @var string */
     protected $businessUnitCode;
 
-    /** @var string */
-    protected $softwareCode;
-
     /**
      * IKOF code - issuer code
      *
@@ -56,13 +52,6 @@ class Invoice extends Model
 
     /** @var array */
     protected $items = [];
-
-    public function setUuid($uuid): self
-    {
-        $this->uuid = $uuid;
-
-        return $this;
-    }
 
     public function setDateTime($dateTime): self
     {
@@ -106,13 +95,6 @@ class Invoice extends Model
     public function setBusinessUnitCode($code): self
     {
         $this->businessUnitCode = $code;
-
-        return $this;
-    }
-
-    public function setSoftwareCode($code): self
-    {
-        $this->softwareCode = $code;
 
         return $this;
     }
