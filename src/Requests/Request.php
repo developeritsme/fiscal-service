@@ -32,7 +32,7 @@ abstract class Request
         $writer->writeAttribute('Version', '1');
 
         if ($this->model) {
-            $writer->writeRaw($this->model->toXML());
+            $writer->writeRaw(PHP_EOL . $this->model->toXML());
         }
 
         $writer->endElement();

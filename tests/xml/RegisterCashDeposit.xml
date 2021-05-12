@@ -1,0 +1,4 @@
+<RegisterCashDepositRequest xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" Id="Request" Version="1" xmlns="https://efi.tax.gov.me/fs/schema">
+<Header SendDateTime="2019-12-05T14:35:00+01:00" UUID="3389b9c4-bb24-4673-b952-456e451cd3c3"/>
+<CashDeposit CashAmt="2000.00" ChangeDateTime="2019-12-05T14:35:00+01:00" IssuerTIN="PRIMJER PIB-A" Operation="INITIAL" TCRCode="KOD BLAGAJNE"/>
+</RegisterCashDepositRequest>
