@@ -1,34 +1,24 @@
 <?php
 
-
 namespace DeveloperItsMe\FiscalService\Requests;
 
-
+use DeveloperItsMe\FiscalService\Models\Model;
+use DeveloperItsMe\FiscalService\Traits\HasXmlWriter;
 use DOMDocument;
-use XMLWriter;
 
 abstract class Request
 {
+    use HasXmlWriter;
+
     /** @var string */
     protected $requestName = 'RegisterInvoiceRequest';
 
     /** @var \DeveloperItsMe\FiscalService\Requests\Request */
-    protected $request;
+    protected $model;
 
-    public function __construct(Request $request = null)
+    public function __construct(Model $model = null)
     {
-        $this->request = $request;
-    }
-
-    public function generateUUID(): string
-    {
-        return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0x0fff) | 0x4000,
-            mt_rand(0, 0x3fff) | 0x8000,
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
-        );
+        $this->model = $model;
     }
 
     public function envelope()
@@ -51,17 +41,6 @@ abstract class Request
             ->appendChild($XMLRequestTypeNode);
 
         return $envelope->saveXML();
-    }
-
-    protected function getXmlWriter($indent = true, $indentString = '    '): XMLWriter
-    {
-        $writer = new XMLWriter();
-        $writer->openMemory();
-
-        $writer->setIndent($indent);
-        $writer->setIndentString($indentString);
-
-        return $writer;
     }
 
     protected function getEnvelopeXml(): string

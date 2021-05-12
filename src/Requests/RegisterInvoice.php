@@ -1,8 +1,6 @@
 <?php
 
-
 namespace DeveloperItsMe\FiscalService\Requests;
-
 
 class RegisterInvoice extends Request
 {
@@ -20,8 +18,8 @@ class RegisterInvoice extends Request
         $writer->writeAttribute('Id', 'Request');
         $writer->writeAttribute('Version', '1');
 
-        if ($this->request) {
-            $writer->writeRaw($this->request->toXML());
+        if ($this->model) {
+            $writer->writeRaw($this->model->toXML());
         }
 
         $writer->endElement();
