@@ -6,9 +6,12 @@ class SameTaxes extends Model
 {
     protected $items = [];
 
+    protected $grouped = [];
+
     public function __construct(array $items)
     {
         $this->items = $items;
+        $this->setGroupedItems();
     }
 
     public static function make(array $items): self
@@ -21,7 +24,7 @@ class SameTaxes extends Model
         $writer = $this->getXmlWriter();
         $writer->startElementNs(null, 'SameTaxes', null);
 
-        foreach ($this->getGroupedItems() as $rate => $item) {
+        foreach ($this->grouped as $rate => $item) {
             $writer->startElementNs(null, 'SameTax', null);
             $writer->writeAttribute('NumOfItems', count($item['vats']));
             $writer->writeAttribute('PriceBefVAT', number_format(array_sum($item['prices']), 2));
@@ -35,17 +38,30 @@ class SameTaxes extends Model
         return $writer->outputMemory();
     }
 
-    protected function getGroupedItems(): array
+    protected function setGroupedItems()
     {
-        $grouped = [];
         /** @var \DeveloperItsMe\FiscalService\Models\Item $item */
         foreach ($this->items as $item) {
-            $grouped[$item->getVatRate()]['prices'][] = $basePrice = $item->totalBasePrice();
-            $grouped[$item->getVatRate()]['vats'][] = $item->totalPrice() - $basePrice;
+            $this->grouped[$item->getVatRate()]['prices'][] = $basePrice = $item->totalBasePrice();
+            $this->grouped[$item->getVatRate()]['vats'][] = $item->totalPrice() - $basePrice;
         }
 
-        ksort($grouped, SORT_NUMERIC);
+        ksort($this->grouped, SORT_NUMERIC);
+    }
 
-        return $grouped;
+    public function getTotals(): array
+    {
+        $totals = [
+            'total' => 0,
+            'base'  => 0,
+            'vat'   => 0,
+        ];
+        foreach ($this->grouped as $item) {
+            $totals['base'] += $base = array_sum($item['prices']);
+            $totals['vat'] += $vat = array_sum($item['vats']);
+            $totals['total'] += $base + $vat;
+        }
+
+        return $totals;
     }
 }

@@ -36,6 +36,11 @@ abstract class Business extends Model
         return $this;
     }
 
+    public function getIdNumber(): string
+    {
+        return $this->idNumber;
+    }
+
     public function setName($name): self
     {
         $this->name = $name;

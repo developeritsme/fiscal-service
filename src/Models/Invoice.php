@@ -145,6 +145,8 @@ class Invoice extends Model
         if (!$this->dateTime) {
             $this->dateTime = Carbon::now();
         }
+        $taxes = SameTaxes::make($this->items);
+        $totals = $taxes->getTotals();
 
         //Header
         $writer->startElementNs(null, 'Header', null);
@@ -158,7 +160,7 @@ class Invoice extends Model
         $writer->writeAttribute('IIC', $this->issuerCode);
 
         //todo: IKOF Potpis
-        $writer->writeAttribute('IICSignature', '83D728C8E10BA04C430BE64CE98612B0256C0FE618C167F28BF62A0C0CB38C51824F152AB00510AE076508E53ACE4F877D25D51C7830F043E09BB1500D3A0AEA233ECC6175A45FE58CBF53E517FD9EA1D06CBABC055EEE6B430A16560C96D3A27720A6E5C9BA5C8D18A7AE5C2A7F1D8E46B293F56D32847FCEE199D2AFDC6E5BC1164BA974A6E29D6F40FBD8C51D40A99BC97DD6DB2AE9EC0582F2E74E9C7841AC5A854DE92B1D778A809CACCBBEF4DC325C852487BCF035AA2D54594DC6BDD859E250782CCCDD7CC89EE80A2FE1030AAAD615DA5D728322F8590D9F56E6DDE5975A738F304F56BB832996763624B72C77E97881D9C647B50709F20AFBFA0602');
+        $writer->writeAttribute('IICSignature', $this->securityCode($total = $this->formatNumber($totals['total'])));
         $writer->writeAttribute('InvNum', $this->number());
         $writer->writeAttribute('InvOrdNum', $this->number);
         //todo:
@@ -168,12 +170,9 @@ class Invoice extends Model
         $writer->writeAttribute('OperatorCode', $this->operatorCode);
         $writer->writeAttribute('SoftCode', $this->softwareCode);
         $writer->writeAttribute('TCRCode', $this->enu);
-        //todo:
-        $writer->writeAttribute('TotPrice', '20.00');
-        //todo:
-        $writer->writeAttribute('TotPriceWoVAT', '16.00');
-        //todo:
-        $writer->writeAttribute('TotVATAmt', '4.00');
+        $writer->writeAttribute('TotPrice', $total);
+        $writer->writeAttribute('TotPriceWoVAT', $this->formatNumber($totals['base']));
+        $writer->writeAttribute('TotVATAmt', $this->formatNumber($totals['vat']));
 
         $writer->writeAttribute('TypeOfInv', $this->type);
 
@@ -192,11 +191,31 @@ class Invoice extends Model
         $writer->endElement();
 
         $writer->writeRaw(
-            SameTaxes::make($this->items)->toXML()
+            $taxes->toXML()
         );
 
         $writer->endElement();
 
         return $writer->outputMemory();
+    }
+
+    protected function securityCode($total): string
+    {
+        $pkey = file_get_contents('./private.key');
+        $signatureCode = null;
+
+        $data = implode('|', [
+            $this->seller->getIdNumber(),
+            $this->dateTime->toIso8601String(),
+            $this->number,
+            $this->businessUnitCode,
+            $this->enu,
+            $this->softwareCode,
+            $total,
+        ]);
+
+        openssl_sign($data, $signatureCode, $pkey, 'sha256WithRSAEncryption');
+
+        return '83D728C8E10BA04C430BE64CE98612B0256C0FE618C167F28BF62A0C0CB38C51824F152AB00510AE076508E53ACE4F877D25D51C7830F043E09BB1500D3A0AEA233ECC6175A45FE58CBF53E517FD9EA1D06CBABC055EEE6B430A16560C96D3A27720A6E5C9BA5C8D18A7AE5C2A7F1D8E46B293F56D32847FCEE199D2AFDC6E5BC1164BA974A6E29D6F40FBD8C51D40A99BC97DD6DB2AE9EC0582F2E74E9C7841AC5A854DE92B1D778A809CACCBBEF4DC325C852487BCF035AA2D54594DC6BDD859E250782CCCDD7CC89EE80A2FE1030AAAD615DA5D728322F8590D9F56E6DDE5975A738F304F56BB832996763624B72C77E97881D9C647B50709F20AFBFA0602';
     }
 }
