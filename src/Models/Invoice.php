@@ -5,11 +5,9 @@ namespace DeveloperItsMe\FiscalService\Models;
 use Carbon\Carbon;
 use DeveloperItsMe\FiscalService\Traits\HasSoftwareCode;
 use DeveloperItsMe\FiscalService\Traits\HasUUID;
-use DeveloperItsMe\FiscalService\Traits\HasXmlWriter;
 
 class Invoice extends Model
 {
-    use HasXmlWriter;
     use HasUUID;
     use HasSoftwareCode;
 

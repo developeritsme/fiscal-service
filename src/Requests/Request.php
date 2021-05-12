@@ -11,7 +11,7 @@ abstract class Request
     use HasXmlWriter;
 
     /** @var string */
-    protected $requestName = 'RegisterInvoiceRequest';
+    protected $requestName;
 
     /** @var \DeveloperItsMe\FiscalService\Requests\Request */
     protected $model;
@@ -19,6 +19,25 @@ abstract class Request
     public function __construct(Model $model = null)
     {
         $this->model = $model;
+    }
+
+    public function toXML(): string
+    {
+        $writer = $this->getXmlWriter();
+
+        $writer->startElementNs(null, $this->requestName, 'https://efi.tax.gov.me/fs/schema');
+
+        $writer->writeAttribute('xmlns:ns2', 'http://www.w3.org/2000/09/xmldsig#');
+        $writer->writeAttribute('Id', 'Request');
+        $writer->writeAttribute('Version', '1');
+
+        if ($this->model) {
+            $writer->writeRaw($this->model->toXML());
+        }
+
+        $writer->endElement();
+
+        return $writer->outputMemory();
     }
 
     public function envelope()
@@ -60,7 +79,4 @@ abstract class Request
 
         return $writer->outputMemory();
     }
-
-    abstract public function toXML(): string;
-
 }

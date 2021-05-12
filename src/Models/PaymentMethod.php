@@ -2,12 +2,8 @@
 
 namespace DeveloperItsMe\FiscalService\Models;
 
-use DeveloperItsMe\FiscalService\Traits\HasXmlWriter;
-
 class PaymentMethod extends Model
 {
-    use HasXmlWriter;
-
     public const TYPE_BANKNOTE = 'BANKNOTE';
     public const TYPE_CARD = 'CARD';
     public const TYPE_BUSINESS_CARD = 'BUSINESSCARD';

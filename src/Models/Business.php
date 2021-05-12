@@ -2,12 +2,8 @@
 
 namespace DeveloperItsMe\FiscalService\Models;
 
-use DeveloperItsMe\FiscalService\Traits\HasXmlWriter;
-
 abstract class Business extends Model
 {
-    use HasXmlWriter;
-
     public const ID_TYPE_PIB = 'TIN';
     public const ID_TYPE_ID = 'ID';
     public const ID_TYPE_PASSPORT = 'PASS';

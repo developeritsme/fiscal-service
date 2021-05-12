@@ -2,12 +2,8 @@
 
 namespace DeveloperItsMe\FiscalService\Models;
 
-use DeveloperItsMe\FiscalService\Traits\HasXmlWriter;
-
 class SameTaxes extends Model
 {
-    use HasXmlWriter;
-
     protected $items = [];
 
     public function __construct(array $items)
