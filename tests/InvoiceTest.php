@@ -52,6 +52,7 @@ class InvoiceTest extends TestCase
         $invoice = new Invoice();
 
         $pm = new PaymentMethod(20);
+        $pm2 = new PaymentMethod(24, PaymentMethod::TYPE_CARD);
 
         $seller = new Seller('IME PREZIME PRODAVAOCA', 'ID BROJ PRODAVAOCA');
         $seller->setAddress('ADRESA PRODAVAOCA')
@@ -77,6 +78,7 @@ class InvoiceTest extends TestCase
             ->setSoftwareCode('PRIMJER KODA SOFTVERA')
             ->setIssuerCode('4AD5A215BEAF85B0416235736A6DACAB')
             ->addPaymentMethod($pm)
+            ->addPaymentMethod($pm2)
             ->setSeller($seller)
             ->addItem($item1)
             ->addItem($item2);
