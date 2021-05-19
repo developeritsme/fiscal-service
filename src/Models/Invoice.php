@@ -191,9 +191,7 @@ class Invoice extends Model
 
         $writer->writeRaw($this->items->toXML());
 
-        $writer->writeRaw(
-            $taxes->toXML()
-        );
+        $writer->writeRaw($taxes->toXML());
 
         $writer->endElement();
 

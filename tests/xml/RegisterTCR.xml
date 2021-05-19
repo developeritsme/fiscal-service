@@ -1,4 +1,4 @@
-<RegisterTCRRequest xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" Id="Request" Version="1" xmlns="https://efi.tax.gov.me/fs/schema">
+<RegisterTCRRequest Id="Request" Version="1" xmlns="https://efi.tax.gov.me/fs/schema">
 <Header SendDateTime="2019-12-02T10:57:01+01:00" UUID="78b37523-3677-416a-8bc0-e0dd77296fc7"/>
 <TCR BusinUnitCode="ab123ab123" IssuerTIN="02657597" MaintainerCode="123" SoftCode="ab123ab123" TCRIntID="1" ValidFrom="2019-12-05" Type="REGULAR"/>
 </RegisterTCRRequest>

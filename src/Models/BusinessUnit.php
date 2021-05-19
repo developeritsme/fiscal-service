@@ -102,7 +102,9 @@ class BusinessUnit extends Model
         if ($this->maintainerCode) {
             $writer->writeAttribute('MaintainerCode', $this->maintainerCode);
         }
-        $writer->writeAttribute('SoftCode', $this->softwareCode);
+        if ($this->softwareCode) {
+            $writer->writeAttribute('SoftCode', $this->softwareCode);
+        }
         $writer->writeAttribute('TCRIntID', $this->internalId);
         if ($this->validFrom) {
             $writer->writeAttribute('ValidFrom', $this->validFrom->format('Y-m-d'));

@@ -27,7 +27,7 @@ abstract class Request
 
         $writer->startElementNs(null, $this->requestName, 'https://efi.tax.gov.me/fs/schema');
 
-        $writer->writeAttribute('xmlns:ns2', 'http://www.w3.org/2000/09/xmldsig#');
+//        $writer->writeAttribute('xmlns:ns2', 'http://www.w3.org/2000/09/xmldsig#');
         $writer->writeAttribute('Id', 'Request');
         $writer->writeAttribute('Version', '1');
 
@@ -40,10 +40,10 @@ abstract class Request
         return $writer->outputMemory();
     }
 
-    public function envelope()
+    public function envelope($xml = null)
     {
         $xmlRequestDom = new DOMDocument();
-        $xmlRequestDom->loadXML($this->toXML());
+        $xmlRequestDom->loadXML($xml ?? $this->toXML());
 
         $envelope = new DOMDocument();
         $envelope->loadXML($this->getEnvelopeXml());
