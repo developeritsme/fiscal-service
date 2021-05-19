@@ -3,7 +3,6 @@
 namespace DeveloperItsMe\FiscalService\Models;
 
 use DeveloperItsMe\FiscalService\Traits\HasXmlWriter;
-use phpDocumentor\Reflection\Types\This;
 
 class Item extends Model
 {

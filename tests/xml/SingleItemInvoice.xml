@@ -3,7 +3,7 @@
     <PayMethods><PayMethod Amt="20.00" Type="BANKNOTE"/>
 </PayMethods>
 <Seller Address="ADRESA PRODAVAOCA" Country="MNE" IDNum="ID BROJ PRODAVAOCA" IDType="TIN" Name="IME PREZIME PRODAVAOCA" Town="GRAD PRODAVAOCA"/>
-    <Items><I C="501234567890" N="NAZIV PROIZVODA" PA="20.00" PB="16.00" Q="1.0" R="0" RR="true" U="piece" UPB="16.00" UPA="20.00" VA="4.00" VR="25.00"/>
+<Items><I C="501234567890" N="NAZIV PROIZVODA" PA="20.00" PB="16.00" Q="1.0" R="0" RR="true" U="piece" UPB="16.00" UPA="20.00" VA="4.00" VR="25.00"/>
 </Items>
 <SameTaxes>
     <SameTax NumOfItems="1" PriceBefVAT="16.00" VATAmt="4.00" VATRate="25.00"/>

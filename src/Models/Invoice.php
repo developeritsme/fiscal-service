@@ -48,8 +48,13 @@ class Invoice extends Model
     /** @var array */
     protected $paymentMethods = [];
 
-    /** @var array */
-    protected $items = [];
+    /** @var \DeveloperItsMe\FiscalService\Models\Items */
+    protected $items;
+
+    public function __construct()
+    {
+        $this->items = new Items();
+    }
 
     public function setDateTime($dateTime): self
     {
@@ -115,9 +120,14 @@ class Invoice extends Model
 
     public function addItem(Item $item): self
     {
-        $this->items[] = $item;
+        $this->items->add($item);
 
         return $this;
+    }
+
+    public function getItems(): array
+    {
+        return $this->items->all();
     }
 
     public function setSeller(Seller $seller): self
@@ -145,7 +155,7 @@ class Invoice extends Model
         if (!$this->dateTime) {
             $this->dateTime = Carbon::now();
         }
-        $taxes = SameTaxes::make($this->items);
+        $taxes = SameTaxes::make($this->getItems());
         $totals = $taxes->getTotals();
 
         //Header
@@ -184,11 +194,7 @@ class Invoice extends Model
 
         $writer->writeRaw($this->seller->toXML());
 
-        $writer->startElementNs(null, 'Items', null);
-        foreach ($this->items as $item) {
-            $writer->writeRaw($item->toXML());
-        }
-        $writer->endElement();
+        $writer->writeRaw($this->items->toXML());
 
         $writer->writeRaw(
             $taxes->toXML()
@@ -199,23 +205,21 @@ class Invoice extends Model
         return $writer->outputMemory();
     }
 
-    protected function securityCode($total): string
+    public function concatenate($total)
     {
-        $pkey = file_get_contents('./private.key');
-        $signatureCode = null;
-
-        $data = implode('|', [
+        return implode('|', [
             $this->seller->getIdNumber(),
-            $this->dateTime->toIso8601String(),
+            ($this->dateTime ?? $this->dateTime = Carbon::now())->toIso8601String(),
             $this->number,
             $this->businessUnitCode,
             $this->enu,
             $this->softwareCode,
             $total,
         ]);
+    }
 
-        openssl_sign($data, $signatureCode, $pkey, 'sha256WithRSAEncryption');
-
+    public function securityCode($total): string
+    {
         return '83D728C8E10BA04C430BE64CE98612B0256C0FE618C167F28BF62A0C0CB38C51824F152AB00510AE076508E53ACE4F877D25D51C7830F043E09BB1500D3A0AEA233ECC6175A45FE58CBF53E517FD9EA1D06CBABC055EEE6B430A16560C96D3A27720A6E5C9BA5C8D18A7AE5C2A7F1D8E46B293F56D32847FCEE199D2AFDC6E5BC1164BA974A6E29D6F40FBD8C51D40A99BC97DD6DB2AE9EC0582F2E74E9C7841AC5A854DE92B1D778A809CACCBBEF4DC325C852487BCF035AA2D54594DC6BDD859E250782CCCDD7CC89EE80A2FE1030AAAD615DA5D728322F8590D9F56E6DDE5975A738F304F56BB832996763624B72C77E97881D9C647B50709F20AFBFA0602';
     }
 }
