@@ -149,12 +149,6 @@ class Invoice extends Model
 
     protected function number(): string
     {
-        /*
-          Broj računa sastavljen od kôda poslovnog prostora,
-          rednog broja računa, godine izdavanja računa i kôda ENU na kojem je izdat račun.
-         Redni broj računa je neprekidni string koji se dodjeljuje svakom novom računu kako
-         bi se računi mogli prebrojati. String resetuje se na početku svake godine.
-         */
         return implode('/', [$this->businessUnitCode, $this->number, $this->dateTime->year, $this->enu]);
     }
 
@@ -204,9 +198,6 @@ class Invoice extends Model
 
         $writer->endElement();
 
-        var_dump($this->dateTime->tz('Europe/Podgorica')->toIso8601String());
-        var_dump($this->issuerCode);
-
         return $writer->outputMemory();
     }
 
@@ -249,5 +240,26 @@ class Invoice extends Model
         }
 
         return !empty($key) && array_key_exists($key, $this->totals) ? $this->totals[$key] : $this->totals;
+    }
+
+    public function url()
+    {
+        $query = [
+            'iic'  => $this->issuerCode,
+            'tin'  => $this->seller->getIdNumber(),
+            'crtd' => $this->dateTime->tz('Europe/Podgorica')->toIso8601String(),
+            'ord'  => $this->number,
+            'bu'   => $this->businessUnitCode,
+            'cr'   => $this->enu,
+            'sw'   => $this->softwareCode,
+            'prc'  => $this->formatNumber($this->totals('total')),
+        ];
+
+        return static::$qrBaseUrl . '?' . http_build_query($query);
+    }
+
+    public function ikof()
+    {
+        return $this->issuerCode;
     }
 }

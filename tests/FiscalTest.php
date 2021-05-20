@@ -94,6 +94,8 @@ class FiscalTest extends TestCase
             ->send();
 
         $this->assertTrue($responseWithdraw->valid());
+        $data = $responseWithdraw->data();
+        $this->assertArrayHasKey('id', $data);
     }
 
     /** @skip */
@@ -113,6 +115,8 @@ class FiscalTest extends TestCase
             ->send();
 
         $this->assertTrue($response->valid());
+        $data = $response->data();
+        $this->assertArrayHasKey('code', $data);
     }
 
     /** @skip */
@@ -152,5 +156,9 @@ class FiscalTest extends TestCase
             ->send();
 
         $this->assertTrue($response->valid());
+        $data = $response->data();
+        $this->assertArrayHasKey('url', $data);
+        $this->assertArrayHasKey('ikof', $data);
+        $this->assertArrayHasKey('jikr', $data);
     }
 }

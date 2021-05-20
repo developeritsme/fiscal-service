@@ -72,7 +72,9 @@ abstract class Response
 
     protected function setDomResponse()
     {
-        $this->domResponse = (new DOMDocument())->loadXML($this->response);
+        $this->domResponse = new DOMDocument();
+        $this->domResponse->loadXML($this->response);
     }
 
+    public abstract function data(): array;
 }
