@@ -13,7 +13,6 @@ class SameTaxes extends Model
     public function __construct(array $items)
     {
         $this->setItems($items);
-        $this->setGroupedItems();
     }
 
     public static function make(array $items): self
@@ -25,7 +24,7 @@ class SameTaxes extends Model
     {
         $this->items = $items;
 
-        return $this;
+        return $this->setGroupedItems();
     }
 
     public function toXML(): string
@@ -47,7 +46,7 @@ class SameTaxes extends Model
         return $writer->outputMemory();
     }
 
-    protected function setGroupedItems()
+    protected function setGroupedItems(): self
     {
         $this->totals = [];
         /** @var \DeveloperItsMe\FiscalService\Models\Item $item */
@@ -57,6 +56,8 @@ class SameTaxes extends Model
         }
 
         ksort($this->grouped, SORT_NUMERIC);
+
+        return $this;
     }
 
     public function getTotals(): array

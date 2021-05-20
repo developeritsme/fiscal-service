@@ -8,8 +8,6 @@ class Certificate
 
     protected $certificate;
 
-    protected $passphrase;
-
     /** @var false|resource */
     protected $privateKeyResource = false;
 
@@ -17,26 +15,27 @@ class Certificate
 
     public function __construct($path, $passphrase)
     {
-        if (file_exists($path)) {
+        if (@file_exists($path)) {
             $this->rawCertificate = $this->readCertificateFromDisk($path);
         } else {
             $this->rawCertificate = $path;
         }
-        $this->passphrase = $passphrase;
 
-        $read = openssl_pkcs12_read($this->rawCertificate, $this->certificate, $this->getPassphrase());
+        $read = openssl_pkcs12_read($this->rawCertificate, $this->certificate, $passphrase);
         if ($read === false) {
             for ($e = openssl_error_string(), $i = 0; $e; $e = openssl_error_string(), $i++)
                 printf("SSL l%d: %s" . PHP_EOL, $i, $e);
             exit(1);
         }
-        $this->privateKeyResource = openssl_pkey_get_private($this->certificate['pkey'], $this->getPassphrase());
+
+        $this->privateKeyResource = openssl_pkey_get_private($this->certificate['pkey'], $passphrase);
+
         $this->publicCertificateData = openssl_x509_parse($this->certificate['cert']);
     }
 
-    public function key($key)
+    public function public()
     {
-        return $this->certificate[$key];
+        return $this->certificate['cert'];
     }
 
     public function raw()
@@ -63,10 +62,5 @@ class Certificate
         }
 
         return $cert;
-    }
-
-    public function getPassphrase(): string
-    {
-        return $this->passphrase;
     }
 }

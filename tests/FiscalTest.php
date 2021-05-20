@@ -4,7 +4,6 @@ namespace Tests;
 
 use Carbon\Carbon;
 use DeveloperItsMe\FiscalService\Fiscal;
-use DeveloperItsMe\FiscalService\Models\Business;
 use DeveloperItsMe\FiscalService\Models\BusinessUnit;
 use DeveloperItsMe\FiscalService\Models\CashDeposit;
 use DeveloperItsMe\FiscalService\Models\Invoice;
@@ -28,19 +27,30 @@ class FiscalTest extends TestCase
     protected $maintainerCode = 'mm123mm123';
     protected $operatorCode = 'oo123oo123';
 
-    protected function fiscal()
+    protected function fiscal($certContent = null): Fiscal
     {
         if (Carbon::hasTestNow()) {
             Carbon::setTestNow();
         }
 
-        return new Fiscal($this->certPath, $this->certPassphrase, true);
+        return new Fiscal($certContent ?? $this->certPath, $this->certPassphrase, true);
     }
 
     /** @test */
-    public function it_can_construct_proper()
+    public function it_sets_certificate_from_file()
     {
         $fiscal = $this->fiscal();
+        $cert = $fiscal->certificate();
+
+        $this->assertNotFalse($cert->getPrivateKey());
+        $this->assertNotFalse($cert->getPublicData());
+    }
+
+    /** @test */
+    public function it_sets_certificate_from_content()
+    {
+        $content = file_get_contents($this->certPath);
+        $fiscal = $this->fiscal($content);
         $cert = $fiscal->certificate();
 
         $this->assertNotFalse($cert->getPrivateKey());
@@ -62,7 +72,6 @@ class FiscalTest extends TestCase
             ->request($requestInitial)
             ->send();
 
-        var_dump($responseInitial);
         $this->assertTrue($responseInitial->valid());
 
         $cashDeposit->setOperation(CashDeposit::OPERATION_WITHDRAW);
@@ -72,7 +81,6 @@ class FiscalTest extends TestCase
             ->request($requestWithdraw)
             ->send();
 
-        var_dump($responseWithdraw);
         $this->assertTrue($responseWithdraw->valid());
     }
 
@@ -105,8 +113,7 @@ class FiscalTest extends TestCase
             ->setTown('Podgorica');
 
         $item = new Item();
-        $item->setCode(501234567890)
-            ->setName('Taxi voznja')
+        $item->setName('Taxi voznja')
             ->setUnitPrice(2.20)
             ->setVatRate(7);
 
@@ -132,7 +139,6 @@ class FiscalTest extends TestCase
             ->request($request)
             ->send();
 
-        var_dump($response);
         $this->assertTrue($response->valid());
     }
 }

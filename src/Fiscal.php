@@ -4,6 +4,7 @@ namespace DeveloperItsMe\FiscalService;
 
 use DeveloperItsMe\FiscalService\Requests\RegisterInvoice;
 use DeveloperItsMe\FiscalService\Requests\Request;
+use DeveloperItsMe\FiscalService\Responses\Factory;
 use DeveloperItsMe\FiscalService\Responses\Response;
 use DOMDocument;
 use DOMElement;
@@ -41,8 +42,8 @@ class Fiscal
     public function send(): Response
     {
         if ($this->request) {
-            if($this->request instanceof RegisterInvoice) {
-                $this->request->model()->generateIIC($this->certificate()->getPrivateKey());
+            if (method_exists($model = $this->request->model(), 'generateIIC')) {
+                $model->generateIIC($this->certificate()->getPrivateKey());
             }
             $payload = $this->request->envelope(
                 $this->sign($this->request->toXML())
@@ -57,8 +58,7 @@ class Fiscal
         $XMLRequestDOMDoc = new DOMDocument();
         $XMLRequestDOMDoc->loadXML($xml);
 
-        $canonical = $XMLRequestDOMDoc->C14N();
-        $DigestValue = base64_encode(hash('sha256', $canonical, true));
+        $digestValue = base64_encode(hash('sha256', $XMLRequestDOMDoc->C14N(), true));
 
         $rootElem = $XMLRequestDOMDoc->documentElement;
         $rootElem->removeAttributeNS('ns2', '');
@@ -90,11 +90,11 @@ class Fiscal
         $DigestMethodNode = $ReferenceNode->appendChild(new DOMElement('DigestMethod'));
         $DigestMethodNode->setAttribute('Algorithm', 'http://www.w3.org/2001/04/xmlenc#sha256');
 
-        $ReferenceNode->appendChild(new DOMElement('DigestValue', $DigestValue));
+        $ReferenceNode->appendChild(new DOMElement('DigestValue', $digestValue));
 
         $SignedInfoNode = $XMLRequestDOMDoc->getElementsByTagName('SignedInfo')->item(0);
 
-        $publicCertificatePureString = str_replace('-----BEGIN CERTIFICATE-----', '', $this->certificate()->key('cert'));
+        $publicCertificatePureString = str_replace('-----BEGIN CERTIFICATE-----', '', $this->certificate()->public());
         $publicCertificatePureString = str_replace('-----END CERTIFICATE-----', '', $publicCertificatePureString);
 
         $signedInfoSignature = null;
@@ -116,7 +116,7 @@ class Fiscal
         return $XMLRequestDOMDoc->saveXML();
     }
 
-    protected function soap($payload)
+    protected function soap($payload): Response
     {
         //todo: this is "hack" - fix it...
         $payload = str_replace('default:', '', $payload);
@@ -150,6 +150,6 @@ class Fiscal
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        return new Response($response, $code);
+        return Factory::make($response, $code, $this->request->setPayload($payload));
     }
 }

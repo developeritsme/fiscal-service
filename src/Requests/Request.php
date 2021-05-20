@@ -16,6 +16,9 @@ abstract class Request
     /** @var \DeveloperItsMe\FiscalService\Requests\Request */
     protected $model;
 
+    /** @var string */
+    protected $payload;
+
     public function __construct(Model $model = null)
     {
         $this->model = $model;
@@ -32,7 +35,6 @@ abstract class Request
 
         $writer->startElementNs(null, $this->requestName, 'https://efi.tax.gov.me/fs/schema');
 
-//        $writer->writeAttribute('xmlns:ns2', 'http://www.w3.org/2000/09/xmldsig#');
         $writer->writeAttribute('Id', 'Request');
         $writer->writeAttribute('Version', '1');
 
@@ -43,6 +45,13 @@ abstract class Request
         $writer->endElement();
 
         return $writer->outputMemory();
+    }
+
+    public function setPayload($payload): self
+    {
+        $this->payload = $payload;
+
+        return $this;
     }
 
     public function envelope($xml = null)
