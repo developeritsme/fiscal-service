@@ -12,6 +12,10 @@ use PHPUnit\Framework\TestCase;
 
 class InvoiceTest extends TestCase
 {
+    protected $iicSignature = '83D728C8E10BA04C430BE64CE98612B0256C0FE618C167F28BF62A0C0CB38C51824F152AB00510AE076508E53ACE4F877D25D51C7830F043E09BB1500D3A0AEA233ECC6175A45FE58CBF53E517FD9EA1D06CBABC055EEE6B430A16560C96D3A27720A6E5C9BA5C8D18A7AE5C2A7F1D8E46B293F56D32847FCEE199D2AFDC6E5BC1164BA974A6E29D6F40FBD8C51D40A99BC97DD6DB2AE9EC0582F2E74E9C7841AC5A854DE92B1D778A809CACCBBEF4DC325C852487BCF035AA2D54594DC6BDD859E250782CCCDD7CC89EE80A2FE1030AAAD615DA5D728322F8590D9F56E6DDE5975A738F304F56BB832996763624B72C77E97881D9C647B50709F20AFBFA0602';
+
+    protected $issuerCode = '4AD5A215BEAF85B0416235736A6DACAB';
+
     /** @test */
     public function it_generates_proper_xml_for_single_item()
     {
@@ -37,7 +41,8 @@ class InvoiceTest extends TestCase
             ->setOperatorCode('ab123ab123')
             ->setBusinessUnitCode('ab123ab123')
             ->setSoftwareCode('PRIMJER KODA SOFTVERA')
-            ->setIssuerCode('4AD5A215BEAF85B0416235736A6DACAB')
+            ->setIssuerCode($this->issuerCode)
+            ->setIicSignature($this->iicSignature)
             ->addPaymentMethod($pm)
             ->setSeller($seller)
             ->addItem($item);
@@ -77,7 +82,8 @@ class InvoiceTest extends TestCase
             ->setOperatorCode('ab123ab123')
             ->setBusinessUnitCode('ab123ab123')
             ->setSoftwareCode('PRIMJER KODA SOFTVERA')
-            ->setIssuerCode('4AD5A215BEAF85B0416235736A6DACAB')
+            ->setIssuerCode($this->issuerCode)
+            ->setIicSignature($this->iicSignature)
             ->addPaymentMethod($pm)
             ->addPaymentMethod($pm2)
             ->setSeller($seller)
@@ -136,7 +142,8 @@ class InvoiceTest extends TestCase
             ->setEnu('cc123cc123')
             ->setBusinessUnitCode('bb123bb123')
             ->setSoftwareCode('ss123ss123')
-            ->setIssuerCode('4AD5A215BEAF85B0416235736A6DACAB')
+            ->setIssuerCode($this->issuerCode)
+            ->setIicSignature($this->iicSignature)
             ->addPaymentMethod($pm)
             ->setSeller($seller)
             ->addItem($item);

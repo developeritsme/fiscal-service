@@ -53,16 +53,27 @@ class FiscalTest extends TestCase
         $cashDeposit = (new CashDeposit())
             ->setDate(Carbon::now())
             ->setIdNumber($this->tin)
-            ->setAmount(0)
+            ->setAmount(1)
             ->setEnu($this->enu);
 
-        $request = new RegisterCashDeposit($cashDeposit);
+        $requestInitial = new RegisterCashDeposit($cashDeposit);
 
-        $response = $this->fiscal()
-            ->request($request)
+        $responseInitial = $this->fiscal()
+            ->request($requestInitial)
             ->send();
 
-        $this->assertTrue($response->valid());
+        var_dump($responseInitial);
+        $this->assertTrue($responseInitial->valid());
+
+        $cashDeposit->setOperation(CashDeposit::OPERATION_WITHDRAW);
+        $requestWithdraw = new RegisterCashDeposit($cashDeposit);
+
+        $responseWithdraw = $this->fiscal()
+            ->request($requestWithdraw)
+            ->send();
+
+        var_dump($responseWithdraw);
+        $this->assertTrue($responseWithdraw->valid());
     }
 
     /** @skip */
@@ -90,7 +101,8 @@ class FiscalTest extends TestCase
         $pm = new PaymentMethod(3);
 
         $seller = new Seller($this->seller, $this->tin);
-        $seller->setAddress('Radosava Burića bb');
+        $seller->setAddress('Radosava Burića bb')
+            ->setTown('Podgorica');
 
         $item = new Item();
         $item->setCode(501234567890)
@@ -104,13 +116,11 @@ class FiscalTest extends TestCase
             ->setVatRate(7);
 
         $invoice = (new Invoice())
-//            ->setType(Invoice::TYPE_NONCASH)
             ->setNumber(9952)
             ->setEnu($this->enu)
             ->setBusinessUnitCode($this->unitCode)
             ->setSoftwareCode($this->softwareCode)
             ->setOperatorCode($this->operatorCode)
-            ->setIssuerCode('4AD5A215BEAF85B0416235736A6DACAB')
             ->addPaymentMethod($pm)
             ->setSeller($seller)
             ->addItem($item2)

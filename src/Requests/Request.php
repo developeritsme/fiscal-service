@@ -21,6 +21,11 @@ abstract class Request
         $this->model = $model;
     }
 
+    public function model(): Model
+    {
+        return $this->model;
+    }
+
     public function toXML(): string
     {
         $writer = $this->getXmlWriter();

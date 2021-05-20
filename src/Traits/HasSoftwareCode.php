@@ -13,4 +13,14 @@ trait HasSoftwareCode
 
         return $this;
     }
+
+    /**
+     * @param null $code
+     *
+     * @return string|$this
+     */
+    public function softwareCode($code = null)
+    {
+        return empty($code) ? $this->softwareCode : $this->setSoftwareCode($code);
+    }
 }

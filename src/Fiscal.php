@@ -2,6 +2,7 @@
 
 namespace DeveloperItsMe\FiscalService;
 
+use DeveloperItsMe\FiscalService\Requests\RegisterInvoice;
 use DeveloperItsMe\FiscalService\Requests\Request;
 use DeveloperItsMe\FiscalService\Responses\Response;
 use DOMDocument;
@@ -40,6 +41,9 @@ class Fiscal
     public function send(): Response
     {
         if ($this->request) {
+            if($this->request instanceof RegisterInvoice) {
+                $this->request->model()->generateIIC($this->certificate()->getPrivateKey());
+            }
             $payload = $this->request->envelope(
                 $this->sign($this->request->toXML())
             );
@@ -93,14 +97,14 @@ class Fiscal
         $publicCertificatePureString = str_replace('-----BEGIN CERTIFICATE-----', '', $this->certificate()->key('cert'));
         $publicCertificatePureString = str_replace('-----END CERTIFICATE-----', '', $publicCertificatePureString);
 
-        $this->signedInfoSignature = null;
+        $signedInfoSignature = null;
 
-        if (!openssl_sign($SignedInfoNode->C14N(true), $this->signedInfoSignature, $this->certificate()->getPrivateKey(), OPENSSL_ALGO_SHA256)) {
+        if (!openssl_sign($SignedInfoNode->C14N(true), $signedInfoSignature, $this->certificate()->getPrivateKey(), OPENSSL_ALGO_SHA256)) {
             throw new Exception('Unable to sign the request');
         }
 
         $SignatureNode = $XMLRequestDOMDoc->getElementsByTagName('Signature')->item(0);
-        $SignatureValueNode = new DOMElement('SignatureValue', base64_encode($this->signedInfoSignature));
+        $SignatureValueNode = new DOMElement('SignatureValue', base64_encode($signedInfoSignature));
         $SignatureNode->appendChild($SignatureValueNode);
 
         $KeyInfoNode = $SignatureNode->appendChild(new DOMElement('KeyInfo'));

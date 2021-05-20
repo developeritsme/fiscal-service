@@ -51,6 +51,15 @@ class Invoice extends Model
     /** @var \DeveloperItsMe\FiscalService\Models\Items */
     protected $items;
 
+    /** @var \DeveloperItsMe\FiscalService\Models\SameTaxes */
+    protected $taxes;
+
+    /** @var array */
+    protected $totals = [];
+
+    /** @var string */
+    protected $iicSignature;
+
     public function __construct()
     {
         $this->paymentMethods = new PaymentMethods();
@@ -154,8 +163,6 @@ class Invoice extends Model
         if (!$this->dateTime) {
             $this->dateTime = Carbon::now();
         }
-        $taxes = SameTaxes::make($this->getItems());
-        $totals = $taxes->getTotals();
 
         //Header
         $writer->startElementNs(null, 'Header', null);
@@ -168,7 +175,7 @@ class Invoice extends Model
         $writer->writeAttribute('IssueDateTime', $this->dateTime->toIso8601String());
 
         //todo: IKOF Potpis
-        $writer->writeAttribute('IICSignature', $this->securityCode($total = $this->formatNumber($totals['total'])));
+        $writer->writeAttribute('IICSignature', $this->iicSignature);
         $writer->writeAttribute('IIC', $this->issuerCode);
         $writer->writeAttribute('InvNum', $this->number());
         $writer->writeAttribute('InvOrdNum', $this->number);
@@ -179,9 +186,9 @@ class Invoice extends Model
         $writer->writeAttribute('OperatorCode', $this->operatorCode);
         $writer->writeAttribute('SoftCode', $this->softwareCode);
         $writer->writeAttribute('TCRCode', $this->enu);
-        $writer->writeAttribute('TotPrice', $total);
-        $writer->writeAttribute('TotPriceWoVAT', $this->formatNumber($totals['base']));
-        $writer->writeAttribute('TotVATAmt', $this->formatNumber($totals['vat']));
+        $writer->writeAttribute('TotPrice', $this->formatNumber($this->totals('total')));
+        $writer->writeAttribute('TotPriceWoVAT', $this->formatNumber($this->totals('base')));
+        $writer->writeAttribute('TotVATAmt', $this->formatNumber($this->totals('vat')));
 
         $writer->writeAttribute('TypeOfInv', $this->type);
 
@@ -191,14 +198,17 @@ class Invoice extends Model
 
         $writer->writeRaw($this->items->toXML());
 
-        $writer->writeRaw($taxes->toXML());
+        $writer->writeRaw($this->taxes->toXML());
 
         $writer->endElement();
+
+        var_dump($this->dateTime->tz('Europe/Podgorica')->toIso8601String());
+        var_dump($this->issuerCode);
 
         return $writer->outputMemory();
     }
 
-    public function concatenate($total)
+    public function concatenate($total): string
     {
         return implode('|', [
             $this->seller->getIdNumber(),
@@ -211,21 +221,31 @@ class Invoice extends Model
         ]);
     }
 
-    public function securityCode($total): string
+    public function generateIIC($pkey)
     {
-//        $pkey = file_get_contents('./private.key');
-//        $key = openssl_pkey_get_private($pkey);
-//        var_dump($key);
-//        $signatureCode = null;
+        $data = hash('sha256', $this->concatenate($this->totals('total')));
 
-//        $data = $this->concatenate($total);
+        openssl_sign($data, $this->iicSignature, $pkey, OPENSSL_ALGO_SHA256);
 
-//        openssl_sign($data, $signatureCode, $pkey, OPENSSL_ALGO_SHA256);
+        $this->iicSignature = strtoupper(bin2hex($this->iicSignature));
 
-//        $signatureCode = 'A72977773A579523665C3D4F8DEFF3F301CA726A7960EFF5A6863E4CB6009A752C52652C615049A0B2B650380A12D4CC44E7FEB0371FEC42501D95A2F8ACE24A9483EC8AF93219DCC7F58C1E62497B412922B5CAE83A0F914427A769EE550C6510C43DE1FFBF13C911DBADCE66DAC6065B98352276F0B19260457887C20EB351932377B749B4CC0338100D9CB6A202A1EE9BC77B1E584FD9692C26102F603C7ED920E3ABF22DAF4C1D170E954B1D320709E26A429C3B8D45208B7C5CBF5BA1C51713E888ACA00BC60C00BA18E7B1434A196F9F09CBD28B68F4FD1F56EA197B59AF77D6B8459C1CBCAA367089BCC8CEFAE3926DA8183DD822D371230411F4CFFD';
+        $this->issuerCode = strtoupper(md5($this->iicSignature));
+    }
 
-//        return md5($signatureCode);
+    public function setIicSignature($signature): self
+    {
+        $this->iicSignature = $signature;
 
-        return '83D728C8E10BA04C430BE64CE98612B0256C0FE618C167F28BF62A0C0CB38C51824F152AB00510AE076508E53ACE4F877D25D51C7830F043E09BB1500D3A0AEA233ECC6175A45FE58CBF53E517FD9EA1D06CBABC055EEE6B430A16560C96D3A27720A6E5C9BA5C8D18A7AE5C2A7F1D8E46B293F56D32847FCEE199D2AFDC6E5BC1164BA974A6E29D6F40FBD8C51D40A99BC97DD6DB2AE9EC0582F2E74E9C7841AC5A854DE92B1D778A809CACCBBEF4DC325C852487BCF035AA2D54594DC6BDD859E250782CCCDD7CC89EE80A2FE1030AAAD615DA5D728322F8590D9F56E6DDE5975A738F304F56BB832996763624B72C77E97881D9C647B50709F20AFBFA0602';
+        return $this;
+    }
+
+    protected function totals($key = null)
+    {
+        if (empty($this->totals)) {
+            $this->taxes = SameTaxes::make($this->getItems());
+            $this->totals = $this->taxes->getTotals();
+        }
+
+        return !empty($key) && array_key_exists($key, $this->totals) ? $this->totals[$key] : $this->totals;
     }
 }
