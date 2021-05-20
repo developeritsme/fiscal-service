@@ -21,7 +21,7 @@ class FiscalTest extends TestCase
     protected $certPath = './CoreitPotpisSoft.pfx';
     protected $certPassphrase = '123456';
     protected $enu = 'si747we972';
-    protected $seller = 'Test only company';
+    protected $seller = 'City Taxi';
     protected $tin = '12345678';
     protected $unitCode = 'xx123xx123';
     protected $softwareCode = 'ss123ss123';
@@ -53,7 +53,7 @@ class FiscalTest extends TestCase
         $cashDeposit = (new CashDeposit())
             ->setDate(Carbon::now())
             ->setIdNumber($this->tin)
-            ->setAmount(10)
+            ->setAmount(0)
             ->setEnu($this->enu);
 
         $request = new RegisterCashDeposit($cashDeposit);
@@ -84,20 +84,27 @@ class FiscalTest extends TestCase
         $this->assertTrue($response->valid());
     }
 
-    /** @test */
+    /** @skip */
     public function it_can_send_invoice_request()
     {
-        $pm = new PaymentMethod(121);
+        $pm = new PaymentMethod(3);
 
         $seller = new Seller($this->seller, $this->tin);
+        $seller->setAddress('Radosava Burića bb');
 
         $item = new Item();
         $item->setCode(501234567890)
             ->setName('Taxi voznja')
-            ->setUnitPrice(121)
-            ->setVatRate(21);
+            ->setUnitPrice(2.20)
+            ->setVatRate(7);
+
+        $item2 = new Item();
+        $item2->setName('Čekanje')
+            ->setUnitPrice(0.80)
+            ->setVatRate(7);
 
         $invoice = (new Invoice())
+//            ->setType(Invoice::TYPE_NONCASH)
             ->setNumber(9952)
             ->setEnu($this->enu)
             ->setBusinessUnitCode($this->unitCode)
@@ -106,6 +113,7 @@ class FiscalTest extends TestCase
             ->setIssuerCode('4AD5A215BEAF85B0416235736A6DACAB')
             ->addPaymentMethod($pm)
             ->setSeller($seller)
+            ->addItem($item2)
             ->addItem($item);
 
         $request = new RegisterInvoice($invoice);

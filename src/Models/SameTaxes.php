@@ -8,15 +8,24 @@ class SameTaxes extends Model
 
     protected $grouped = [];
 
+    protected $totals = [];
+
     public function __construct(array $items)
     {
-        $this->items = $items;
+        $this->setItems($items);
         $this->setGroupedItems();
     }
 
     public static function make(array $items): self
     {
         return new static($items);
+    }
+
+    public function setItems(array $items): self
+    {
+        $this->items = $items;
+
+        return $this;
     }
 
     public function toXML(): string
@@ -40,6 +49,7 @@ class SameTaxes extends Model
 
     protected function setGroupedItems()
     {
+        $this->totals = [];
         /** @var \DeveloperItsMe\FiscalService\Models\Item $item */
         foreach ($this->items as $item) {
             $this->grouped[$item->getVatRate()]['prices'][] = $basePrice = $item->totalBasePrice();
@@ -51,17 +61,19 @@ class SameTaxes extends Model
 
     public function getTotals(): array
     {
-        $totals = [
-            'total' => 0,
-            'base'  => 0,
-            'vat'   => 0,
-        ];
-        foreach ($this->grouped as $item) {
-            $totals['base'] += $base = array_sum($item['prices']);
-            $totals['vat'] += $vat = array_sum($item['vats']);
-            $totals['total'] += $base + $vat;
+        if (empty($this->totals)) {
+            $this->totals = [
+                'total' => 0,
+                'base'  => 0,
+                'vat'   => 0,
+            ];
+            foreach ($this->grouped as $item) {
+                $this->totals['base'] += $base = array_sum($item['prices']);
+                $this->totals['vat'] += $vat = array_sum($item['vats']);
+                $this->totals['total'] += $base + $vat;
+            }
         }
 
-        return $totals;
+        return $this->totals;
     }
 }

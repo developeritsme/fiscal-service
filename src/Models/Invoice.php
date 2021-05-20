@@ -166,10 +166,10 @@ class Invoice extends Model
         $writer->startElementNs(null, 'Invoice', null);
         $writer->writeAttribute('BusinUnitCode', $this->businessUnitCode);
         $writer->writeAttribute('IssueDateTime', $this->dateTime->toIso8601String());
-        $writer->writeAttribute('IIC', $this->issuerCode);
 
         //todo: IKOF Potpis
         $writer->writeAttribute('IICSignature', $this->securityCode($total = $this->formatNumber($totals['total'])));
+        $writer->writeAttribute('IIC', $this->issuerCode);
         $writer->writeAttribute('InvNum', $this->number());
         $writer->writeAttribute('InvOrdNum', $this->number);
         //todo:

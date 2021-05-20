@@ -67,7 +67,7 @@ abstract class Business extends Model
         $writer = $this->getXmlWriter();
         $writer->startElementNs(null, $this->getXmlNodeName(), null);
         if ($this->address) {
-            $writer->writeAttribute('Address', 'ADRESA PRODAVAOCA');
+            $writer->writeAttribute('Address', $this->address);
         }
         //todo:
         $writer->writeAttribute('Country', 'MNE');
