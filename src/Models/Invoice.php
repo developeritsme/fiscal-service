@@ -14,6 +14,8 @@ class Invoice extends Model
     public const TYPE_CASH = 'CASH';
     public const TYPE_NONCASH = 'NONCASH';
 
+    public static $qrBaseUrl;
+
     /** @var Carbon */
     protected $dateTime;
 

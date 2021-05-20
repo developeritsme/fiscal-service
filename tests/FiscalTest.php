@@ -17,6 +17,8 @@ use PHPUnit\Framework\TestCase;
 
 class FiscalTest extends TestCase
 {
+    protected $qrProductionUrl = 'https://mapr.tax.gov.me/ic/#/verify';
+    protected $qrTestUrl = 'https://efitest.tax.gov.me/ic/#/verify';
     protected $certPath = './CoreitPotpisSoft.pfx';
     protected $certPassphrase = '123456';
     protected $enu = 'si747we972';
@@ -27,13 +29,13 @@ class FiscalTest extends TestCase
     protected $maintainerCode = 'mm123mm123';
     protected $operatorCode = 'oo123oo123';
 
-    protected function fiscal($certContent = null): Fiscal
+    protected function fiscal($certContent = null, $test = true): Fiscal
     {
         if (Carbon::hasTestNow()) {
             Carbon::setTestNow();
         }
 
-        return new Fiscal($certContent ?? $this->certPath, $this->certPassphrase, true);
+        return new Fiscal($certContent ?? $this->certPath, $this->certPassphrase, $test);
     }
 
     /** @test */
@@ -55,6 +57,16 @@ class FiscalTest extends TestCase
 
         $this->assertNotFalse($cert->getPrivateKey());
         $this->assertNotFalse($cert->getPublicData());
+    }
+
+    /** @test */
+    public function it_sets_proper_qr_code_base_url()
+    {
+        $this->fiscal();
+        $this->assertEquals($this->qrTestUrl, Invoice::$qrBaseUrl);
+
+        $this->fiscal(null, false);
+        $this->assertEquals($this->qrProductionUrl, Invoice::$qrBaseUrl);
     }
 
     /** @skip */

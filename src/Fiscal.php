@@ -2,7 +2,7 @@
 
 namespace DeveloperItsMe\FiscalService;
 
-use DeveloperItsMe\FiscalService\Requests\RegisterInvoice;
+use DeveloperItsMe\FiscalService\Models\Invoice;
 use DeveloperItsMe\FiscalService\Requests\Request;
 use DeveloperItsMe\FiscalService\Responses\Factory;
 use DeveloperItsMe\FiscalService\Responses\Response;
@@ -11,7 +11,11 @@ use DOMElement;
 
 class Fiscal
 {
-    private $url = 'https://efi.tax.gov.me/fs-v1';
+    /** @var string */
+    private $serviceUrl = 'https://efi.tax.gov.me/fs-v1';
+
+    /** @var string */
+    private $qrUrl = 'https://mapr.tax.gov.me/ic/#/verify';
 
     /** @var \DeveloperItsMe\FiscalService\Certificate */
     protected $certificate;
@@ -22,8 +26,12 @@ class Fiscal
     public function __construct($certificatePath, $certificatePassphrase, $test = false)
     {
         if ($test) {
-            $this->url = 'https://efitest.tax.gov.me/fs-v1';
+            $this->serviceUrl = 'https://efitest.tax.gov.me/fs-v1';
+            $this->qrUrl = 'https://efitest.tax.gov.me/ic/#/verify';
         }
+
+        Invoice::$qrBaseUrl = $this->qrUrl;
+
         $this->certificate = new Certificate($certificatePath, $certificatePassphrase);
     }
 
@@ -132,7 +140,7 @@ class Fiscal
         ];
 
         $options = [
-            CURLOPT_URL            => $this->url,
+            CURLOPT_URL            => $this->serviceUrl,
             CURLOPT_CONNECTTIMEOUT => 5,
             CURLOPT_TIMEOUT        => 5,
             CURLOPT_RETURNTRANSFER => true,
