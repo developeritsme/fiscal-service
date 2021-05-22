@@ -4,7 +4,7 @@ namespace DeveloperItsMe\FiscalService\Responses;
 
 class RegisterCashDeposit extends Response
 {
-    public function data(): array
+    public function toArray(): array
     {
         return [
             'id' => $this->fcdc(),

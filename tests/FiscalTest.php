@@ -155,8 +155,8 @@ class FiscalTest extends TestCase
             ->request($request)
             ->send();
 
-        $this->assertTrue($response->valid());
         $data = $response->data();
+        $this->assertTrue($response->valid());
         $this->assertArrayHasKey('url', $data);
         $this->assertArrayHasKey('ikof', $data);
         $this->assertArrayHasKey('jikr', $data);

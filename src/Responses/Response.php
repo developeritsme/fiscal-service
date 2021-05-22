@@ -33,6 +33,11 @@ abstract class Response
         return $this->code === 200;
     }
 
+    public function failed(): bool
+    {
+        return !$this->valid();
+    }
+
     public function success(): bool
     {
         return $this->valid();
@@ -46,6 +51,11 @@ abstract class Response
     public function body(): string
     {
         return $this->response;
+    }
+
+    public function data(): array
+    {
+        return $this->valid() ? $this->toArray() : $this->errors();
     }
 
     public function errors(): array
@@ -76,5 +86,5 @@ abstract class Response
         $this->domResponse->loadXML($this->response);
     }
 
-    public abstract function data(): array;
+    public abstract function toArray(): array;
 }

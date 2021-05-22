@@ -4,7 +4,7 @@ namespace DeveloperItsMe\FiscalService\Responses;
 
 class RegisterInvoice extends Response
 {
-    public function data(): array
+    public function toArray(): array
     {
         /** @var \DeveloperItsMe\FiscalService\Models\Invoice $model */
         $model = $this->request->model();

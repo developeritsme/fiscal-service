@@ -4,7 +4,7 @@ namespace DeveloperItsMe\FiscalService\Responses;
 
 class RegisterTCR extends Response
 {
-    public function data(): array
+    public function toArray(): array
     {
         return [
             'code' => $this->code(),
