@@ -106,9 +106,9 @@ class BusinessUnit extends Model
             $writer->writeAttribute('SoftCode', $this->softwareCode);
         }
         $writer->writeAttribute('TCRIntID', $this->internalId);
-        if ($this->validFrom) {
-            $writer->writeAttribute('ValidFrom', $this->validFrom->format('Y-m-d'));
-        }
+
+        $writer->writeAttribute('ValidFrom', ($this->validFrom ?? Carbon::now('Europe/Podgorica'))->format('Y-m-d'));
+
         if ($this->validTo) {
             $writer->writeAttribute('ValidTo', $this->validTo->format('Y-m-d'));
         }

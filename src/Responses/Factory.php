@@ -25,7 +25,7 @@ class Factory
                 break;
 
             default:
-                $class = 'Test';
+                throw new \Exception('Unknown response type');
 
         }
 

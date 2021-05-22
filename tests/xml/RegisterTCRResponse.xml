@@ -1,0 +1,70 @@
+<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
+    <env:Header/>
+    <env:Body>
+        <RegisterTCRResponse xmlns="https://efi.tax.gov.me/fs/schema" xmlns:ns0="http://www.w3.org/2000/09/xmldsig#"
+                             Id="Response" Version="1">
+            <Header UUID="a8323e4a-4ceb-4ef0-8a38-6b315229a1f7" RequestUUID="08d580c9-a5da-4bf2-b1bf-18d8b4bc321c"
+                    SendDateTime="2021-05-22T14:41:45+02:00" xmlns="https://efi.tax.gov.me/fs/schema"/>
+            <TCRCode xmlns="https://efi.tax.gov.me/fs/schema">ku392kn209</TCRCode>
+            <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+                <SignedInfo>
+                    <CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+                    <SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+                    <Reference URI="#Response">
+                        <Transforms>
+                            <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+                            <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+                        </Transforms>
+                        <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+                        <DigestValue>fVgTdeN14VAA+ZMgFJplCk8xX5snqxIn3UrwrdJD64M=</DigestValue>
+                    </Reference>
+                </SignedInfo>
+                <SignatureValue>pSDI34fyyt60Gof80aCZxGtZOQKFZslfRCtjiR4l1coeJrhHe1EuzpPOfWg6JED1jch/80iZn4cF
+                    X5LvxNTqZPqN2aaSqLEWaojjBbl6isb4XVPGAwMVSWUzlX815VWJXgR8wW/5Xk3P65cdQYbAyAtL
+                    fpPAg8OyvY7eUuuKoAn9ePZYHJtwXeEOb2Pv6LvSrG381fed9Q38lbSx+V0JXafpTGAMopNYy6kJ
+                    Wjh+iak8bU/Y8nnxdRBwD6kzDod6IDl7jD9F+Ko4nx2LspJU9m/NpmXqPRdkyisSf0bfbDCn6JYY
+                    90++6YFd7BLTY48N+GsRF0PKTkRevqJRHww4JA==
+                </SignatureValue>
+                <KeyInfo>
+                    <X509Data>
+                        <X509Certificate>MIIHVjCCBb6gAwIBAgIEXQLgzjANBgkqhkiG9w0BAQsFADA0MQswCQYDVQQGEwJtZTEQMA4GA1UE
+                            ChMHUG9zdGFDRzETMBEGA1UEAxMKUG9zdGFDRyBDQTAeFw0yMDA4MjYwOTM0MjlaFw0yMzA4MjYx
+                            MDA0MjlaMHoxCzAJBgNVBAYTAk1FMRQwEgYDVQQLEwtQcmF2bm8gbGljZTEuMBUGA1UEChMOUG9y
+                            ZXNrYSB1cHJhdmEwFQYDVQRhEw5WQVRNRS0xMTA0NDc2MDElMAwGA1UEBRMFNDA2MTkwFQYDVQQD
+                            Ew5Qb3Jlc2thIHVwcmF2YTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK1fDZf0sLP8
+                            iU9yguE6aEgBenAYXwGXHlRXpvWC6Ll68GJylxLB0JuFyaMKq5vAGIsg/mv5hFIB223TZxJqoA4W
+                            HR30gNuvOIUiKkWaTAJcZPaaxOEcyEMqgzWPKYrfCSG8Xk6/pd/afwrwWPT0+xuFL3olUaJgRdqG
+                            6jGy0e/x7XxM80SztMHrnY5gAwShxQ2YhYsgcv3O+/9IEhO5rS8/OhoXY0zqDr4xYEDUF7SCMRUi
+                            jRMFZa0UMd06akr6StsPxXNIeDBs7daSwgxXEDyi5g1DnPrLdYl9HdqB82/oMQ/M31injxuGo6eg
+                            sUdT9C2lOkgpIY9h5wme2RSrvbUCAwEAAaOCA6gwggOkMA4GA1UdDwEB/wQEAwIGwDBGBgNVHSAE
+                            PzA9MDsGDCsGAQQBgp8BAQYBAjArMCkGCCsGAQUFBwIBFh1odHRwOi8vd3d3LnBvc3RhY2ctY2Eu
+                            bWUvY3BzLzCBsgYIKwYBBQUHAQMEgaUwgaIwCAYGBACORgEBMIGABgYEAI5GAQUwdjA5FjNodHRw
+                            czovL3d3dy5wb3N0YWNnLWNhLm1lL2Nwcy9wb3N0YWNnLWNhX3Bkc19lbi5wZGYTAmVuMDkWM2h0
+                            dHBzOi8vd3d3LnBvc3RhY2ctY2EubWUvY3BzL3Bvc3RhY2ctY2FfcGRzX3NyLnBkZhMCc3IwEwYG
+                            BACORgEGMAkGBwQAjkYBBgIwTgYIKwYBBQUHAQEEQjBAMD4GCCsGAQUFBzAChjJodHRwOi8vd3d3
+                            LnBvc3RhY2ctY2EubWUvY2VyL1Bvc3RhQ0ctQ0FfY2FjZXJ0LmNlcjCBgAYDVR0SBHkwd6R1MHMx
+                            CzAJBgNVBAYTAk1FMTYwNAYDVQQKEy1QT1NUQSBDUk5FIEdPUkUgQUtDSU9OQVJTS08gRFJVU1RW
+                            TyBQT0RHT1JJQ0ExFzAVBgNVBGETDlZBVE1FLTAyODY3OTQwMRMwEQYDVQQDEwpQb3N0YUNHIENB
+                            MD0GA1UdEQQ2MDSBHHZlc2VsaW4uam92aWNldmljQHRheC5nb3YubWWBFHBvcmVza2F1cHJhdmFA
+                            Z292Lm1lMIIBQQYDVR0fBIIBODCCATQwTKBKoEikRjBEMQswCQYDVQQGEwJtZTEQMA4GA1UEChMH
+                            UG9zdGFDRzETMBEGA1UEAxMKUG9zdGFDRyBDQTEOMAwGA1UEAxMFQ1JMNDIwgeOggeCggd2GW2xk
+                            YXA6Ly9sZGFwLnBvc3RhY2ctY2EubWUvY249UG9zdGFDRyUyMENBLG89UG9zdGFDRyxjPW1lP2Nl
+                            cnRpZmljYXRlUmV2b2NhdGlvbkxpc3QlM0JiaW5hcnmGPmh0dHA6Ly9laWQucG9zdGFjZy1jYS5t
+                            ZS9jcmwvcG9zdGFjZ19jYV9wb3N0YWNnX21lX2NybGZpbGUuY3Jshj5odHRwOi8vd3d3LnBvc3Rh
+                            Y2ctY2EubWUvY3JsL3Bvc3RhY2dfY2FfcG9zdGFjZ19tZV9jcmxmaWxlLmNybDAfBgNVHSMEGDAW
+                            gBR3Y0xYMrlU0RoJ93Quq6uNPKoq8TAdBgNVHQ4EFgQUFjnokiRtOybrNf+mrU3dzvW6fYkwDQYJ
+                            KoZIhvcNAQELBQADggGBALdkMCpx6vKKPj+x3chOvZeoS4s5Yc7LxQdUMHKk1v7f6ff5FmtNKbl3
+                            mez9ipRkmfakN4+yrrHSW1AJI754TkeX6f7sB+dtXxML5VuFX3jSY+bA/ctnuz2sKKwKGx7zAcuB
+                            eI7OErqwLFLMyGMgo9GWSUX11hEAzjaNKX0pGkccrJ8eh0cvUmsVIGqskr0aqxrzS2l8b4qEWJlx
+                            orhHFzTtkSkIMR+Q7mYLBJx4FnJRJt3EQTYcmKnf/sBx9ZoqXfqPdT1Gf+Tl6Nwy4hGcRnViAggF
+                            OFHEP53EN26Xqhs79crpElIQ6sYlLakUkr5dfnozsDOhWisty/dgmewzSwFRiApKrYRnP3luD4Vo
+                            tyzkSxPWJKMyWuoko119/Oz2K1JlXAL+euBvfj2rdZqWfMDn1mOTboz9N/jmti7A7PeOvtzSq60u
+                            plw9IVQUDIGI2+KmxkNzu1ISGOAmzZxCEAG8Cc6GVK6JVHPvy4DyCUPNFSt4ekfv+VktqLPXH/Tf
+                            hg==
+                        </X509Certificate>
+                    </X509Data>
+                </KeyInfo>
+            </Signature>
+        </RegisterTCRResponse>
+    </env:Body>
+</env:Envelope>

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests;
+namespace Tests\Models;
 
 use Carbon\Carbon;
 use DeveloperItsMe\FiscalService\Models\BusinessUnit;

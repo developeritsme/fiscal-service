@@ -3,6 +3,7 @@
 namespace DeveloperItsMe\FiscalService\Models;
 
 use Carbon\Carbon;
+use DeveloperItsMe\FiscalService\Fiscal;
 use DeveloperItsMe\FiscalService\Traits\HasSoftwareCode;
 use DeveloperItsMe\FiscalService\Traits\HasUUID;
 
@@ -66,6 +67,7 @@ class Invoice extends Model
     {
         $this->paymentMethods = new PaymentMethods();
         $this->items = new Items();
+        $this->dateTime = Carbon::now();
     }
 
     public function setDateTime($dateTime): self
@@ -147,7 +149,7 @@ class Invoice extends Model
         return $this;
     }
 
-    protected function number(): string
+    public function number(): string
     {
         return implode('/', [$this->businessUnitCode, $this->number, $this->dateTime->year, $this->enu]);
     }
@@ -261,5 +263,10 @@ class Invoice extends Model
     public function ikof()
     {
         return $this->issuerCode;
+    }
+
+    public function toArray()
+    {
+
     }
 }

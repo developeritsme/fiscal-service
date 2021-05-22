@@ -58,6 +58,13 @@ abstract class Response
         return $this->valid() ? $this->toArray() : $this->errors();
     }
 
+    public function error(): string
+    {
+        $faultString = $this->domResponse->getElementsByTagName('faultstring')->item(0);
+
+        return $faultString ? $faultString->nodeValue : 'Success';
+    }
+
     public function errors(): array
     {
         $faultCode = $this->domResponse->getElementsByTagName('faultcode')->item(0);
