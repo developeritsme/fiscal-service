@@ -10,9 +10,10 @@ class RegisterInvoice extends Response
         $model = $this->request->model();
 
         return [
-            'url'  => $model->url(),
-            'ikof' => $model->ikof(),
-            'jikr' => $this->fic(),
+            'url'    => $model->url(),
+            'ikof'   => $model->ikof(),
+            'jikr'   => $this->fic(),
+            'number' => $model->number(),
         ];
     }
 

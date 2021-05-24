@@ -29,6 +29,7 @@ class ResponsesTest extends TestCase
         $this->assertArrayHasKey('url', $data);
         $this->assertArrayHasKey('ikof', $data);
         $this->assertArrayHasKey('jikr', $data);
+        $this->assertArrayHasKey('number', $data);
     }
 
     /** @test */
@@ -49,6 +50,7 @@ class ResponsesTest extends TestCase
 
         $this->assertArrayHasKey('code', $data);
     }
+
     /** @test */
     public function register_cash_deposit_returns_proper_data()
     {
