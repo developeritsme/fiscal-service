@@ -47,18 +47,27 @@ class Fiscal
         return $this;
     }
 
+    public function payload(): string
+    {
+        if (method_exists($model = $this->request->model(), 'generateIIC')) {
+            $model->generateIIC($this->certificate()->getPrivateKey());
+        }
+
+        return str_replace('default:', '', $this->sign($this->request->toXML()));
+    }
+
+    /**
+     * @throws \Exception
+     */
     public function send(): Response
     {
         if ($this->request) {
-            if (method_exists($model = $this->request->model(), 'generateIIC')) {
-                $model->generateIIC($this->certificate()->getPrivateKey());
-            }
-            $payload = $this->request->envelope(
-                $this->sign($this->request->toXML())
+            return $this->soap(
+                $this->request->envelope($this->payload())
             );
-
-            return $this->soap($payload);
         }
+
+        throw new \Exception('No request set on Fiscal class');
     }
 
     protected function sign($xml)

@@ -186,7 +186,7 @@
             </attribute>
         </complexType>
     </element>
-    
+
     <complexType name="RegisterInvoiceRequestHeaderType">
         <attribute name="UUID" type="me:UUIDSType" use="required">
             <annotation>
@@ -1034,7 +1034,7 @@
             </annotation>
         </attribute>
     </complexType>
-    
+
     <simpleType name="InvoiceTSType">
         <annotation>
             <documentation>Invoice fiscalization type.</documentation>
@@ -1070,7 +1070,7 @@
                     <documentation>Credit note.</documentation>
                 </annotation>
             </enumeration>
-        </restriction>        
+        </restriction>
     </simpleType>
     <simpleType name="InvoiceSType">
         <annotation>
@@ -1189,11 +1189,11 @@
                     <documentation>Invoice not yet paid. It will be paid by summary invoice.</documentation>
                 </annotation>
             </enumeration>
-            <enumeration value="ADVANCE"> 
-                <annotation> 
-                    <documentation>Invoice is paid in advance</documentation> 
-                </annotation> 
-            </enumeration> 
+            <enumeration value="ADVANCE">
+                <annotation>
+                    <documentation>Invoice is paid in advance</documentation>
+                </annotation>
+            </enumeration>
             <enumeration value="ACCOUNT">
                 <annotation>
                     <documentation>Transaction account</documentation>
@@ -1261,7 +1261,7 @@
             <documentation>Invoice number composed of Business unit code, Invoice ordinal number, year of invoice issuing and TCR code.</documentation>
         </annotation>
         <restriction base="string">
-            <pattern value="[a-z]{2}[0-9]{3}[a-z]{2}[0-9]{3}\/[1-9]{1}[0-9]{0,14}\/[0-9]{4}\/[a-z]{2}[0-9]{3}[a-z]{2}[0-9]{3}"/>
+            <pattern value="[a-z]{2}[0-9]{3}[a-z]{2}[0-9]{3}/[1-9]{1}[0-9]{0,14}/[0-9]{4}/[a-z]{2}[0-9]{3}[a-z]{2}[0-9]{3}"/>
         </restriction>
     </simpleType>
     <simpleType name="String200SType">
@@ -1369,7 +1369,7 @@
             <documentation>Tax period composed of month and year for which it is applied, in the format MM/YYYY.</documentation>
         </annotation>
         <restriction base="string">
-            <pattern value="((0[1-9])|(1[0-2]))\/(\d{4})"/>
+            <pattern value="((0[1-9])|(1[0-2]))/(\d{4})"/>
         </restriction>
     </simpleType>
     <simpleType name="CashDepositOperationSType">
