@@ -54,6 +54,11 @@ abstract class Request
         return $this;
     }
 
+    public function payload(): string
+    {
+        return $this->payload;
+    }
+
     public function envelope($xml = null)
     {
         $xmlRequestDom = new DOMDocument();

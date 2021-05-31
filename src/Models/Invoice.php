@@ -178,7 +178,7 @@ class Invoice extends Model
         $writer->writeAttribute('InvNum', $this->number());
         $writer->writeAttribute('InvOrdNum', $this->number);
         //todo:
-        $writer->writeAttribute('IsIssuerInVAT', 'true');
+        $writer->writeAttribute('IsIssuerInVAT', $this->boolToString($this->seller->getIsVat()));
         $writer->writeAttribute('IsReverseCharge', $this->boolToString(false));
         $writer->writeAttribute('IsSimplifiedInv', $this->boolToString($this->isSimplified));
         $writer->writeAttribute('OperatorCode', $this->operatorCode);

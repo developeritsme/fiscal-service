@@ -17,16 +17,20 @@ abstract class Business extends Model
     /** @var string */
     protected $name;
 
+    /** @var boolean */
+    protected $isVat;
+
     /** @var string */
     protected $address;
 
     /** @var string */
     protected $town;
 
-    public function __construct($name, $idNumber)
+    public function __construct($name, $idNumber, $isVat = true)
     {
         $this->setName($name)
-            ->setIdNumber($idNumber);
+            ->setIdNumber($idNumber)
+            ->setIsVat($isVat);
     }
 
     public function setIdNumber($id): self
@@ -39,6 +43,18 @@ abstract class Business extends Model
     public function getIdNumber(): string
     {
         return $this->idNumber;
+    }
+
+    public function setIsVat($isVat): self
+    {
+        $this->isVat = $isVat;
+
+        return $this;
+    }
+
+    public function getIsVat(): bool
+    {
+        return $this->isVat;
     }
 
     public function setName($name): self

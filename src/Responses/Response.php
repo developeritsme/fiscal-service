@@ -53,6 +53,11 @@ abstract class Response
         return $this->response;
     }
 
+    public function request(): string
+    {
+        return $this->request->payload();
+    }
+
     public function data(): array
     {
         return $this->valid() ? $this->toArray() : $this->errors();
