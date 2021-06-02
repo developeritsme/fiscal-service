@@ -17,8 +17,10 @@ class RegisterInvoice extends Response
         ];
     }
 
-    protected function fic(): string
+    protected function fic(): ?string
     {
-        return $this->domResponse->getElementsByTagName('FIC')->item(0)->nodeValue;
+        return $this->domResponse
+            ? $this->domResponse->getElementsByTagName('FIC')->item(0)->nodeValue
+            : null;
     }
 }

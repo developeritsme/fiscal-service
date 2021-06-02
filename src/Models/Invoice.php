@@ -164,7 +164,7 @@ class Invoice extends Model
 
         //Header
         $writer->startElementNs(null, 'Header', null);
-        $writer->writeAttribute('SendDateTime', Carbon::now()->toIso8601String());
+        $writer->writeAttribute('SendDateTime', $this->dateTime->toIso8601String());
         $writer->writeAttribute('UUID', $this->uuid ?? $this->generateUUID());
         $writer->endElement();
 

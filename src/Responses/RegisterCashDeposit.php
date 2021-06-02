@@ -11,8 +11,10 @@ class RegisterCashDeposit extends Response
         ];
     }
 
-    protected function fcdc()
+    protected function fcdc(): ?string
     {
-        return $this->domResponse->getElementsByTagName('FCDC')->item(0)->nodeValue;
+        return $this->domResponse
+            ? $this->domResponse->getElementsByTagName('FCDC')->item(0)->nodeValue
+            : null;
     }
 }

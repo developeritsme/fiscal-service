@@ -65,37 +65,48 @@ abstract class Response
 
     public function error(): string
     {
-        $faultString = $this->domResponse->getElementsByTagName('faultstring')->item(0);
+        if ($this->domResponse) {
+            $faultString = $this->domResponse->getElementsByTagName('faultstring')->item(0);
 
-        return $faultString ? $faultString->nodeValue : 'Success';
+            return $faultString ? $faultString->nodeValue : 'Success';
+        }
+
+        return 'Empty response';
     }
 
     public function errors(): array
     {
-        $faultCode = $this->domResponse->getElementsByTagName('faultcode')->item(0);
-        $faultString = $this->domResponse->getElementsByTagName('faultstring')->item(0);
-        $details = $this->domResponse->getElementsByTagName('detail')->item(0);
+        if ($this->domResponse) {
+            $faultCode = $this->domResponse->getElementsByTagName('faultcode')->item(0);
+            $faultString = $this->domResponse->getElementsByTagName('faultstring')->item(0);
+            $details = $this->domResponse->getElementsByTagName('detail')->item(0);
 
-        $errors = [
-            'code'    => $faultCode ? $faultCode->nodeValue : 0,
-            'message' => $faultString ? $faultString->nodeValue : 'Success',
-        ];
+            $errors = [
+                'code'    => $faultCode ? $faultCode->nodeValue : 0,
+                'message' => $faultString ? $faultString->nodeValue : 'Success',
+            ];
 
-        if ($details) {
-            $errors['details'] = [];
-            /** @var \DOMNode $detail */
-            foreach ($details->childNodes as $detail) {
-                $errors['details'][] = [$detail->nodeName => $detail->nodeValue];
+            if ($details) {
+                $errors['details'] = [];
+                /** @var \DOMNode $detail */
+                foreach ($details->childNodes as $detail) {
+                    $errors['details'][] = [$detail->nodeName => $detail->nodeValue];
+                }
             }
+
+            return $errors;
         }
 
-        return $errors;
+        return ['code' => 0, 'message' => $this->error()];
     }
 
     protected function setDomResponse()
     {
-        $this->domResponse = new DOMDocument();
-        $this->domResponse->loadXML($this->response);
+        if ($this->response) {
+            $this->domResponse = new DOMDocument();
+
+            $this->domResponse->loadXML($this->response);
+        }
     }
 
     public abstract function toArray(): array;
