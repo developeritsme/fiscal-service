@@ -48,6 +48,9 @@ class Invoice extends Model
     /** @var \DeveloperItsMe\FiscalService\Models\Seller */
     protected $seller;
 
+    /** @var \DeveloperItsMe\FiscalService\Models\Buyer */
+    protected $buyer;
+
     /** @var \DeveloperItsMe\FiscalService\Models\PaymentMethods */
     protected $paymentMethods;
 
@@ -149,6 +152,13 @@ class Invoice extends Model
         return $this;
     }
 
+    public function setBuyer(Buyer $buyer): self
+    {
+        $this->buyer = $buyer;
+
+        return $this;
+    }
+
     public function number(): string
     {
         return implode('/', [$this->businessUnitCode, $this->number, $this->dateTime->year, $this->enu]);
@@ -193,6 +203,10 @@ class Invoice extends Model
         $writer->writeRaw($this->paymentMethods->toXML());
 
         $writer->writeRaw($this->seller->toXML());
+
+        if ($this->buyer) {
+            $writer->writeRaw($this->buyer->toXML());
+        }
 
         $writer->writeRaw($this->items->toXML());
 
