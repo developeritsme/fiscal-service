@@ -23,7 +23,7 @@ trait HasTestData
 
     protected $qrProductionUrl = 'https://mapr.tax.gov.me/ic/#/verify';
     protected $qrTestUrl = 'https://efitest.tax.gov.me/ic/#/verify';
-    protected $certPath = './CoreitPotpisSoft.pfx';
+    protected $certPath = './CoreitPecatSoft.pfx';
     protected $certPassphrase = '123456';
     protected $enu = 'si747we972';
     protected $seller = 'City Taxi';

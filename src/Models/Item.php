@@ -95,7 +95,7 @@ class Item extends Model
         if ($this->code) {
             $writer->writeAttribute('C', $this->code);
         }
-        $writer->writeAttribute('N', $this->name);
+        $writer->writeAttribute('N', substr($this->name, 0, 50));
         $writer->writeAttribute('PA', number_format($this->totalPrice(), 2));
         $writer->writeAttribute('PB', number_format($this->totalBasePrice(), 2));
         $writer->writeAttribute('Q', number_format($this->quantity, 1));
