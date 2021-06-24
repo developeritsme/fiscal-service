@@ -210,7 +210,9 @@ class Invoice extends Model
 
         $writer->writeRaw($this->items->toXML());
 
-        $writer->writeRaw($this->taxes->toXML());
+        if ($this->seller->getIsVat()) {
+            $writer->writeRaw($this->taxes->toXML());
+        }
 
         $writer->endElement();
 
