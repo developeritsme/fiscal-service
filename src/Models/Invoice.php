@@ -196,7 +196,9 @@ class Invoice extends Model
         $writer->writeAttribute('TCRCode', $this->enu);
         $writer->writeAttribute('TotPrice', $this->formatNumber($this->totals('total')));
         $writer->writeAttribute('TotPriceWoVAT', $this->formatNumber($this->totals('base')));
-        $writer->writeAttribute('TotVATAmt', $this->formatNumber($this->totals('vat')));
+        if ($this->seller->getIsVat()) {
+            $writer->writeAttribute('TotVATAmt', $this->formatNumber($this->totals('vat')));
+        }
 
         $writer->writeAttribute('TypeOfInv', $this->type);
 
