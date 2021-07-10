@@ -236,7 +236,9 @@ class Invoice extends Model
 
     public function generateIIC($pkey)
     {
-        $data = hash('sha256', $this->concatenate($this->totals('total')));
+        $data = hash('sha256', $this->concatenate(
+            $this->formatNumber($this->totals('total'))
+        ));
 
         openssl_sign($data, $this->iicSignature, $pkey, OPENSSL_ALGO_SHA256);
 

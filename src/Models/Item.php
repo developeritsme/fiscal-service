@@ -96,9 +96,9 @@ class Item extends Model
             $writer->writeAttribute('C', $this->code);
         }
         $writer->writeAttribute('N', substr($this->name, 0, 50));
-        $writer->writeAttribute('PA', number_format($this->totalPrice(), 2));
-        $writer->writeAttribute('PB', number_format($this->totalBasePrice(), 2));
-        $writer->writeAttribute('Q', number_format($this->quantity, 1));
+        $writer->writeAttribute('PA', $this->formatNumber($this->totalPrice(), 2));
+        $writer->writeAttribute('PB', $this->formatNumber($this->totalBasePrice(), 2));
+        $writer->writeAttribute('Q', $this->formatNumber($this->quantity, 1));
 
         //todo:
         $writer->writeAttribute('R', '0');
@@ -106,11 +106,11 @@ class Item extends Model
 
         $writer->writeAttribute('U', $this->unit);
 
-        $writer->writeAttribute('UPB', number_format($this->baseUnitPrice(), 2));
-        $writer->writeAttribute('UPA', number_format($this->unitPrice, 2));
+        $writer->writeAttribute('UPB', $this->formatNumber($this->baseUnitPrice(), 2));
+        $writer->writeAttribute('UPA', $this->formatNumber($this->unitPrice, 2));
 
-        $writer->writeAttribute('VA', number_format($this->totalPrice() - $this->totalBasePrice(), 2));
-        $writer->writeAttribute('VR', number_format($this->vatRate, 2));
+        $writer->writeAttribute('VA', $this->formatNumber($this->totalPrice() - $this->totalBasePrice(), 2));
+        $writer->writeAttribute('VR', $this->formatNumber($this->vatRate, 2));
 
         $writer->endElement();
 

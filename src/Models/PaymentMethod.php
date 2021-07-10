@@ -53,7 +53,7 @@ class PaymentMethod extends Model
     {
         $writer = $this->getXmlWriter();
         $writer->startElementNs(null, 'PayMethod', null);
-        $writer->writeAttribute('Amt', number_format($this->amount, 2));
+        $writer->writeAttribute('Amt', $this->formatNumber($this->amount, 2));
         $writer->writeAttribute('Type', $this->type);
         $writer->endElement();
 
