@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Tests;
-
 
 use Carbon\Carbon;
 use DeveloperItsMe\FiscalService\Fiscal;
@@ -19,19 +17,12 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 trait HasTestData
 {
+    use HasPublicTestData;
+
     public static $createdEnu;
 
     protected $qrProductionUrl = 'https://mapr.tax.gov.me/ic/#/verify';
     protected $qrTestUrl = 'https://efitest.tax.gov.me/ic/#/verify';
-    protected $certPath = './CoreitPecatSoft.pfx';
-    protected $certPassphrase = '123456';
-    protected $enu = 'si747we972';
-    protected $seller = 'City Taxi';
-    protected $tin = '12345678';
-    protected $unitCode = 'xx123xx123';
-    protected $softwareCode = 'ss123ss123';
-    protected $maintainerCode = 'mm123mm123';
-    protected $operatorCode = 'oo123oo123';
 
     protected function fiscal($certContent = null, $test = true): Fiscal
     {
@@ -50,10 +41,8 @@ trait HasTestData
             ->getMock();
     }
 
-    protected function getRegisterInvoiceRequest(): RegisterInvoice
+    protected function getRegisterInvoiceRequest($noCash = false): RegisterInvoice
     {
-        $pm = new PaymentMethod(3);
-
         $seller = new Seller($this->seller, $this->tin);
         $seller->setAddress('Radosava Burića bb')
             ->setTown('Podgorica');
@@ -74,10 +63,18 @@ trait HasTestData
             ->setBusinessUnitCode($this->unitCode)
             ->setSoftwareCode($this->softwareCode)
             ->setOperatorCode($this->operatorCode)
-            ->addPaymentMethod($pm)
             ->setSeller($seller)
             ->addItem($item2)
             ->addItem($item);
+
+        if ($noCash) {
+            $invoice->setType(Invoice::TYPE_NONCASH);
+            $pm = new PaymentMethod(3, PaymentMethod::TYPE_ACCOUNT);
+        } else {
+            $pm = new PaymentMethod(3);
+        }
+
+        $invoice->addPaymentMethod($pm);
 
         return new RegisterInvoice($invoice);
     }

@@ -49,10 +49,20 @@ class FiscalServiceTest extends TestCase
     }
 
     /** @skip */
-    public function it_can_send_invoice_request()
+    public function it_can_send_cash_invoice_request()
     {
         $response = $this->fiscal()
             ->request($this->getRegisterInvoiceRequest())
+            ->send();
+
+        $this->assertTrue($response->valid(), $response->error());
+    }
+
+    /** @test */
+    public function it_can_send_no_cash_invoice_request()
+    {
+        $response = $this->fiscal()
+            ->request($this->getRegisterInvoiceRequest(true))
             ->send();
 
         $this->assertTrue($response->valid(), $response->error());
