@@ -26,6 +26,9 @@ abstract class Business extends Model
     /** @var string */
     protected $town;
 
+    /** @var string */
+    protected $country = 'MNE';
+
     public function __construct($name, $idNumber, $isVat = true)
     {
         $this->setName($name)
@@ -78,6 +81,15 @@ abstract class Business extends Model
         return $this;
     }
 
+    public function setCountry($country): self
+    {
+        if (in_array($country, Countries::codes())) {
+            $this->country = $country;
+        }
+
+        return $this;
+    }
+
     public function toXML(): string
     {
         $writer = $this->getXmlWriter();
@@ -85,8 +97,8 @@ abstract class Business extends Model
         if ($this->address) {
             $writer->writeAttribute('Address', $this->address);
         }
-        //todo:
-        $writer->writeAttribute('Country', 'MNE');
+
+        $writer->writeAttribute('Country', $this->country);
         $writer->writeAttribute('IDNum', $this->idNumber);
         $writer->writeAttribute('IDType', self::ID_TYPE_PIB);
         $writer->writeAttribute('Name', $this->name);
