@@ -41,7 +41,7 @@ trait HasTestData
             ->getMock();
     }
 
-    protected function getRegisterInvoiceRequest($noCash = false): RegisterInvoice
+    protected function getRegisterInvoiceRequest($noCash = false, $corrective = null): RegisterInvoice
     {
         $seller = new Seller($this->seller, $this->tin);
         $seller->setAddress('Radosava Burića bb')
@@ -58,20 +58,30 @@ trait HasTestData
             ->setVatRate(7);
 
         $invoice = (new Invoice())
-            ->setNumber(9952)
+            ->setNumber(time())
             ->setEnu($this->enu)
             ->setBusinessUnitCode($this->unitCode)
             ->setSoftwareCode($this->softwareCode)
             ->setOperatorCode($this->operatorCode)
-            ->setSeller($seller)
-            ->addItem($item2)
+            ->setSeller($seller);
+
+        if ($corrective) {
+            $multi = -1;
+            $invoice->setCorrectiveInvoice($corrective);
+            $item->setQuantity($multi);
+            $item2->setQuantity($multi);
+        } else {
+            $multi = 1;
+        }
+
+        $invoice->addItem($item2)
             ->addItem($item);
 
         if ($noCash) {
             $invoice->setType(Invoice::TYPE_NONCASH);
-            $pm = new PaymentMethod(3, PaymentMethod::TYPE_ACCOUNT);
+            $pm = new PaymentMethod($multi * 3, PaymentMethod::TYPE_ACCOUNT);
         } else {
-            $pm = new PaymentMethod(3);
+            $pm = new PaymentMethod($multi * 3);
         }
 
         $invoice->addPaymentMethod($pm);

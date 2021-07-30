@@ -14,6 +14,7 @@ class RegisterInvoice extends Response
             'ikof'   => $model->ikof(),
             'jikr'   => $this->fic(),
             'number' => $model->number(),
+            'date'   => $model->getDateTime(),
         ];
     }
 

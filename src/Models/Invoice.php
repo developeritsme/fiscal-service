@@ -3,7 +3,6 @@
 namespace DeveloperItsMe\FiscalService\Models;
 
 use Carbon\Carbon;
-use DeveloperItsMe\FiscalService\Fiscal;
 use DeveloperItsMe\FiscalService\Traits\HasSoftwareCode;
 use DeveloperItsMe\FiscalService\Traits\HasUUID;
 
@@ -15,13 +14,23 @@ class Invoice extends Model
     public const TYPE_CASH = 'CASH';
     public const TYPE_NONCASH = 'NONCASH';
 
+    public const TYPE_INVOICE = 'INVOICE';
+    public const TYPE_CORRECTIVE = 'CORRECTIVE';
+    public const TYPE_SUMMARY = 'SUMMARY';
+    public const TYPE_PERIODICAL = 'PERIODICAL';
+    public const TYPE_ADVANCE = 'ADVANCE';
+    public const TYPE_CREDIT_NOTE = 'CREDIT_NOTE';
+
     public static $qrBaseUrl;
 
     /** @var Carbon */
     protected $dateTime;
 
     /** @var string */
-    protected $type = self::TYPE_CASH;
+    protected $method = self::TYPE_CASH;
+
+    /** @var string */
+    protected $type = self::TYPE_INVOICE;
 
     /** @var bool */
     protected $isSimplified = false;
@@ -60,6 +69,9 @@ class Invoice extends Model
     /** @var \DeveloperItsMe\FiscalService\Models\SameTaxes */
     protected $taxes;
 
+    /** @var \DeveloperItsMe\FiscalService\Models\CorrectiveInvoice */
+    protected $corrective;
+
     /** @var array */
     protected $totals = [];
 
@@ -80,13 +92,36 @@ class Invoice extends Model
         return $this;
     }
 
+    public function getDateTime(): ?string
+    {
+        return $this->dateTime ? $this->dateTime->toIso8601String() : null;
+    }
+
     public function setType($type): self
     {
         if (in_array($type, [self::TYPE_CASH, self::TYPE_NONCASH])) {
+            $this->method = $type;
+
+            return $this;
+        }
+
+        if (in_array($type, $this->types())) {
             $this->type = $type;
         }
 
         return $this;
+    }
+
+    protected function types(): array
+    {
+        return [
+            self::TYPE_INVOICE,
+            self::TYPE_CORRECTIVE,
+            self::TYPE_SUMMARY,
+            self::TYPE_PERIODICAL,
+            self::TYPE_ADVANCE,
+            self::TYPE_CREDIT_NOTE,
+        ];
     }
 
     public function setNumber(int $number): self
@@ -128,7 +163,7 @@ class Invoice extends Model
 
     public function addPaymentMethod(PaymentMethod $paymentMethod): self
     {
-        $this->paymentMethods->add($paymentMethod, $this->type);
+        $this->paymentMethods->add($paymentMethod, $this->method);
 
         return $this;
     }
@@ -143,6 +178,12 @@ class Invoice extends Model
     public function getItems(): array
     {
         return $this->items->all();
+    }
+
+    public function setCorrectiveInvoice(CorrectiveInvoice $invoice)
+    {
+        $this->corrective = $invoice;
+        $this->setType(self::TYPE_CORRECTIVE);
     }
 
     public function setSeller(Seller $seller): self
@@ -200,7 +241,12 @@ class Invoice extends Model
             $writer->writeAttribute('TotVATAmt', $this->formatNumber($this->totals('vat')));
         }
 
-        $writer->writeAttribute('TypeOfInv', $this->type);
+        $writer->writeAttribute('TypeOfInv', $this->method);
+        $writer->writeAttribute('InvType', $this->type);
+
+        if ($this->corrective) {
+            $writer->writeRaw($this->corrective->toXML());
+        }
 
         $writer->writeRaw($this->paymentMethods->toXML());
 

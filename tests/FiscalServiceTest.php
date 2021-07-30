@@ -4,6 +4,7 @@ namespace Tests;
 
 use Carbon\Carbon;
 use DeveloperItsMe\FiscalService\Models\CashDeposit;
+use DeveloperItsMe\FiscalService\Models\CorrectiveInvoice;
 use PHPUnit\Framework\TestCase;
 
 class FiscalServiceTest extends TestCase
@@ -66,5 +67,26 @@ class FiscalServiceTest extends TestCase
             ->send();
 
         $this->assertTrue($response->valid(), $response->error());
+    }
+
+    /** @test */
+    public function it_can_send_corrective_invoice_full_amount()
+    {
+        sleep(1);
+        $response = $this->fiscal()
+            ->request($this->getRegisterInvoiceRequest(true))
+            ->send();
+
+        $this->assertTrue($response->valid(), $response->error());
+        $data = $response->data();
+
+        sleep(1);
+
+        $corrective = new CorrectiveInvoice($data['ikof'], $data['date']);
+        $cResponse = $this->fiscal()
+            ->request($this->getRegisterInvoiceRequest(true, $corrective))
+            ->send();
+
+        $this->assertTrue($cResponse->valid(), $cResponse->error());
     }
 }
