@@ -27,7 +27,7 @@ abstract class Business extends Model
     protected $town;
 
     /** @var string */
-    protected $country = 'MNE';
+    protected $country = Countries::ME;
 
     public function __construct($name, $idNumber, $isVat = true)
     {
@@ -100,7 +100,7 @@ abstract class Business extends Model
 
         $writer->writeAttribute('Country', $this->country);
         $writer->writeAttribute('IDNum', $this->idNumber);
-        $writer->writeAttribute('IDType', self::ID_TYPE_PIB);
+        $writer->writeAttribute('IDType', $this->country == Countries::ME ? self::ID_TYPE_PIB : self::ID_TYPE_TAX_NUMBER);
         $writer->writeAttribute('Name', $this->name);
         if ($this->town) {
             $writer->writeAttribute('Town', $this->town);
