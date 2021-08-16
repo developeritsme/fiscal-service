@@ -1,4 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?><schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:me="https://efi.tax.gov.me/fs/schema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified" targetNamespace="https://efi.tax.gov.me/fs/schema" vc:minVersion="1.1">
+<?xml version="1.0" encoding="UTF-8"?>
+<schema
+    targetNamespace="https://efi.tax.gov.me/fs/schema"
+    xmlns:me="https://efi.tax.gov.me/fs/schema"
+    xmlns="http://www.w3.org/2001/XMLSchema"
+    xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+    xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"
+    elementFormDefault="qualified"
+    vc:minVersion="1.1">
 
     <import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd"/>
 
@@ -7,29 +15,29 @@
             <documentation>Root XML element representing register invoice message.</documentation>
         </annotation>
         <complexType>
-            <all maxOccurs="1" minOccurs="1">
-                <element maxOccurs="1" minOccurs="1" name="Header" type="me:RegisterInvoiceRequestHeaderType">
+            <all minOccurs="1" maxOccurs="1">
+                <element name="Header" type="me:RegisterInvoiceRequestHeaderType" minOccurs="1" maxOccurs="1">
                     <annotation>
                         <documentation>XML element representing header of the invoice containing data about the message (request) sent.</documentation>
                     </annotation>
                 </element>
-                <element maxOccurs="1" minOccurs="1" name="Invoice" type="me:InvoiceType">
+                <element name="Invoice" type="me:InvoiceType" minOccurs="1" maxOccurs="1">
                     <annotation>
                         <documentation>XML element representing a single invoice.</documentation>
                     </annotation>
                 </element>
-                <element maxOccurs="1" minOccurs="1" ref="ds:Signature">
+                <element ref="ds:Signature" minOccurs="1" maxOccurs="1">
                     <annotation>
                         <documentation>XML element representing signature for the invoice.</documentation>
                     </annotation>
                 </element>
             </all>
-            <attribute fixed="Request" name="Id" type="string" use="required">
+            <attribute name="Id" type="string" use="required" fixed="Request">
                 <annotation>
                     <documentation>Attribute used for signature creation and verification.</documentation>
                 </annotation>
             </attribute>
-            <attribute fixed="1" name="Version" type="me:IntSType" use="required">
+            <attribute name="Version" type="me:IntSType" use="required" fixed="1">
                 <annotation>
                     <documentation>Attribute used to specify compliance with XSD schema.</documentation>
                 </annotation>
@@ -42,24 +50,24 @@
         </annotation>
         <complexType>
             <all>
-                <element maxOccurs="1" minOccurs="1" name="Header" type="me:RegisterInvoiceResponseHeaderType">
+                <element name="Header" type="me:RegisterInvoiceResponseHeaderType" minOccurs="1" maxOccurs="1">
                     <annotation>
                         <documentation>Element representing the header of the message.</documentation>
                     </annotation>
                 </element>
-                <element maxOccurs="1" minOccurs="1" name="FIC" type="me:UUIDSType">
+                <element name="FIC" type="me:UUIDSType" minOccurs="1" maxOccurs="1">
                     <annotation>
                         <documentation>CIS generated verification code that can be used to uniquely identify registered invoice.</documentation>
                     </annotation>
                 </element>
-                <element maxOccurs="1" minOccurs="1" ref="ds:Signature"/>
+                <element ref="ds:Signature" minOccurs="1" maxOccurs="1"/>
             </all>
-            <attribute fixed="Response" name="Id" type="string" use="required">
+            <attribute name="Id" type="string" use="required" fixed="Response">
                 <annotation>
                     <documentation>Identification of the response, used to reference a signature.</documentation>
                 </annotation>
             </attribute>
-            <attribute fixed="1" name="Version" type="me:IntSType" use="required">
+            <attribute name="Version" type="me:IntSType" use="required" fixed="1">
                 <annotation>
                     <documentation>Identification of the schema version.</documentation>
                 </annotation>
@@ -71,25 +79,25 @@
             <documentation>Root XML element representing cash deposit request message.</documentation>
         </annotation>
         <complexType>
-            <all maxOccurs="1" minOccurs="1">
-                <element maxOccurs="1" minOccurs="1" name="Header" type="me:RegisterCashDepositRequestHeaderType">
+            <all minOccurs="1" maxOccurs="1">
+                <element name="Header" type="me:RegisterCashDepositRequestHeaderType" minOccurs="1" maxOccurs="1">
                     <annotation>
                         <documentation>Element representing the header of the message.</documentation>
                     </annotation>
                 </element>
-                <element maxOccurs="1" minOccurs="1" name="CashDeposit" type="me:CashDepositType">
+                <element name="CashDeposit" type="me:CashDepositType" minOccurs="1" maxOccurs="1">
                     <annotation>
                         <documentation>Element representing a single cash deposit request.</documentation>
                     </annotation>
                 </element>
-                <element maxOccurs="1" minOccurs="1" ref="ds:Signature"/>
+                <element ref="ds:Signature" minOccurs="1" maxOccurs="1"/>
             </all>
-            <attribute fixed="Request" name="Id" type="string" use="required">
+            <attribute name="Id" type="string" use="required" fixed="Request">
                 <annotation>
                     <documentation>Identification of the request, used to reference a signature.</documentation>
                 </annotation>
             </attribute>
-            <attribute fixed="1" name="Version" type="me:IntSType" use="required">
+            <attribute name="Version" type="me:IntSType" use="required" fixed="1">
                 <annotation>
                     <documentation>Identification of the schema version.</documentation>
                 </annotation>
@@ -101,25 +109,25 @@
             <documentation>Root XML element representing cash deposit response message.</documentation>
         </annotation>
         <complexType>
-            <all maxOccurs="1" minOccurs="1">
-                <element maxOccurs="1" minOccurs="1" name="Header" type="me:RegisterCashDepositResponseHeaderType">
+            <all minOccurs="1" maxOccurs="1">
+                <element name="Header" type="me:RegisterCashDepositResponseHeaderType" minOccurs="1" maxOccurs="1">
                     <annotation>
                         <documentation>Element representing the header of the message.</documentation>
                     </annotation>
                 </element>
-                <element maxOccurs="1" minOccurs="1" name="FCDC" type="me:UUIDSType">
+                <element name="FCDC" type="me:UUIDSType" minOccurs="1" maxOccurs="1">
                     <annotation>
                         <documentation>Fiscalization cash deposit code generated by the CIS.</documentation>
                     </annotation>
                 </element>
-                <element maxOccurs="1" minOccurs="1" ref="ds:Signature"/>
+                <element ref="ds:Signature" minOccurs="1" maxOccurs="1"/>
             </all>
-            <attribute fixed="Response" name="Id" type="string" use="required">
+            <attribute name="Id" type="string" use="required" fixed="Response">
                 <annotation>
                     <documentation>Identification of the response, used to reference a signature.</documentation>
                 </annotation>
             </attribute>
-            <attribute fixed="1" name="Version" type="me:IntSType" use="required">
+            <attribute name="Version" type="me:IntSType" use="required" fixed="1">
                 <annotation>
                     <documentation>Identification of the schema version.</documentation>
                 </annotation>
@@ -131,25 +139,25 @@
             <documentation>Root XML element representing TCR request message.</documentation>
         </annotation>
         <complexType>
-            <all maxOccurs="1" minOccurs="1">
-                <element maxOccurs="1" minOccurs="1" name="Header" type="me:RegisterTCRRequestHeaderType">
+            <all minOccurs="1" maxOccurs="1">
+                <element name="Header" type="me:RegisterTCRRequestHeaderType" minOccurs="1" maxOccurs="1">
                     <annotation>
                         <documentation>Element representing the header of the message.</documentation>
                     </annotation>
                 </element>
-                <element maxOccurs="1" minOccurs="1" name="TCR" type="me:TCRType">
+                <element name="TCR" type="me:TCRType" minOccurs="1" maxOccurs="1">
                     <annotation>
                         <documentation>XML element representing a single TCR registration message.</documentation>
                     </annotation>
                 </element>
-                <element maxOccurs="1" minOccurs="1" ref="ds:Signature"/>
+                <element ref="ds:Signature" minOccurs="1" maxOccurs="1"/>
             </all>
-            <attribute fixed="Request" name="Id" type="string" use="required">
+            <attribute name="Id" type="string" use="required" fixed="Request">
                 <annotation>
                     <documentation>Identification of the request, used to reference a signature.</documentation>
                 </annotation>
             </attribute>
-            <attribute fixed="1" name="Version" type="me:IntSType" use="required">
+            <attribute name="Version" type="me:IntSType" use="required" fixed="1">
                 <annotation>
                     <documentation>Identification of the schema version.</documentation>
                 </annotation>
@@ -161,25 +169,25 @@
             <documentation>Root XML element representing TCR response message.</documentation>
         </annotation>
         <complexType>
-            <all maxOccurs="1" minOccurs="1">
-                <element maxOccurs="1" minOccurs="1" name="Header" type="me:RegisterTCRResponseHeaderType">
+            <all minOccurs="1" maxOccurs="1">
+                <element name="Header" type="me:RegisterTCRResponseHeaderType" minOccurs="1" maxOccurs="1">
                     <annotation>
                         <documentation>Element representing the header of the message.</documentation>
                     </annotation>
                 </element>
-                <element maxOccurs="1" minOccurs="1" name="TCRCode" type="me:RegistrationCodeSType">
+                <element name="TCRCode" type="me:RegistrationCodeSType" minOccurs="1" maxOccurs="1">
                     <annotation>
                         <documentation>TCR code generated by the service.</documentation>
                     </annotation>
                 </element>
-                <element maxOccurs="1" minOccurs="1" ref="ds:Signature"/>
+                <element ref="ds:Signature" minOccurs="1" maxOccurs="1"/>
             </all>
-            <attribute fixed="Response" name="Id" type="string" use="required">
+            <attribute name="Id" type="string" use="required" fixed="Response">
                 <annotation>
                     <documentation>Identification of the response, used to reference a signature.</documentation>
                 </annotation>
             </attribute>
-            <attribute fixed="1" name="Version" type="me:IntSType" use="required">
+            <attribute name="Version" type="me:IntSType" use="required" fixed="1">
                 <annotation>
                     <documentation>Identification of the schema version.</documentation>
                 </annotation>
@@ -198,7 +206,7 @@
                 <documentation>Date and time of sending the register invoice data message from a TCR to the CIS.</documentation>
             </annotation>
         </attribute>
-        <attribute name="SubseqDelivType" type="me:SubseqDelivTypeSType" use="optional">
+        <attribute name="SubseqDelivType" type="me:SubseqDelivTypeSType" use="optional" >
             <annotation>
                 <documentation>Type of subsequent delivery if message is delivered after invoice issuance.</documentation>
             </annotation>
@@ -221,18 +229,18 @@
             </annotation>
         </attribute>
     </complexType>
-        <complexType name="RegisterCashDepositRequestHeaderType">
-        <attribute name="UUID" type="me:UUIDSType" use="required">
+    <complexType name="RegisterCashDepositRequestHeaderType">
+        <attribute name="UUID" type="me:UUIDSType" use="required" >
             <annotation>
                 <documentation>Element generated by the TCR. It uniquely identifies the request message sent from TCR to CIS.</documentation>
             </annotation>
         </attribute>
-        <attribute name="SendDateTime" type="me:UTCSType" use="required">
+        <attribute name="SendDateTime" type="me:UTCSType" use="required" >
             <annotation>
                 <documentation>Element represents date and time of sending the request message to the CIS.</documentation>
             </annotation>
         </attribute>
-        <attribute name="SubseqDelivType" type="me:SubseqDelivTypeSType" use="optional">
+        <attribute name="SubseqDelivType" type="me:SubseqDelivTypeSType" use="optional" >
             <annotation>
                 <documentation>Type of subsequent delivery if message is delivered after cash deposit issuance.</documentation>
             </annotation>
@@ -287,17 +295,17 @@
 
     <complexType name="InvoiceType">
         <all>
-            <element maxOccurs="1" minOccurs="0" name="SupplyDateOrPeriod" type="me:SupplyDateOrPeriodType">
+            <element name="SupplyDateOrPeriod" type="me:SupplyDateOrPeriodType" minOccurs="0" maxOccurs="1">
                 <annotation>
                     <documentation>XML element representing supply date or period is supply is different from the date when the invoice was issued.</documentation>
                 </annotation>
             </element>
-            <element maxOccurs="1" minOccurs="0" name="CorrectiveInv" type="me:CorrectiveInvType">
+            <element name="CorrectiveInv" type="me:CorrectiveInvType" minOccurs="0" maxOccurs="1">
                 <annotation>
                     <documentation>XML element groups data for a corrective invoice.</documentation>
                 </annotation>
             </element>
-            <element maxOccurs="1" minOccurs="1" name="PayMethods" type="me:PayMethodsType">
+            <element name="PayMethods" type="me:PayMethodsType" minOccurs="1" maxOccurs="1">
                 <annotation>
                     <documentation>XML element representing list of payment methods.</documentation>
                 </annotation>
@@ -306,37 +314,37 @@
                     <field xpath="@Type"/>
                 </unique>
             </element>
-            <element maxOccurs="1" minOccurs="0" name="Currency" type="me:CurrencyType">
+            <element name="Currency" type="me:CurrencyType" minOccurs="0" maxOccurs="1">
                 <annotation>
                     <documentation>XML element representing currency in which the amount on the invoice is expressed.</documentation>
                 </annotation>
             </element>
-            <element maxOccurs="1" minOccurs="1" name="Seller" type="me:SellerType">
+            <element name="Seller" type="me:SellerType" minOccurs="1" maxOccurs="1" >
                 <annotation>
                     <documentation>XML element representing an seller of the goods.</documentation>
                 </annotation>
             </element>
-            <element maxOccurs="1" minOccurs="0" name="Buyer" type="me:BuyerType">
+            <element name="Buyer" type="me:BuyerType" minOccurs="0" maxOccurs="1" >
                 <annotation>
                     <documentation>XML element representing a buyer of the goods.</documentation>
                 </annotation>
             </element>
-            <element maxOccurs="1" minOccurs="0" name="Items" type="me:InvoiceItemsType">
+            <element name="Items" type="me:InvoiceItemsType" minOccurs="0" maxOccurs="1" >
                 <annotation>
                     <documentation>XML element representing list of invoice items (goods or services).</documentation>
                 </annotation>
             </element>
-            <element maxOccurs="1" minOccurs="0" name="SameTaxes" type="me:SameTaxesType">
+            <element name="SameTaxes" type="me:SameTaxesType" minOccurs="0" maxOccurs="1" >
                 <annotation>
                     <documentation>XML element representing list of items of the same VAT rate.</documentation>
                 </annotation>
             </element>
-            <element maxOccurs="1" minOccurs="0" name="Approvals" type="me:ApprovalsType">
+            <element name="Approvals" type="me:ApprovalsType" minOccurs="0" maxOccurs="1" >
                 <annotation>
                     <documentation>XML element representing an approval list for credit note.</documentation>
                 </annotation>
             </element>
-            <element maxOccurs="1" minOccurs="0" name="Fees" type="me:FeesType">
+            <element name="Fees" type="me:FeesType" minOccurs="0" maxOccurs="1" >
                 <annotation>
                     <documentation>XML element representing list of fees.</documentation>
                 </annotation>
@@ -345,161 +353,151 @@
                     <field xpath="@Type"/>
                 </unique>
             </element>
-            <element maxOccurs="1" minOccurs="0" name="IICRefs" type="me:IICRefsType">
+            <element name="IICRefs" type="me:IICRefsType" minOccurs="0" maxOccurs="1" >
                 <annotation>
                     <documentation>XML element representing list of invoices IIC referenced by a invoice.</documentation>
                 </annotation>
             </element>
-            <element maxOccurs="1" minOccurs="0" name="SumInvIICRefs" type="me:SumInvIICRefsType">
+            <element name="SumInvIICRefs" type="me:SumInvIICRefsType" minOccurs="0" maxOccurs="1" >
                 <annotation>
                     <documentation>XML element representing list of invoices IIC referenced by a summary invoice.</documentation>
                 </annotation>
             </element>
-            <element maxOccurs="1" minOccurs="0" name="BadDebtInv" type="me:BadDebtInvType">
+            <element name="BadDebtInv" type="me:BadDebtInvType" minOccurs="0" maxOccurs="1">
                 <annotation>
                     <documentation>XML element groups data for an original invoice that will be declared bad debt invoice, as uncollectible.</documentation>
                 </annotation>
             </element>
         </all>
-        <attribute name="InvType" type="me:InvoiceTSType" use="optional">
+        <attribute name="InvType" type="me:InvoiceTSType" use="optional" >
             <annotation>
                 <documentation>The type of invoice, the financial document, that is being fiscalized.</documentation>
             </annotation>
         </attribute>
-        <attribute name="TypeOfInv" type="me:InvoiceSType" use="required">
+        <attribute name="TypeOfInv" type="me:InvoiceSType" use="required" >
             <annotation>
                 <documentation>Type of the item represents the type of invoice item, e.g. regular sale or a returned item.</documentation>
             </annotation>
         </attribute>
-        <attribute name="IsSimplifiedInv" type="boolean" use="optional">
+        <attribute name="IsSimplifiedInv" type="boolean" use="optional" >
             <annotation>
                 <documentation>If the invoice is simplified or not.</documentation>
             </annotation>
         </attribute>
-        <attribute name="TypeOfSelfIss" type="me:SelfIssSType" use="optional">
+        <attribute name="TypeOfSelfIss" type="me:SelfIssSType" use="optional" >
             <annotation>
                 <documentation>Type of self-issuing.</documentation>
             </annotation>
         </attribute>
-        <attribute name="IssueDateTime" type="me:UTCSType" use="required">
+        <attribute name="IssueDateTime" type="me:UTCSType" use="required" >
             <annotation>
                 <documentation>Date and time of invoice created and issued at TCR.</documentation>
             </annotation>
         </attribute>
-        <attribute name="InvNum" type="me:InvNumSType" use="required">
+        <attribute name="InvNum" type="me:InvNumSType" use="required" >
             <annotation>
                 <documentation>Invoice number composed of invoice ordinal number, year of invoice issuance and code of TCR that issued invoice.</documentation>
             </annotation>
         </attribute>
-        <attribute name="InvOrdNum" type="me:IntSType" use="required">
+        <attribute name="InvOrdNum" type="me:IntSType" use="required" >
             <annotation>
                 <documentation>Invoice ordinal number.</documentation>
             </annotation>
         </attribute>
-        <attribute name="TCRCode" type="me:RegistrationCodeSType" use="required">
+        <attribute name="TCRCode" type="me:RegistrationCodeSType" use="required" >
             <annotation>
                 <documentation>Code of the device that issued the invoice.</documentation>
             </annotation>
         </attribute>
-        <attribute name="IsIssuerInVAT" type="boolean" use="required">
+        <attribute name="IsIssuerInVAT" type="boolean" use="required" >
             <annotation>
                 <documentation>Is the taxpayer in the VAT system.</documentation>
             </annotation>
         </attribute>
-        <attribute name="TaxFreeAmt" type="me:DecimalNegSType" use="optional">
+        <attribute name="TaxFreeAmt" type="me:DecimalNegSType" use="optional" >
             <annotation>
                 <documentation>Amount on the invoice that is tax free.</documentation>
             </annotation>
         </attribute>
-        <attribute name="MarkUpAmt" type="me:DecimalNegSType" use="optional">
+        <attribute name="MarkUpAmt" type="me:DecimalNegSType" use="optional" >
             <annotation>
                 <documentation>Amount of the mark-up on the invoice.</documentation>
             </annotation>
         </attribute>
-        <attribute name="GoodsExAmt" type="me:DecimalNegSType" use="optional">
+        <attribute name="GoodsExAmt" type="me:DecimalNegSType" use="optional" >
             <annotation>
                 <documentation>Total price of delivery of exported goods. There is no VAT on the invoice.</documentation>
             </annotation>
         </attribute>
-        <attribute name="TotPriceWoVAT" type="me:DecimalNegSType" use="required">
+        <attribute name="TotPriceWoVAT" type="me:DecimalNegSType" use="required" >
             <annotation>
                 <documentation>Total price of the invoice without VAT.</documentation>
             </annotation>
         </attribute>
-        <attribute name="TotVATAmt" type="me:DecimalNegSType" use="optional">
+        <attribute name="TotVATAmt" type="me:DecimalNegSType" use="optional" >
             <annotation>
                 <documentation>Total VAT amount.</documentation>
             </annotation>
         </attribute>
-        <attribute name="TotPrice" type="me:DecimalNegSType" use="required">
+        <attribute name="TotPrice" type="me:DecimalNegSType" use="required" >
             <annotation>
                 <documentation>Total price of the invoice including VAT.</documentation>
             </annotation>
         </attribute>
-        <attribute name="TotPriceToPay" type="me:DecimalSType" use="optional">
+        <attribute name="TotPriceToPay" type="me:DecimalSType" use="optional" >
             <annotation>
                 <documentation>Total price that customer pays.</documentation>
             </annotation>
         </attribute>
-        <attribute name="OperatorCode" type="me:RegistrationCodeSType" use="required">
+        <attribute name="OperatorCode" type="me:RegistrationCodeSType" use="required" >
             <annotation>
                 <documentation>Reference to the operator who is operating on TCR. Value represents code of the operator.</documentation>
             </annotation>
         </attribute>
-        <attribute name="BusinUnitCode" type="me:RegistrationCodeSType" use="required">
+        <attribute name="BusinUnitCode" type="me:RegistrationCodeSType" use="required" >
             <annotation>
                 <documentation>Code (ID) of the business unit in which the invoice is issued.</documentation>
             </annotation>
         </attribute>
-        <attribute name="SoftCode" type="me:RegistrationCodeSType" use="required">
+        <attribute name="SoftCode" type="me:RegistrationCodeSType" use="required" >
             <annotation>
                 <documentation>Number of the software used for invoice issuing.</documentation>
             </annotation>
         </attribute>
-        <attribute name="IIC" type="me:Hex32SType" use="required">
+        <attribute name="IIC" type="me:Hex32SType" use="required" >
             <annotation>
                 <documentation>Issuers’s invoice code which is generated by the cash register of the issuer of the invoice. This is a unique code for every invoice. </documentation>
             </annotation>
         </attribute>
-        <attribute name="IICSignature" type="me:Hex512SType" use="required">
+        <attribute name="IICSignature" type="me:Hex512SType" use="required" >
             <annotation>
                 <documentation>Signed issuer’s invoice code concatenated parameters.</documentation>
             </annotation>
         </attribute>
-        <attribute name="IsReverseCharge" type="boolean" use="optional">
+        <attribute name="IsReverseCharge" type="boolean" use="optional" >
             <annotation>
                 <documentation>Buyer is obliged to pay taxes by himself rather than issuer does it for him.</documentation>
             </annotation>
         </attribute>
-        <attribute name="PayDeadline" type="me:DateSType" use="optional">
+        <attribute name="PayDeadline" type="me:DateSType" use="optional" >
             <annotation>
                 <documentation>Last day for a payment.</documentation>
             </annotation>
         </attribute>
-        <attribute name="ParagonBlockNum" type="me:String20SType" use="optional">
+        <attribute name="ParagonBlockNum" type="me:String20SType" use="optional" >
             <annotation>
                 <documentation>Number of paragon block.</documentation>
             </annotation>
         </attribute>
-        <attribute name="TaxPeriod" type="me:TaxPeriodSType" use="optional">
+        <attribute name="TaxPeriod" type="me:TaxPeriodSType" use="optional" >
             <annotation>
                 <documentation>Tax period for tax return.</documentation>
-            </annotation>
-        </attribute>
-        <attribute name="BankAccNum" type="me:String50SType" use="optional">
-            <annotation>
-                <documentation>The number of the giro account to which the customer needs to pay the amount to pay the invoice.</documentation>
-            </annotation>
-        </attribute>
-        <attribute name="Note" type="me:String200SType" use="optional">
-            <annotation>
-                <documentation>Note on the invoice.</documentation>
             </annotation>
         </attribute>
     </complexType>
     <complexType name="InvoiceItemType">
         <all>
-            <element maxOccurs="1" minOccurs="0" name="VS" type="me:VouchersSoldType">
+            <element name="VS" type="me:VouchersSoldType" minOccurs="0" maxOccurs="1">
                 <annotation>
                     <documentation>Element representing voucher data linked to this item.</documentation>
                 </annotation>
@@ -560,7 +558,7 @@
                 <documentation>Amount of value added tax for the items in this group of items.</documentation>
             </annotation>
         </attribute>
-        <attribute name="IN" type="boolean" use="optional">
+        <attribute name="IN" type="boolean" use="optional" >
             <annotation>
                 <documentation>If true, the item is investment.</documentation>
             </annotation>
@@ -588,7 +586,7 @@
     </complexType>
     <complexType name="InvoiceItemsType">
         <sequence>
-            <element maxOccurs="1000" minOccurs="1" name="I" type="me:InvoiceItemType">
+            <element name="I" type="me:InvoiceItemType" minOccurs="1" maxOccurs="1000">
                 <annotation>
                     <documentation>Element representing a single item on the invoice.</documentation>
                 </annotation>
@@ -707,7 +705,7 @@
     </complexType>
     <complexType name="PayMethodsType">
         <sequence>
-            <element maxOccurs="10" minOccurs="1" name="PayMethod" type="me:PayMethodType">
+            <element name="PayMethod" type="me:PayMethodType" minOccurs="1" maxOccurs="10">
                 <annotation>
                     <documentation>XML element representing one payment method.</documentation>
                 </annotation>
@@ -716,7 +714,7 @@
     </complexType>
     <complexType name="SameTaxesType">
         <sequence>
-            <element maxOccurs="20" minOccurs="1" name="SameTax" type="me:SameTaxType">
+            <element name="SameTax" type="me:SameTaxType" minOccurs="1" maxOccurs="20">
                 <annotation>
                     <documentation>Element representing an item of list of same tax items.</documentation>
                 </annotation>
@@ -725,7 +723,7 @@
     </complexType>
     <complexType name="ApprovalsType">
         <sequence>
-            <element maxOccurs="20" minOccurs="1" name="Approval" type="me:ApprovalType">
+            <element name="Approval" type="me:ApprovalType" minOccurs="1" maxOccurs="20">
                 <annotation>
                     <documentation>Element representing approval for a single tax rate.</documentation>
                 </annotation>
@@ -734,7 +732,7 @@
     </complexType>
     <complexType name="FeesType">
         <sequence>
-            <element maxOccurs="20" minOccurs="1" name="Fee" type="me:FeeType">
+            <element name="Fee" type="me:FeeType" minOccurs="1" maxOccurs="20">
                 <annotation>
                     <documentation>Element representing an item of list of fee items.</documentation>
                 </annotation>
@@ -743,7 +741,7 @@
     </complexType>
     <complexType name="SumInvIICRefsType">
         <sequence>
-            <element maxOccurs="1000" minOccurs="1" name="SumInvIICRef" type="me:SumInvIICRefType">
+            <element name="SumInvIICRef" type="me:SumInvIICRefType" minOccurs="1" maxOccurs="1000">
                 <annotation>
                     <documentation>XML element representing a single IIC reference on the list of SumInvIICRefs.</documentation>
                 </annotation>
@@ -752,7 +750,7 @@
     </complexType>
     <complexType name="IICRefsType">
         <sequence>
-            <element maxOccurs="1000" minOccurs="1" name="IICRef" type="me:IICRefType">
+            <element name="IICRef" type="me:IICRefType" minOccurs="1" maxOccurs="1000">
                 <annotation>
                     <documentation>XML element representing a single IIC reference on the list of IICRefs.</documentation>
                 </annotation>
@@ -761,7 +759,7 @@
     </complexType>
     <complexType name="PayMethodType">
         <sequence>
-            <element maxOccurs="1" minOccurs="0" name="Vouchers" type="me:VouchersType">
+            <element name="Vouchers" type="me:VouchersType" minOccurs="0" maxOccurs="1">
                 <annotation>
                     <documentation>XML element representing list of voucher numbers if the payment method is voucher.</documentation>
                 </annotation>
@@ -795,7 +793,7 @@
     </complexType>
     <complexType name="VouchersType">
         <sequence>
-            <element maxOccurs="20" minOccurs="1" name="Voucher" type="me:VoucherType">
+            <element name="Voucher" type="me:VoucherType" minOccurs="1" maxOccurs="20">
                 <annotation>
                     <documentation>XML element representing a single voucher number.</documentation>
                 </annotation>
@@ -852,7 +850,7 @@
                 <documentation>VAT rate.</documentation>
             </annotation>
         </attribute>
-        <attribute name="ExemptFromVAT" type="me:DecimalNegSType" use="optional">
+        <attribute name="ExemptFromVAT" type="me:ExemptFromVATSType" use="optional">
             <annotation>
                 <documentation>Exempt from VAT.</documentation>
             </annotation>
@@ -908,14 +906,14 @@
                 <documentation>Date and time the invoice referenced by the invoice is created and issued at TCR.</documentation>
             </annotation>
         </attribute>
-        <attribute name="Amount" type="me:DecimalNegSType" use="required">
+        <attribute name="Amount" type="me:DecimalNegSType" use="optional">
             <annotation>
                 <documentation>The amount of the invoice referred to in the invoice.</documentation>
             </annotation>
         </attribute>
     </complexType>
     <complexType name="CashDepositType">
-        <attribute name="ChangeDateTime" type="me:UTCSType" use="required">
+        <attribute name="ChangeDateTime" type="me:UTCSType" use="required" >
             <annotation>
                 <documentation>Element representing date and time when the deposit of cash was checked in the cash register.</documentation>
             </annotation>
@@ -925,12 +923,12 @@
                 <documentation>This is an XML element that represents the operation made at the cash register.</documentation>
             </annotation>
         </attribute>
-        <attribute name="CashAmt" type="me:DecimalSType" use="required">
+        <attribute name="CashAmt" type="me:DecimalSType" use="required" >
             <annotation>
                 <documentation>Element representing the amount of cash found in the cash register after the operation.</documentation>
             </annotation>
         </attribute>
-        <attribute name="TCRCode" type="me:RegistrationCodeSType" use="required">
+        <attribute name="TCRCode" type="me:RegistrationCodeSType" use="required" >
             <annotation>
                 <documentation>Element representing the unique code of the TCR in question.</documentation>
             </annotation>
@@ -989,12 +987,12 @@
     </complexType>
     <complexType name="VouchersSoldType">
         <all>
-            <element maxOccurs="1" minOccurs="1" name="VD" type="me:VoucherSoldDataType">
+            <element name="VD" type="me:VoucherSoldDataType" minOccurs="1" maxOccurs="1">
                 <annotation>
                     <documentation>XML element representing a voucher data.</documentation>
                 </annotation>
             </element>
-            <element maxOccurs="1" minOccurs="1" name="VN" type="me:VouchersSoldNumType">
+            <element name="VN" type="me:VouchersSoldNumType" minOccurs="1" maxOccurs="1">
                 <annotation>
                     <documentation>XML element representing a voucher numbers.</documentation>
                 </annotation>
@@ -1015,7 +1013,7 @@
     </complexType>
     <complexType name="VouchersSoldNumType">
         <sequence>
-            <element maxOccurs="1000" minOccurs="1" name="V" type="me:VoucherType">
+            <element name="V" type="me:VoucherType" minOccurs="1" maxOccurs="1000">
                 <annotation>
                     <documentation>XML element representing a single voucher number sold.</documentation>
                 </annotation>
@@ -1204,6 +1202,7 @@
                     <documentation>Factoring</documentation>
                 </annotation>
             </enumeration>
+
             <enumeration value="OTHER">
                 <annotation>
                     <documentation>Other cashless payments</documentation>
@@ -1353,7 +1352,7 @@
             <documentation>Positive double.</documentation>
         </annotation>
         <restriction base="double">
-            <minExclusive value="0"/>
+            <minExclusive value="0"></minExclusive>
         </restriction>
     </simpleType>
     <simpleType name="IntSType">
@@ -1436,6 +1435,7 @@
                     <documentation>Packaging fee.</documentation>
                 </annotation>
             </enumeration>
+
             <enumeration value="COMMISSION">
                 <annotation>
                     <documentation>Commission for currency exchange activities.</documentation>
@@ -1456,16 +1456,6 @@
             <enumeration value="CORRECTIVE">
                 <annotation>
                     <documentation>Corrective invoice.</documentation>
-                </annotation>
-            </enumeration>
-            <enumeration value="DEBIT">
-                <annotation>
-                    <documentation>Debit note.</documentation>
-                </annotation>
-            </enumeration>
-            <enumeration value="CREDIT">
-                <annotation>
-                    <documentation>Credit note.</documentation>
                 </annotation>
             </enumeration>
             <enumeration value="ERROR_CORRECTIVE">

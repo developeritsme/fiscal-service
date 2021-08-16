@@ -32,9 +32,6 @@ class Invoice extends Model
     /** @var string */
     protected $type = self::TYPE_INVOICE;
 
-    /** @var bool */
-    protected $isSimplified = false;
-
     /** @var int */
     protected $number;
 
@@ -231,7 +228,6 @@ class Invoice extends Model
         //todo:
         $writer->writeAttribute('IsIssuerInVAT', $this->boolToString($this->seller->getIsVat()));
         $writer->writeAttribute('IsReverseCharge', $this->boolToString(false));
-        $writer->writeAttribute('IsSimplifiedInv', $this->boolToString($this->isSimplified));
         $writer->writeAttribute('OperatorCode', $this->operatorCode);
         $writer->writeAttribute('SoftCode', $this->softwareCode);
         $writer->writeAttribute('TCRCode', $this->enu);
