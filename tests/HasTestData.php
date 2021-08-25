@@ -41,29 +41,46 @@ trait HasTestData
             ->getMock();
     }
 
-    protected function getRegisterInvoiceRequest($noCash = false, $corrective = null): RegisterInvoice
+    protected function getInvoice($noCash = false, $decimals = 2): Invoice
     {
         $seller = new Seller($this->seller, $this->tin);
         $seller->setAddress('Radosava Burića bb')
             ->setTown('Podgorica');
 
-        $item = new Item();
-        $item->setName('Taxi voznja')
-            ->setUnitPrice(2.20)
-            ->setVatRate(7);
+        $number = intval(time() * (rand(1, 100) / 10000) * 100);
 
-        $item2 = new Item();
-        $item2->setName('Čekanje')
-            ->setUnitPrice(0.80)
-            ->setVatRate(7);
-
-        $invoice = (new Invoice())
-            ->setNumber(time())
+        $invoice = (new Invoice($decimals))
+            ->setNumber($number)
             ->setEnu($this->enu)
             ->setBusinessUnitCode($this->unitCode)
             ->setSoftwareCode($this->softwareCode)
             ->setOperatorCode($this->operatorCode)
             ->setSeller($seller);
+
+        return $noCash ? $invoice->setType(Invoice::TYPE_NONCASH) : $invoice;
+    }
+
+    protected function getItem($name, $vatRate, $price): Item
+    {
+        $item = new Item();
+
+        return $item->setName($name)
+            ->setVatRate($vatRate)
+            ->setUnitPrice($price);
+    }
+
+    protected function getPaymentMethod($amount, $type = PaymentMethod::TYPE_BANKNOTE): PaymentMethod
+    {
+        return new PaymentMethod($amount, $type);
+    }
+
+    protected function getRegisterInvoiceRequest($noCash = false, $corrective = null, $decimals = 2): RegisterInvoice
+    {
+        $item = $this->getItem('Taxi voznja', 7, 2.20);
+
+        $item2 = $this->getItem('Čekanje', 7, 0.80);
+
+        $invoice = $this->getInvoice($noCash, $decimals);
 
         if ($corrective) {
             $multi = -1;
@@ -77,15 +94,15 @@ trait HasTestData
         $invoice->addItem($item2)
             ->addItem($item);
 
-        if ($noCash) {
-            $invoice->setType(Invoice::TYPE_NONCASH);
-            $pm = new PaymentMethod($multi * 3, PaymentMethod::TYPE_ACCOUNT);
-        } else {
-            $pm = new PaymentMethod($multi * 3);
-        }
+        $invoice->addPaymentMethod($this->getPaymentMethod(
+            $multi * 3, $noCash ? PaymentMethod::TYPE_ACCOUNT : PaymentMethod::TYPE_BANKNOTE
+        ));
 
-        $invoice->addPaymentMethod($pm);
+        return $this->registerInvoiceRequest($invoice);
+    }
 
+    protected function registerInvoiceRequest($invoice): RegisterInvoice
+    {
         return new RegisterInvoice($invoice);
     }
 

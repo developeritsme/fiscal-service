@@ -56,11 +56,9 @@ class RequestsTest extends TestCase
         $seller->setAddress('ADRESA PRODAVAOCA')
             ->setTown('GRAD PRODAVAOCA');
 
-        $item = new Item();
+        $item = new Item('NAZIV PROIZVODA', 25);
         $item->setCode(501234567890)
-            ->setName('NAZIV PROIZVODA')
-            ->setUnitPrice(20)
-            ->setVatRate(25);
+            ->setUnitPrice(20);
 
         $invoice->setUuid('8d216f9a-55bb-445a-be32-30137f11b964')
             ->setNumber(1)

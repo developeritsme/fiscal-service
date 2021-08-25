@@ -2,8 +2,12 @@
 
 namespace DeveloperItsMe\FiscalService\Models;
 
+use DeveloperItsMe\FiscalService\Traits\Vatable;
+
 abstract class Business extends Model
 {
+    use Vatable;
+
     public const ID_TYPE_PIB = 'TIN';
     public const ID_TYPE_ID = 'ID';
     public const ID_TYPE_PASSPORT = 'PASS';
@@ -16,9 +20,6 @@ abstract class Business extends Model
 
     /** @var string */
     protected $name;
-
-    /** @var boolean */
-    protected $isVat;
 
     /** @var string */
     protected $address;
@@ -46,18 +47,6 @@ abstract class Business extends Model
     public function getIdNumber(): string
     {
         return $this->idNumber;
-    }
-
-    public function setIsVat($isVat): self
-    {
-        $this->isVat = $isVat;
-
-        return $this;
-    }
-
-    public function getIsVat(): bool
-    {
-        return $this->isVat;
     }
 
     public function setName($name): self

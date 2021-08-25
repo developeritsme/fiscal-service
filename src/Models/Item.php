@@ -2,11 +2,15 @@
 
 namespace DeveloperItsMe\FiscalService\Models;
 
+use DeveloperItsMe\FiscalService\Traits\HasDecimals;
 use DeveloperItsMe\FiscalService\Traits\HasXmlWriter;
+use DeveloperItsMe\FiscalService\Traits\Vatable;
 
 class Item extends Model
 {
+    use HasDecimals;
     use HasXmlWriter;
+    use Vatable;
 
     /** @var string */
     protected $code;
@@ -15,7 +19,7 @@ class Item extends Model
     protected $name;
 
     /** @var string */
-    protected $unit = 'piece';
+    protected $unit = 'unit';
 
     /** @var float */
     protected $quantity = 1.0;
@@ -25,6 +29,12 @@ class Item extends Model
 
     /** @var float */
     protected $vatRate;
+
+    public function __construct($name = null, $vatRate = null)
+    {
+        $this->setName($name)
+            ->setVatRate($vatRate);
+    }
 
     public function setCode($code): self
     {
@@ -54,7 +64,7 @@ class Item extends Model
         return $this;
     }
 
-    public function setUnitPrice($unitPrice): self
+    public function setUnitPrice($unitPrice, $vatAndDiscountIncluded = true, $rebate = 0): self
     {
         $this->unitPrice = $unitPrice;
 
@@ -96,9 +106,9 @@ class Item extends Model
             $writer->writeAttribute('C', $this->code);
         }
         $writer->writeAttribute('N', substr($this->name, 0, 50));
-        $writer->writeAttribute('PA', $this->formatNumber($this->totalPrice(), 2));
-        $writer->writeAttribute('PB', $this->formatNumber($this->totalBasePrice(), 2));
-        $writer->writeAttribute('Q', $this->formatNumber($this->quantity, 1));
+        $writer->writeAttribute('PA', $this->formatNumber($this->totalPrice(), $this->decimals));
+        $writer->writeAttribute('PB', $this->formatNumber($this->totalBasePrice(), $this->decimals));
+        $writer->writeAttribute('Q', $this->formatNumber($this->quantity, 2));
 
         //todo:
         $writer->writeAttribute('R', '0');
@@ -106,11 +116,13 @@ class Item extends Model
 
         $writer->writeAttribute('U', $this->unit);
 
-        $writer->writeAttribute('UPB', $this->formatNumber($this->baseUnitPrice(), 2));
-        $writer->writeAttribute('UPA', $this->formatNumber($this->unitPrice, 2));
+        $writer->writeAttribute('UPB', $this->formatNumber($this->baseUnitPrice(), $this->decimals));
+        $writer->writeAttribute('UPA', $this->formatNumber($this->unitPrice, $this->decimals));
 
-        $writer->writeAttribute('VA', $this->formatNumber($this->totalPrice() - $this->totalBasePrice(), 2));
-        $writer->writeAttribute('VR', $this->formatNumber($this->vatRate, 2));
+        if ($this->getIsVat()) {
+            $writer->writeAttribute('VA', $this->formatNumber($this->totalPrice() - $this->totalBasePrice(), $this->decimals));
+            $writer->writeAttribute('VR', $this->formatNumber($this->vatRate, $this->decimals));
+        }
 
         $writer->endElement();
 

@@ -29,11 +29,9 @@ class InvoiceTest extends TestCase
         $seller->setAddress('ADRESA PRODAVAOCA')
             ->setTown('GRAD PRODAVAOCA');
 
-        $item = new Item();
+        $item = new Item('NAZIV PROIZVODA', 25);
         $item->setCode(501234567890)
-            ->setName('NAZIV PROIZVODA')
-            ->setUnitPrice(20)
-            ->setVatRate(25);
+            ->setUnitPrice(20);
 
         $invoice->setUuid('8d216f9a-55bb-445a-be32-30137f11b964')
             ->setNumber(1)
@@ -64,17 +62,13 @@ class InvoiceTest extends TestCase
         $seller->setAddress('ADRESA PRODAVAOCA')
             ->setTown('GRAD PRODAVAOCA');
 
-        $item1 = (new Item())
+        $item1 = (new Item('NAZIV PROIZVODA', 25))
             ->setCode(501234567890)
-            ->setName('NAZIV PROIZVODA')
-            ->setUnitPrice(20)
-            ->setVatRate(25);
+            ->setUnitPrice(20);
 
-        $item2 = (new Item())
-            ->setName('NAZIV PROIZVODA 2')
+        $item2 = (new Item('NAZIV PROIZVODA 2', 20))
             ->setQuantity(2)
-            ->setUnitPrice(12)
-            ->setVatRate(20);
+            ->setUnitPrice(12);
 
         $invoice->setUuid('8d216f9a-55bb-445a-be32-30137f11b964')
             ->setNumber(1)
@@ -131,11 +125,9 @@ class InvoiceTest extends TestCase
 
         $seller = new Seller('IME PREZIME PRODAVAOCA', '12345678');
 
-        $item = new Item();
+        $item = new Item('NAZIV PROIZVODA', 25);
         $item->setCode(501234567890)
-            ->setName('NAZIV PROIZVODA')
-            ->setUnitPrice(99.01)
-            ->setVatRate(25);
+            ->setUnitPrice(99.01);
 
         return $invoice
             ->setNumber(9952)

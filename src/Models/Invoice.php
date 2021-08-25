@@ -3,11 +3,13 @@
 namespace DeveloperItsMe\FiscalService\Models;
 
 use Carbon\Carbon;
+use DeveloperItsMe\FiscalService\Traits\HasDecimals;
 use DeveloperItsMe\FiscalService\Traits\HasSoftwareCode;
 use DeveloperItsMe\FiscalService\Traits\HasUUID;
 
 class Invoice extends Model
 {
+    use HasDecimals;
     use HasUUID;
     use HasSoftwareCode;
 
@@ -75,10 +77,11 @@ class Invoice extends Model
     /** @var string */
     protected $iicSignature;
 
-    public function __construct()
+    public function __construct($itemsDecimals = 2)
     {
         $this->paymentMethods = new PaymentMethods();
         $this->items = new Items();
+        $this->setDecimals($itemsDecimals);
         $this->dateTime = Carbon::now();
     }
 
@@ -231,8 +234,8 @@ class Invoice extends Model
         $writer->writeAttribute('OperatorCode', $this->operatorCode);
         $writer->writeAttribute('SoftCode', $this->softwareCode);
         $writer->writeAttribute('TCRCode', $this->enu);
-        $writer->writeAttribute('TotPrice', $this->formatNumber($this->totals('total')));
-        $writer->writeAttribute('TotPriceWoVAT', $this->formatNumber($this->totals('base')));
+        $writer->writeAttribute('TotPrice', $this->formatNumber($this->totals('total'), 2));
+        $writer->writeAttribute('TotPriceWoVAT', $this->formatNumber($this->totals('base'), 2));
         if ($this->seller->getIsVat()) {
             $writer->writeAttribute('TotVATAmt', $this->formatNumber($this->totals('vat')));
         } else {
@@ -254,7 +257,12 @@ class Invoice extends Model
             $writer->writeRaw($this->buyer->toXML());
         }
 
-        $writer->writeRaw($this->items->toXML());
+        $writer->writeRaw(
+            $this->items
+                ->setDecimals($this->decimals)
+                ->setIsVat($this->seller->getIsVat())
+                ->toXML()
+        );
 
         if ($this->seller->getIsVat()) {
             $writer->writeRaw($this->taxes->toXML());

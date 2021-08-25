@@ -5,3 +5,4 @@
 *.pfx
 *.skip
 tests/HasInvoiceGeniusTestData.php
+tests/HasNoVatTestData.php

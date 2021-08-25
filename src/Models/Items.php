@@ -2,11 +2,18 @@
 
 namespace DeveloperItsMe\FiscalService\Models;
 
+use DeveloperItsMe\FiscalService\Traits\HasDecimals;
 use DeveloperItsMe\FiscalService\Traits\HasXmlWriter;
+use DeveloperItsMe\FiscalService\Traits\Vatable;
 
 class Items extends Model
 {
+    use HasDecimals;
     use HasXmlWriter;
+    use Vatable;
+
+    /** @var bool */
+    protected $includeVat = true;
 
     /** @var array */
     protected $items = [];
@@ -25,9 +32,16 @@ class Items extends Model
     {
         $writer = $this->getXmlWriter();
         $writer->startElementNs(null, 'Items', null);
+
+        /** @var \DeveloperItsMe\FiscalService\Models\Item $item */
         foreach ($this->items as $item) {
-            $writer->writeRaw($item->toXML());
+            $writer->writeRaw(
+                $item->setDecimals($this->decimals)
+                    ->setIsVat($this->getIsVat())
+                    ->toXML()
+            );
         }
+
         $writer->endElement();
 
         return $writer->outputMemory();
