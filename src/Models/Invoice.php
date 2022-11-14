@@ -235,6 +235,8 @@ class Invoice extends Model
         $writer->writeAttribute('TotPriceWoVAT', $this->formatNumber($this->totals('base')));
         if ($this->seller->getIsVat()) {
             $writer->writeAttribute('TotVATAmt', $this->formatNumber($this->totals('vat')));
+        } else {
+            $writer->writeAttribute('TaxFreeAmt', $this->formatNumber($this->totals('base')));
         }
 
         $writer->writeAttribute('TypeOfInv', $this->method);
