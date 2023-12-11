@@ -12,6 +12,12 @@ class FiscalServiceTest extends TestCase
 {
     use HasTestData;
 
+    /** @test */
+    public function example()
+    {
+        $this->assertTrue(true);
+    }
+
     /** @skip */
     public function it_can_send_tcr_request()
     {

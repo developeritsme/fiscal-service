@@ -11,6 +11,12 @@ class FiscalServiceNoVatTest extends TestCase
 {
     use HasNoVatTestData;
 
+    /** @test */
+    public function example()
+    {
+        $this->assertTrue(true);
+    }
+
     /** @skip */
     public function it_can_send_no_vat_tcr_request()
     {
