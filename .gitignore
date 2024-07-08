@@ -4,5 +4,6 @@
 *.p7b
 *.pfx
 *.skip
+*.p12
 tests/HasInvoiceGeniusTestData.php
 tests/HasNoVatTestData.php
