@@ -82,13 +82,12 @@ trait HasTestData
 
         $invoice = $this->getInvoice($noCash, $decimals);
 
+        $multi = 1;
         if ($corrective) {
             $multi = -1;
             $invoice->setCorrectiveInvoice($corrective);
             $item->setQuantity($multi);
             $item2->setQuantity($multi);
-        } else {
-            $multi = 1;
         }
 
         $invoice->addItem($item2)

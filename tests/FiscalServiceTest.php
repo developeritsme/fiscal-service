@@ -138,4 +138,25 @@ class FiscalServiceTest extends TestCase
 
         $this->assertTrue($response->valid(), $response->error());
     }
+
+    /** @skip */
+    public function it_can_send_invoice_request_with_tax_period()
+    {
+        $item = $this->getItem('Taxi voznja', 7, $amount = 2.20);
+        $invoice = $this->getInvoice(true, 4);
+        $taxPeriod = Carbon::now('Europe/Podgorica')->subMonth()->format('m/Y');
+
+        $invoice->addItem($item)
+            ->setTaxPeriod($taxPeriod);
+
+        $invoice->addPaymentMethod($this->getPaymentMethod(
+            $amount, PaymentMethod::TYPE_ACCOUNT
+        ));
+
+        $response = $this->fiscal()
+            ->request($this->registerInvoiceRequest($invoice))
+            ->send();
+
+        $this->assertTrue($response->valid(), $response->error());
+    }
 }

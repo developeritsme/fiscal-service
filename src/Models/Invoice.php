@@ -77,6 +77,9 @@ class Invoice extends Model
     /** @var string */
     protected $iicSignature;
 
+    /** @var string */
+    protected $taxPeriod;
+
     public function __construct($itemsDecimals = 2)
     {
         $this->paymentMethods = new PaymentMethods();
@@ -200,6 +203,13 @@ class Invoice extends Model
         return $this;
     }
 
+    public function setTaxPeriod($period): self
+    {
+        $this->taxPeriod = $period;
+
+        return $this;
+    }
+
     public function number(): string
     {
         return implode('/', [$this->businessUnitCode, $this->number, $this->dateTime->year, $this->enu]);
@@ -244,6 +254,11 @@ class Invoice extends Model
 
         $writer->writeAttribute('TypeOfInv', $this->method);
         $writer->writeAttribute('InvType', $this->type);
+
+        // Tax period
+        if ($this->taxPeriod) {
+            $writer->writeAttribute('TaxPeriod', $this->taxPeriod);
+        }
 
         if ($this->corrective) {
             $writer->writeRaw($this->corrective->toXML());
