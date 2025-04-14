@@ -71,6 +71,9 @@ class Invoice extends Model
     /** @var \DeveloperItsMe\FiscalService\Models\CorrectiveInvoice */
     protected $corrective;
 
+    /** @var \DeveloperItsMe\FiscalService\Models\SupplyPeriod */
+    protected $supplyPeriod;
+
     /** @var array */
     protected $totals = [];
 
@@ -210,6 +213,15 @@ class Invoice extends Model
         return $this;
     }
 
+    public function setSupplyPeriod($start, $end = null): self
+    {
+        unset($this->supplyPeriod);
+
+        $this->supplyPeriod = new SupplyPeriod($start, $end);
+
+        return $this;
+    }
+
     public function number(): string
     {
         return implode('/', [$this->businessUnitCode, $this->number, $this->dateTime->year, $this->enu]);
@@ -258,6 +270,11 @@ class Invoice extends Model
         // Tax period
         if ($this->taxPeriod) {
             $writer->writeAttribute('TaxPeriod', $this->taxPeriod);
+        }
+
+        // Supply period
+        if ($this->supplyPeriod) {
+            $writer->writeRaw($this->supplyPeriod->toXML());
         }
 
         if ($this->corrective) {

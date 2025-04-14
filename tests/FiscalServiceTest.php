@@ -159,4 +159,60 @@ class FiscalServiceTest extends TestCase
 
         $this->assertTrue($response->valid(), $response->error());
     }
+
+    /** @skip */
+    public function it_can_send_invoice_request_with_supply_period()
+    {
+        $date = Carbon::now('Europe/Podgorica');
+        $item = $this->getItem('Taxi voznja', 21, $amount = 2.42);
+        $invoice = $this->getInvoice(true, 4);
+        $startPeriod = $date->clone()->subMonth()->startOfMonth()->format('Y-m-d');
+
+        $invoice->addItem($item);
+
+        $invoice->addPaymentMethod($this->getPaymentMethod(
+            $amount, PaymentMethod::TYPE_ACCOUNT
+        ));
+
+        $invoice->setSupplyPeriod($startPeriod);
+
+        $response = $this->fiscal()
+            ->request($this->registerInvoiceRequest($invoice))
+            ->send();
+
+        $this->assertTrue($response->valid(), $response->error());
+
+        $endPeriod = $date->clone()->subMonth()->endOfMonth()->format('Y-m-d');
+        $invoice->setSupplyPeriod($startPeriod, $endPeriod);
+
+        $response = $this->fiscal()
+            ->request($this->registerInvoiceRequest($invoice))
+            ->send();
+
+        $this->assertTrue($response->valid(), $response->error());
+    }
+
+    /** @skip */
+    public function it_can_send_invoice_request_with_tax_and_supply_period()
+    {
+        $date = Carbon::now('Europe/Podgorica');
+        $item = $this->getItem('Taxi voznja', 15, $amount = 2.45);
+        $invoice = $this->getInvoice(true, 4);
+        $taxPeriod = $date->clone()->subMonth()->startOfMonth()->format('m/Y');
+        $startPeriod = $date->clone()->subMonth()->startOfMonth()->format('Y-m-d');
+        $endPeriod = $date->clone()->subMonth()->endOfMonth()->format('Y-m-d');
+
+        $invoice->addItem($item)
+            ->setTaxPeriod($taxPeriod)
+            ->setSupplyPeriod($startPeriod, $endPeriod)
+            ->addPaymentMethod($this->getPaymentMethod(
+                $amount, PaymentMethod::TYPE_ACCOUNT
+            ));
+
+        $response = $this->fiscal()
+            ->request($this->registerInvoiceRequest($invoice))
+            ->send();
+
+        $this->assertTrue($response->valid(), $response->error());
+    }
 }
