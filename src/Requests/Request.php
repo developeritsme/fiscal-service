@@ -19,6 +19,12 @@ abstract class Request
     /** @var string */
     protected $payload;
 
+    /** @var int CURLOPT_CONNECTTIMEOUT */
+    protected $curl_connect_timeout = 10;
+
+    /** @var int CURLOPT_TIMEOUT */
+    protected $curl_timeout = 30;
+
     public function __construct(Model $model = null)
     {
         $this->model = $model;
@@ -79,6 +85,24 @@ abstract class Request
             ->appendChild($XMLRequestTypeNode);
 
         return $envelope->saveXML();
+    }
+
+    public function timeout($seconds = null): int
+    {
+        if (intval($seconds) > 0) {
+            $this->curl_timeout = $seconds;
+        }
+
+        return $this->curl_timeout;
+    }
+
+    public function connect_timeout($seconds = null): int
+    {
+        if (intval($seconds) > 0) {
+            $this->curl_connect_timeout = $seconds;
+        }
+
+        return $this->curl_connect_timeout;
     }
 
     protected function getEnvelopeXml(): string

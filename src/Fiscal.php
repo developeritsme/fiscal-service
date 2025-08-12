@@ -150,8 +150,8 @@ class Fiscal
 
         $options = [
             CURLOPT_URL            => $this->serviceUrl,
-            CURLOPT_CONNECTTIMEOUT => 5,
-            CURLOPT_TIMEOUT        => 5,
+            CURLOPT_CONNECTTIMEOUT => $this->request->connect_timeout(),
+            CURLOPT_TIMEOUT        => $this->request->timeout(),
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST           => true,
             CURLOPT_POSTFIELDS     => $payload,
