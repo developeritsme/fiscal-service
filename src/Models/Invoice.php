@@ -374,7 +374,7 @@ class Invoice extends Model
         return $this->qrBaseUrl . '?' . http_build_query($query);
     }
 
-    public function ikof(): string
+    public function ikof(): ?string
     {
         return $this->issuerCode;
     }

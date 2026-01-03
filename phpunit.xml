@@ -9,6 +9,9 @@
          stopOnFailure="false"
          printerClass="Sempro\PHPUnitPrettyPrinter\PrettyPrinterForPhpUnit9"
          cacheResult="false">
+    <php>
+        <ini name="date.timezone" value="Europe/Podgorica"/>
+    </php>
     <testsuites>
         <testsuite name="Fiskalizacija Test Suite">
             <directory>./tests/</directory>

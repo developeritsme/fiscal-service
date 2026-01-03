@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class FiscalServiceNoVatTest extends TestCase
 {
-    use HasNoVatTestData;
+    //    use HasNoVatTestData;
 
     /** @test */
     public function example()
