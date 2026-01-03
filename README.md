@@ -26,6 +26,9 @@ $fiscal = new Fiscal('/path/to/certificate.pfx', 'certificate-password');
 
 // Test environment
 $fiscal = new Fiscal('/path/to/certificate.pfx', 'certificate-password', true);
+
+// Check certificate expiration date
+$expiresAt = $fiscal->certificate()->expiresAt(); // Returns DateTimeImmutable
 ```
 
 ### Register an Invoice

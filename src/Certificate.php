@@ -66,6 +66,20 @@ class Certificate
         return $this->publicCertificateData;
     }
 
+    /**
+     * Get certificate expiration date (UTC).
+     *
+     * @return \DateTimeImmutable|null
+     */
+    public function expiresAt(): ?\DateTimeImmutable
+    {
+        $timestamp = $this->publicCertificateData['validTo_time_t'] ?? null;
+
+        return $timestamp
+            ? (new \DateTimeImmutable('@' . $timestamp))->setTimezone(new \DateTimeZone('UTC'))
+            : null;
+    }
+
     protected function readCertificateFromDisk($path): string
     {
         $cert = @file_get_contents($path);
