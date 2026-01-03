@@ -2,6 +2,8 @@
 
 namespace Tests;
 
+use DeveloperItsMe\FiscalService\Certificate;
+use DeveloperItsMe\FiscalService\Exceptions\CertificateException;
 use DeveloperItsMe\FiscalService\Models\Invoice;
 use PHPUnit\Framework\TestCase;
 
@@ -38,5 +40,34 @@ class FiscalTest extends TestCase
 
         $this->fiscal(null, false);
         $this->assertEquals($this->qrProductionUrl, Invoice::$qrBaseUrl);
+    }
+
+    /** @test */
+    public function it_throws_certificate_exception_for_invalid_certificate_data()
+    {
+        $this->expectException(CertificateException::class);
+        $this->expectExceptionMessage('Failed to read PKCS12 certificate');
+
+        new Certificate('invalid-certificate-data', 'password');
+    }
+
+    /** @test */
+    public function it_throws_certificate_exception_for_wrong_passphrase()
+    {
+        $this->expectException(CertificateException::class);
+
+        new Certificate($this->certPath, 'wrong-passphrase');
+    }
+
+    /** @test */
+    public function it_provides_openssl_errors_in_certificate_exception()
+    {
+        try {
+            new Certificate('invalid-certificate-data', 'password');
+            $this->fail('Expected CertificateException was not thrown');
+        } catch (CertificateException $e) {
+            $this->assertIsArray($e->getOpensslErrors());
+            $this->assertNotEmpty($e->getOpensslErrors());
+        }
     }
 }

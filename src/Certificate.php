@@ -2,6 +2,8 @@
 
 namespace DeveloperItsMe\FiscalService;
 
+use DeveloperItsMe\FiscalService\Exceptions\CertificateException;
+
 class Certificate
 {
     protected $rawCertificate;
@@ -23,9 +25,14 @@ class Certificate
 
         $read = openssl_pkcs12_read($this->rawCertificate, $this->certificate, $passphrase);
         if ($read === false) {
-            for ($e = openssl_error_string(), $i = 0; $e; $e = openssl_error_string(), $i++)
-                printf("SSL l%d: %s" . PHP_EOL, $i, $e);
-            exit(1);
+            $errors = [];
+            while ($e = openssl_error_string()) {
+                $errors[] = $e;
+            }
+            throw new CertificateException(
+                'Failed to read PKCS12 certificate: ' . ($errors[0] ?? 'Unknown error'),
+                $errors
+            );
         }
 
         $this->privateKeyResource = openssl_pkey_get_private($this->certificate['pkey'], $passphrase);
