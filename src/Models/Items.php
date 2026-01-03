@@ -3,12 +3,14 @@
 namespace DeveloperItsMe\FiscalService\Models;
 
 use DeveloperItsMe\FiscalService\Traits\HasDecimals;
+use DeveloperItsMe\FiscalService\Traits\HasGroupedItems;
 use DeveloperItsMe\FiscalService\Traits\HasXmlWriter;
 use DeveloperItsMe\FiscalService\Traits\Vatable;
 
 class Items extends Model
 {
     use HasDecimals;
+    use HasGroupedItems;
     use HasXmlWriter;
     use Vatable;
 
@@ -47,30 +49,8 @@ class Items extends Model
         return $writer->outputMemory();
     }
 
-    protected function setGroupedItems(): void
+    protected function getGroupableItems(): array
     {
-        /** @var \DeveloperItsMe\FiscalService\Models\Item $item */
-        foreach ($this->items as $item) {
-            $this->grouped[$item->getVatRate()]['prices'][] = $basePrice = $item->totalBasePrice();
-            $this->grouped[$item->getVatRate()]['vats'][] = $item->totalPrice() - $basePrice;
-        }
-
-        ksort($this->grouped, SORT_NUMERIC);
-    }
-
-    public function getTotals(): array
-    {
-        $totals = [
-            'total' => 0,
-            'base'  => 0,
-            'vat'   => 0,
-        ];
-        foreach ($this->grouped as $item) {
-            $totals['base'] += $base = array_sum($item['prices']);
-            $totals['vat'] += $vat = array_sum($item['vats']);
-            $totals['total'] += $base + $vat;
-        }
-
-        return $totals;
+        return $this->items;
     }
 }
