@@ -4,7 +4,7 @@ namespace DeveloperItsMe\FiscalService\Models;
 
 class Countries extends Model
 {
-    const ME = 'MNE';
+    public const ME = 'MNE';
 
     protected static $countries = [
         'ABW'    => 'Aruba',

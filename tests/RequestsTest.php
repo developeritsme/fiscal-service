@@ -116,7 +116,6 @@ class RequestsTest extends TestCase
 
 class TestEnvelope extends Request
 {
-
     public function toXML(): string
     {
         return '<test/>';

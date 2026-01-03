@@ -94,7 +94,8 @@ trait HasTestData
             ->addItem($item);
 
         $invoice->addPaymentMethod($this->getPaymentMethod(
-            $multi * 3, $noCash ? PaymentMethod::TYPE_ACCOUNT : PaymentMethod::TYPE_BANKNOTE
+            $multi * 3,
+            $noCash ? PaymentMethod::TYPE_ACCOUNT : PaymentMethod::TYPE_BANKNOTE
         ));
 
         return $this->registerInvoiceRequest($invoice);

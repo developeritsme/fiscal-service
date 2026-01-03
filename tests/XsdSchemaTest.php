@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use DeveloperItsMe\FiscalService\Responses\Factory;
 use DOMDocument;
 use PHPUnit\Framework\TestCase;
 

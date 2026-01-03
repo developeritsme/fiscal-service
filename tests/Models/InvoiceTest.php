@@ -101,7 +101,6 @@ class InvoiceTest extends TestCase
         $this->assertSame($expected, $invoice->concatenate($totals['total']));
     }
 
-
     /** @skip */
     public function it_can_create_identification_code()
     {

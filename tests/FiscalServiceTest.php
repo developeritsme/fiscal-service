@@ -150,7 +150,8 @@ class FiscalServiceTest extends TestCase
             ->setTaxPeriod($taxPeriod);
 
         $invoice->addPaymentMethod($this->getPaymentMethod(
-            $amount, PaymentMethod::TYPE_ACCOUNT
+            $amount,
+            PaymentMethod::TYPE_ACCOUNT
         ));
 
         $response = $this->fiscal()
@@ -171,7 +172,8 @@ class FiscalServiceTest extends TestCase
         $invoice->addItem($item);
 
         $invoice->addPaymentMethod($this->getPaymentMethod(
-            $amount, PaymentMethod::TYPE_ACCOUNT
+            $amount,
+            PaymentMethod::TYPE_ACCOUNT
         ));
 
         $invoice->setSupplyPeriod($startPeriod);
@@ -206,7 +208,8 @@ class FiscalServiceTest extends TestCase
             ->setTaxPeriod($taxPeriod)
             ->setSupplyPeriod($startPeriod, $endPeriod)
             ->addPaymentMethod($this->getPaymentMethod(
-                $amount, PaymentMethod::TYPE_ACCOUNT
+                $amount,
+                PaymentMethod::TYPE_ACCOUNT
             ));
 
         $response = $this->fiscal()

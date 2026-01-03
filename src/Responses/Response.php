@@ -109,5 +109,5 @@ abstract class Response
         }
     }
 
-    public abstract function toArray(): array;
+    abstract public function toArray(): array;
 }
