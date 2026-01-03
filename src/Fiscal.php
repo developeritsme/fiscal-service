@@ -11,11 +11,16 @@ use DOMElement;
 
 class Fiscal
 {
-    /** @var string */
-    private $serviceUrl = 'https://efi.tax.gov.me/fs-v1';
+    private const SERVICE_URL_PRODUCTION = 'https://efi.tax.gov.me/fs-v1';
+    private const SERVICE_URL_TEST = 'https://efitest.tax.gov.me/fs-v1';
+    private const QR_URL_PRODUCTION = 'https://mapr.tax.gov.me/ic/#/verify';
+    private const QR_URL_TEST = 'https://efitest.tax.gov.me/ic/#/verify';
 
     /** @var string */
-    private $qrUrl = 'https://mapr.tax.gov.me/ic/#/verify';
+    private $serviceUrl = self::SERVICE_URL_PRODUCTION;
+
+    /** @var string */
+    private $qrUrl = self::QR_URL_PRODUCTION;
 
     /** @var \DeveloperItsMe\FiscalService\Certificate */
     protected $certificate;
@@ -26,8 +31,8 @@ class Fiscal
     public function __construct($certificatePath, $certificatePassphrase, $test = false)
     {
         if ($test) {
-            $this->serviceUrl = 'https://efitest.tax.gov.me/fs-v1';
-            $this->qrUrl = 'https://efitest.tax.gov.me/ic/#/verify';
+            $this->serviceUrl = self::SERVICE_URL_TEST;
+            $this->qrUrl = self::QR_URL_TEST;
         }
 
         Invoice::$qrBaseUrl = $this->qrUrl;

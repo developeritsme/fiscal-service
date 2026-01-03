@@ -10,6 +10,11 @@ abstract class Request
 {
     use HasXmlWriter;
 
+    protected const SCHEMA_NAMESPACE = 'https://efi.tax.gov.me/fs/schema';
+    protected const SOAP_NAMESPACE = 'http://schemas.xmlsoap.org/soap/envelope/';
+    protected const DEFAULT_CONNECT_TIMEOUT = 10;
+    protected const DEFAULT_TIMEOUT = 30;
+
     /** @var string */
     protected $requestName;
 
@@ -20,10 +25,10 @@ abstract class Request
     protected $payload;
 
     /** @var int CURLOPT_CONNECTTIMEOUT */
-    protected $curl_connect_timeout = 10;
+    protected $curl_connect_timeout = self::DEFAULT_CONNECT_TIMEOUT;
 
     /** @var int CURLOPT_TIMEOUT */
-    protected $curl_timeout = 30;
+    protected $curl_timeout = self::DEFAULT_TIMEOUT;
 
     public function __construct(Model $model = null)
     {
@@ -39,7 +44,7 @@ abstract class Request
     {
         $writer = $this->getXmlWriter();
 
-        $writer->startElementNs(null, $this->requestName, 'https://efi.tax.gov.me/fs/schema');
+        $writer->startElementNs(null, $this->requestName, self::SCHEMA_NAMESPACE);
 
         $writer->writeAttribute('Id', 'Request');
         $writer->writeAttribute('Version', '1');
@@ -110,7 +115,7 @@ abstract class Request
         $writer = $this->getXmlWriter();
         $ns = 'SOAP-ENV';
 
-        $writer->startElementNs($ns, 'Envelope', 'http://schemas.xmlsoap.org/soap/envelope/');
+        $writer->startElementNs($ns, 'Envelope', self::SOAP_NAMESPACE);
 
         $writer->startElementNs($ns, 'Header', null);
         $writer->endElement();
