@@ -248,13 +248,12 @@ class Invoice extends Model
         $writer->writeAttribute('BusinUnitCode', $this->businessUnitCode);
         $writer->writeAttribute('IssueDateTime', $this->dateTime->toIso8601String());
 
-        //todo: IKOF Potpis
         $writer->writeAttribute('IICSignature', $this->iicSignature);
         $writer->writeAttribute('IIC', $this->issuerCode);
         $writer->writeAttribute('InvNum', $this->number());
         $writer->writeAttribute('InvOrdNum', $this->number);
-        //todo:
         $writer->writeAttribute('IsIssuerInVAT', $this->boolToString($this->seller->getIsVat()));
+        // TODO: Make configurable for B2B where buyer handles VAT
         $writer->writeAttribute('IsReverseCharge', $this->boolToString(false));
         $writer->writeAttribute('OperatorCode', $this->operatorCode);
         $writer->writeAttribute('SoftCode', $this->softwareCode);

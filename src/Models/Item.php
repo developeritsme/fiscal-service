@@ -109,11 +109,9 @@ class Item extends Model
         $writer->writeAttribute('PA', $this->formatNumber($this->totalPrice(), $this->decimals));
         $writer->writeAttribute('PB', $this->formatNumber($this->totalBasePrice(), $this->decimals));
         $writer->writeAttribute('Q', $this->formatNumber($this->quantity, 2));
-
-        //todo:
-        $writer->writeAttribute('R', '0');
-        $writer->writeAttribute('RR', 'true');
-
+        // TODO: Make rebate configurable via setRebate($percent, $reducesBasePrice)
+        $writer->writeAttribute('R', '0');   // Rebate percentage
+        $writer->writeAttribute('RR', 'true'); // Rebate reduces base price
         $writer->writeAttribute('U', $this->unit);
 
         $writer->writeAttribute('UPB', $this->formatNumber($this->baseUnitPrice(), $this->decimals));

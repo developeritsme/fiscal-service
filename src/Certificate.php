@@ -70,8 +70,7 @@ class Certificate
     {
         $cert = @file_get_contents($path);
         if (false === $cert) {
-            throw new \Exception('Ne mogu procitati certifikat sa lokacije: ' .
-                $path, 1);
+            throw new \Exception('Cannot read certificate from path: ' . $path, 1);
         }
 
         return $cert;
