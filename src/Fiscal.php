@@ -143,7 +143,8 @@ class Fiscal
 
     protected function soap($payload): Response
     {
-        //todo: this is "hack" - fix it...
+        // PHP's XMLWriter adds 'default:' prefix to elements in the default namespace.
+        // The fiscal service expects unprefixed elements, so we strip it out.
         $payload = str_replace('default:', '', $payload);
 
         $ch = curl_init();
@@ -173,8 +174,9 @@ class Fiscal
 
         $response = curl_exec($ch);
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $connectionError = $response === false ? curl_error($ch) : null;
         curl_close($ch);
 
-        return Factory::make($response, $code, $this->request->setPayload($payload));
+        return Factory::make($response, $code, $this->request->setPayload($payload), $connectionError);
     }
 }

@@ -19,11 +19,15 @@ abstract class Response
     /** @var DOMDocument */
     protected $domResponse;
 
-    public function __construct($response, $code, Request $request = null)
+    /** @var string */
+    protected $connectionError;
+
+    public function __construct($response, $code, Request $request = null, string $connectionError = null)
     {
         $this->response = $response;
         $this->code = $code;
         $this->request = $request;
+        $this->connectionError = $connectionError;
 
         $this->setDomResponse();
     }
@@ -71,7 +75,7 @@ abstract class Response
             return $faultString ? $faultString->nodeValue : 'Success';
         }
 
-        return 'Empty response';
+        return $this->connectionError ?: 'Empty response';
     }
 
     public function errors(): array

@@ -221,7 +221,7 @@ try {
 $response = $fiscal->request($request)->send();
 
 if ($response->failed()) {
-    $error = $response->error();   // Error message
+    $error = $response->error();   // Error message (includes connection errors like timeouts)
     $errors = $response->errors(); // Detailed errors array
 }
 ```

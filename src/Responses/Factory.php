@@ -15,7 +15,7 @@ class Factory
         RegisterTCRRequest::class => RegisterTCR::class,
     ];
 
-    public static function make($response, $code, Request $request = null): Response
+    public static function make($response, $code, Request $request = null, string $connectionError = null): Response
     {
         $requestClass = get_class($request);
 
@@ -25,6 +25,6 @@ class Factory
 
         $class = self::REQUEST_RESPONSE_MAP[$requestClass];
 
-        return new $class($response, $code, $request);
+        return new $class($response, $code, $request, $connectionError);
     }
 }
