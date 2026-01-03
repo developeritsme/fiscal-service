@@ -9,25 +9,21 @@ use DeveloperItsMe\FiscalService\Requests\Request;
 
 class Factory
 {
+    protected const REQUEST_RESPONSE_MAP = [
+        RegisterCashDepositRequest::class => RegisterCashDeposit::class,
+        RegisterInvoiceRequest::class => RegisterInvoice::class,
+        RegisterTCRRequest::class => RegisterTCR::class,
+    ];
+
     public static function make($response, $code, Request $request = null): Response
     {
-        switch (true) {
-            case $request instanceof RegisterCashDepositRequest:
-                $class = RegisterCashDeposit::class;
-                break;
+        $requestClass = get_class($request);
 
-            case $request instanceof RegisterInvoiceRequest:
-                $class = RegisterInvoice::class;
-                break;
-
-            case $request instanceof RegisterTCRRequest:
-                $class = RegisterTCR::class;
-                break;
-
-            default:
-                throw new \Exception('Unknown response type');
-
+        if (!isset(self::REQUEST_RESPONSE_MAP[$requestClass])) {
+            throw new \Exception('Unknown response type: ' . $requestClass);
         }
+
+        $class = self::REQUEST_RESPONSE_MAP[$requestClass];
 
         return new $class($response, $code, $request);
     }
