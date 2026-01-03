@@ -65,7 +65,7 @@ abstract class Request
         return $this->payload;
     }
 
-    public function envelope($xml = null)
+    public function envelope($xml = null): string
     {
         $xmlRequestDom = new DOMDocument();
         $xmlRequestDom->loadXML($xml ?? $this->toXML());

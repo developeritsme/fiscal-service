@@ -40,21 +40,27 @@ class Certificate
         $this->publicCertificateData = openssl_x509_parse($this->certificate['cert']);
     }
 
-    public function public()
+    public function public(): string
     {
         return $this->certificate['cert'];
     }
 
-    public function raw()
+    public function raw(): string
     {
         return $this->rawCertificate;
     }
 
+    /**
+     * @return resource|false
+     */
     public function getPrivateKey()
     {
         return $this->privateKeyResource;
     }
 
+    /**
+     * @return array|false
+     */
     public function getPublicData()
     {
         return $this->publicCertificateData;

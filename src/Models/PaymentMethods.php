@@ -37,7 +37,7 @@ class PaymentMethods extends Model
         return $writer->outputMemory();
     }
 
-    protected function setGroupedItems()
+    protected function setGroupedItems(): void
     {
         /** @var \DeveloperItsMe\FiscalService\Models\Item $item */
         foreach ($this->methods as $item) {

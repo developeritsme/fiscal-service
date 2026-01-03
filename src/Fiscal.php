@@ -70,7 +70,7 @@ class Fiscal
         throw new \Exception('No request set on Fiscal class');
     }
 
-    protected function sign($xml)
+    protected function sign($xml): string
     {
         $XMLRequestDOMDoc = new DOMDocument();
         $XMLRequestDOMDoc->loadXML($xml);

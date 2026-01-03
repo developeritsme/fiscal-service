@@ -186,10 +186,12 @@ class Invoice extends Model
         return $this->items->all();
     }
 
-    public function setCorrectiveInvoice(CorrectiveInvoice $invoice)
+    public function setCorrectiveInvoice(CorrectiveInvoice $invoice): self
     {
         $this->corrective = $invoice;
         $this->setType(self::TYPE_CORRECTIVE);
+
+        return $this;
     }
 
     public function setSeller(Seller $seller): self
@@ -318,7 +320,7 @@ class Invoice extends Model
         ]);
     }
 
-    public function generateIIC($pkey)
+    public function generateIIC($pkey): void
     {
         $data = hash('sha256', $this->concatenate(
             $this->formatNumber($this->totals('total'))
@@ -348,7 +350,7 @@ class Invoice extends Model
         return !empty($key) && array_key_exists($key, $this->totals) ? $this->totals[$key] : $this->totals;
     }
 
-    public function url()
+    public function url(): string
     {
         $query = [
             'iic'  => $this->issuerCode,
@@ -364,13 +366,13 @@ class Invoice extends Model
         return static::$qrBaseUrl . '?' . http_build_query($query);
     }
 
-    public function ikof()
+    public function ikof(): string
     {
         return $this->issuerCode;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
-
+        return [];
     }
 }

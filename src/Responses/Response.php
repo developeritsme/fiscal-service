@@ -100,7 +100,7 @@ abstract class Response
         return ['code' => 0, 'message' => $this->error()];
     }
 
-    protected function setDomResponse()
+    protected function setDomResponse(): void
     {
         if ($this->response) {
             $this->domResponse = new DOMDocument();

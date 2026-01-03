@@ -23,7 +23,7 @@ class Items extends Model
         return $this->items;
     }
 
-    public function add(Item $item)
+    public function add(Item $item): void
     {
         $this->items[] = $item;
     }
@@ -47,7 +47,7 @@ class Items extends Model
         return $writer->outputMemory();
     }
 
-    protected function setGroupedItems()
+    protected function setGroupedItems(): void
     {
         /** @var \DeveloperItsMe\FiscalService\Models\Item $item */
         foreach ($this->items as $item) {
