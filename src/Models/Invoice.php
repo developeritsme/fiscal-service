@@ -23,7 +23,8 @@ class Invoice extends Model
     public const TYPE_ADVANCE = 'ADVANCE';
     public const TYPE_CREDIT_NOTE = 'CREDIT_NOTE';
 
-    public static $qrBaseUrl;
+    /** @var string */
+    protected $qrBaseUrl;
 
     /** @var Carbon */
     protected $dateTime;
@@ -340,6 +341,13 @@ class Invoice extends Model
         return $this;
     }
 
+    public function setQrBaseUrl(string $url): self
+    {
+        $this->qrBaseUrl = $url;
+
+        return $this;
+    }
+
     protected function totals($key = null)
     {
         if (empty($this->totals)) {
@@ -363,7 +371,7 @@ class Invoice extends Model
             'prc'  => $this->formatNumber($this->totals('total')),
         ];
 
-        return static::$qrBaseUrl . '?' . http_build_query($query);
+        return $this->qrBaseUrl . '?' . http_build_query($query);
     }
 
     public function ikof(): string

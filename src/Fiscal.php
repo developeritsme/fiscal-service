@@ -2,7 +2,6 @@
 
 namespace DeveloperItsMe\FiscalService;
 
-use DeveloperItsMe\FiscalService\Models\Invoice;
 use DeveloperItsMe\FiscalService\Requests\Request;
 use DeveloperItsMe\FiscalService\Responses\Factory;
 use DeveloperItsMe\FiscalService\Responses\Response;
@@ -35,8 +34,6 @@ class Fiscal
             $this->qrUrl = self::QR_URL_TEST;
         }
 
-        Invoice::$qrBaseUrl = $this->qrUrl;
-
         $this->certificate = new Certificate($certificatePath, $certificatePassphrase);
     }
 
@@ -54,8 +51,14 @@ class Fiscal
 
     public function payload(): string
     {
-        if (method_exists($model = $this->request->model(), 'generateIIC')) {
+        $model = $this->request->model();
+
+        if (method_exists($model, 'generateIIC')) {
             $model->generateIIC($this->certificate()->getPrivateKey());
+        }
+
+        if (method_exists($model, 'setQrBaseUrl')) {
+            $model->setQrBaseUrl($this->qrUrl);
         }
 
         return str_replace('default:', '', $this->sign($this->request->toXML()));

@@ -4,7 +4,6 @@ namespace Tests;
 
 use DeveloperItsMe\FiscalService\Certificate;
 use DeveloperItsMe\FiscalService\Exceptions\CertificateException;
-use DeveloperItsMe\FiscalService\Models\Invoice;
 use PHPUnit\Framework\TestCase;
 
 class FiscalTest extends TestCase
@@ -33,13 +32,14 @@ class FiscalTest extends TestCase
     }
 
     /** @test */
-    public function it_sets_proper_qr_code_base_url()
+    public function it_sets_qr_base_url_on_invoice_when_processing()
     {
-        $this->fiscal();
-        $this->assertEquals($this->qrTestUrl, Invoice::$qrBaseUrl);
+        $fiscal = $this->fiscal();
+        $request = $this->getRegisterInvoiceRequest();
 
-        $this->fiscal(null, false);
-        $this->assertEquals($this->qrProductionUrl, Invoice::$qrBaseUrl);
+        $fiscal->request($request)->payload();
+
+        $this->assertStringContainsString('efitest.tax.gov.me', $request->model()->url());
     }
 
     /** @test */
