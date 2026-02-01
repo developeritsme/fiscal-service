@@ -9,15 +9,21 @@ use PHPUnit\Framework\TestCase;
 
 class FiscalServiceNoVatTest extends TestCase
 {
-    //    use HasNoVatTestData;
+    use HasTestData;
 
-    /** @test */
-    public function example()
+    protected function setUp(): void
     {
-        $this->assertTrue(true);
+        parent::setUp();
+        $this->loadEnvCredentials('FISCAL_NOVAT');
+        $this->isVat = false;
+        $this->vatRate = 0;
+        $this->requireEnvCredentials('FISCAL_NOVAT');
     }
 
-    /** @skip */
+    /**
+     * @test
+     * @group integration
+     */
     public function it_can_send_no_vat_tcr_request()
     {
         $response = $this->fiscal()
@@ -27,7 +33,10 @@ class FiscalServiceNoVatTest extends TestCase
         $this->assertTrue($response->valid(), $response->error());
     }
 
-    /** @skip */
+    /**
+     * @test
+     * @group integration
+     */
     public function it_can_send_no_vat_initial_cash_deposit_request()
     {
         $date = Carbon::now('Europe/Podgorica')->format('Y-m-d');
@@ -46,7 +55,10 @@ class FiscalServiceNoVatTest extends TestCase
         $this->assertTrue($responseInitial->valid(), $responseInitial->error());
     }
 
-    /** @skip */
+    /**
+     * @test
+     * @group integration
+     */
     public function it_can_send_no_vat_withdraw_cash_deposit_request()
     {
         $responseWithdraw = $this->fiscal()
@@ -56,7 +68,10 @@ class FiscalServiceNoVatTest extends TestCase
         $this->assertTrue($responseWithdraw->valid(), $responseWithdraw->error());
     }
 
-    /** @skip */
+    /**
+     * @test
+     * @group integration
+     */
     public function it_can_send_no_vat_cash_invoice_request()
     {
         $response = $this->fiscal()
@@ -66,7 +81,10 @@ class FiscalServiceNoVatTest extends TestCase
         $this->assertTrue($response->valid(), $response->error());
     }
 
-    /** @skip */
+    /**
+     * @test
+     * @group integration
+     */
     public function it_can_send_no_vat_no_cash_invoice_request()
     {
         $response = $this->fiscal()
@@ -76,7 +94,10 @@ class FiscalServiceNoVatTest extends TestCase
         $this->assertTrue($response->valid(), $response->error());
     }
 
-    /** @skip */
+    /**
+     * @test
+     * @group integration
+     */
     public function it_can_send_no_vat_corrective_invoice_full_amount()
     {
         $response = $this->fiscal()
@@ -94,7 +115,10 @@ class FiscalServiceNoVatTest extends TestCase
         $this->assertTrue($cResponse->valid(), $cResponse->error());
     }
 
-    /** @skip */
+    /**
+     * @test
+     * @group integration
+     */
     public function it_can_send_no_vat_items_with_4_decimals_invoice_request()
     {
         $response = $this->fiscal()

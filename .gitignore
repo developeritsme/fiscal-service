@@ -4,7 +4,7 @@
 *.cer
 *.p7b
 *.pfx
+!CoreitPecatSoft.pfx
 *.skip
 *.p12
-tests/HasInvoiceGeniusTestData.php
-tests/HasNoVatTestData.php
+.env.testing

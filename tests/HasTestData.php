@@ -21,6 +21,12 @@ trait HasTestData
 
     public static $createdEnu;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->loadEnvCredentials('FISCAL_VAT');
+    }
+
     protected $qrProductionUrl = 'https://mapr.tax.gov.me/ic/#/verify';
     protected $qrTestUrl = 'https://efitest.tax.gov.me/ic/#/verify';
 
@@ -43,7 +49,7 @@ trait HasTestData
 
     protected function getInvoice($noCash = false, $decimals = 2): Invoice
     {
-        $seller = new Seller($this->seller, $this->tin);
+        $seller = new Seller($this->seller, $this->tin, $this->isVat);
         $seller->setAddress('Radosava Burića bb')
             ->setTown('Podgorica');
 
@@ -76,9 +82,9 @@ trait HasTestData
 
     protected function getRegisterInvoiceRequest($noCash = false, $corrective = null, $decimals = 2): RegisterInvoice
     {
-        $item = $this->getItem('Taxi voznja', 7, 2.20);
+        $item = $this->getItem('Taxi voznja', $this->vatRate, 2.20);
 
-        $item2 = $this->getItem('Čekanje', 7, 0.80);
+        $item2 = $this->getItem('Čekanje', $this->vatRate, 0.80);
 
         $invoice = $this->getInvoice($noCash, $decimals);
 

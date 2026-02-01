@@ -12,13 +12,17 @@ class FiscalServiceTest extends TestCase
 {
     use HasTestData;
 
-    /** @test */
-    public function example()
+    protected function setUp(): void
     {
-        $this->assertTrue(true);
+        parent::setUp();
+        $this->loadEnvCredentials('FISCAL_VAT');
+        $this->requireEnvCredentials('FISCAL_VAT');
     }
 
-    /** @skip */
+    /**
+     * @test
+     * @group integration
+     */
     public function it_can_send_tcr_request()
     {
         $response = $this->fiscal()
@@ -28,7 +32,10 @@ class FiscalServiceTest extends TestCase
         $this->assertTrue($response->valid(), $response->error());
     }
 
-    /** @skip */
+    /**
+     * @test
+     * @group integration
+     */
     public function it_can_send_initial_cash_deposit_request()
     {
         $date = Carbon::now('Europe/Podgorica')->format('Y-m-d');
@@ -47,7 +54,10 @@ class FiscalServiceTest extends TestCase
         $this->assertTrue($responseInitial->valid(), $responseInitial->error());
     }
 
-    /** @skip */
+    /**
+     * @test
+     * @group integration
+     */
     public function it_can_send_withdraw_cash_deposit_request()
     {
         $responseWithdraw = $this->fiscal()
@@ -57,7 +67,10 @@ class FiscalServiceTest extends TestCase
         $this->assertTrue($responseWithdraw->valid(), $responseWithdraw->error());
     }
 
-    /** @skip */
+    /**
+     * @test
+     * @group integration
+     */
     public function it_can_send_cash_invoice_request()
     {
         $response = $this->fiscal()
@@ -67,7 +80,10 @@ class FiscalServiceTest extends TestCase
         $this->assertTrue($response->valid(), $response->error());
     }
 
-    /** @skip */
+    /**
+     * @test
+     * @group integration
+     */
     public function it_can_send_no_cash_invoice_request()
     {
         $response = $this->fiscal()
@@ -77,7 +93,10 @@ class FiscalServiceTest extends TestCase
         $this->assertTrue($response->valid(), $response->error());
     }
 
-    /** @skip */
+    /**
+     * @test
+     * @group integration
+     */
     public function it_can_send_corrective_invoice_full_amount()
     {
         $response = $this->fiscal()
@@ -95,7 +114,10 @@ class FiscalServiceTest extends TestCase
         $this->assertTrue($cResponse->valid(), $cResponse->error());
     }
 
-    /** @skip */
+    /**
+     * @test
+     * @group integration
+     */
     public function it_can_send_items_with_4_decimals_invoice_request()
     {
         $response = $this->fiscal()
@@ -105,7 +127,10 @@ class FiscalServiceTest extends TestCase
         $this->assertTrue($response->valid(), $response->error());
     }
 
-    /** @skip */
+    /**
+     * @test
+     * @group integration
+     */
     public function it_calculates_proper_vat_21_with_4_decimals_invoice_request()
     {
         $item = $this->getItem('Test', 21, 1)
@@ -121,7 +146,10 @@ class FiscalServiceTest extends TestCase
         $this->assertTrue($response->valid(), $response->error());
     }
 
-    /** @skip */
+    /**
+     * @test
+     * @group integration
+     */
     public function it_calculates_proper_vat_7_with_4_decimals_invoice_request()
     {
         $item = $this->getItem('Test 1', 7, 546);
@@ -139,7 +167,10 @@ class FiscalServiceTest extends TestCase
         $this->assertTrue($response->valid(), $response->error());
     }
 
-    /** @skip */
+    /**
+     * @test
+     * @group integration
+     */
     public function it_can_send_invoice_request_with_tax_period()
     {
         $item = $this->getItem('Taxi voznja', 7, $amount = 2.20);
@@ -161,7 +192,10 @@ class FiscalServiceTest extends TestCase
         $this->assertTrue($response->valid(), $response->error());
     }
 
-    /** @skip */
+    /**
+     * @test
+     * @group integration
+     */
     public function it_can_send_invoice_request_with_supply_period()
     {
         $date = Carbon::now('Europe/Podgorica');
@@ -194,7 +228,10 @@ class FiscalServiceTest extends TestCase
         $this->assertTrue($response->valid(), $response->error());
     }
 
-    /** @skip */
+    /**
+     * @test
+     * @group integration
+     */
     public function it_can_send_invoice_request_with_tax_and_supply_period()
     {
         $date = Carbon::now('Europe/Podgorica');

@@ -104,21 +104,6 @@ class InvoiceTest extends TestCase
         $this->assertSame($expected, $invoice->concatenate($totals['total']));
     }
 
-    /** @skip */
-    public function it_can_create_identification_code()
-    {
-        Carbon::setTestNow('2019-06-12T17:05:43+02:00');
-
-        $invoice = $this->getInvoice();
-
-        $taxes = SameTaxes::make($invoice->getItems());
-        $totals = $taxes->getTotals();
-        $expected = 'A72977773A579523665C3D4F8DEFF3F301CA726A7960EFF5A6863E4CB6009A752C52652C615049A0B2B650380A12D4CC44E7FEB0371FEC42501D95A2F8ACE24A9483EC8AF93219DCC7F58C1E62497B412922B5CAE83A0F914427A769EE550C6510C43DE1FFBF13C911DBADCE66DAC6065B98352276F0B19260457887C20EB351932377B749B4CC0338100D9CB6A202A1EE9BC77B1E584FD9692C26102F603C7ED920E3ABF22DAF4C1D170E954B1D320709E26A429C3B8D45208B7C5CBF5BA1C51713E888ACA00BC60C00BA18E7B1434A196F9F09CBD28B68F4FD1F56EA197B59AF77D6B8459C1CBCAA367089BCC8CEFAE3926DA8183DD822D371230411F4CFFD';
-        $expected = 'E4033D471FEEA47A3C664B15C669C709';
-
-        $this->assertSame($expected, $invoice->securityCode($totals['total']));
-    }
-
     /** @test */
     public function it_throws_exception_when_iic_signing_fails()
     {
