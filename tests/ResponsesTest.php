@@ -146,4 +146,52 @@ class ResponsesTest extends TestCase
         $this->assertArrayHasKey('id', $data);
         $this->assertNull($data['id']);
     }
+
+    /** @test */
+    public function verifier_returns_valid_on_signed_response()
+    {
+        $responseContent = file_get_contents('./tests/xml/RegisterInvoiceResponse.xml');
+        $request = $this->getRegisterInvoiceRequest();
+        $response = Factory::make($responseContent, 200, $request);
+
+        $this->assertTrue($response->verifier()->valid());
+        $this->assertNull($response->verifier()->error());
+    }
+
+    /** @test */
+    public function verifier_returns_invalid_on_empty_response()
+    {
+        $request = $this->getRegisterInvoiceRequest();
+        $response = Factory::make('', 0, $request, 'Connection timeout');
+
+        $this->assertFalse($response->verifier()->valid());
+        $this->assertSame('Empty response', $response->verifier()->error());
+    }
+
+    /** @test */
+    public function verifier_returns_invalid_on_tampered_content()
+    {
+        $xml = file_get_contents('./tests/xml/RegisterInvoiceResponse.xml');
+        $xml = str_replace(
+            '029de09a-3784-4630-b8e4-257e55afbd0b',
+            '00000000-0000-0000-0000-000000000000',
+            $xml,
+        );
+
+        $request = $this->getRegisterInvoiceRequest();
+        $response = Factory::make($xml, 200, $request);
+
+        $this->assertFalse($response->verifier()->valid());
+        $this->assertSame('Digest value mismatch', $response->verifier()->error());
+    }
+
+    /** @test */
+    public function verifier_returns_same_instance()
+    {
+        $responseContent = file_get_contents('./tests/xml/RegisterInvoiceResponse.xml');
+        $request = $this->getRegisterInvoiceRequest();
+        $response = Factory::make($responseContent, 200, $request);
+
+        $this->assertSame($response->verifier(), $response->verifier());
+    }
 }

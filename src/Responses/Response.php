@@ -22,6 +22,9 @@ abstract class Response
     /** @var string */
     protected $connectionError;
 
+    /** @var SignatureVerifier */
+    protected $verifier;
+
     public function __construct($response, $code, Request $request = null, string $connectionError = null)
     {
         $this->response = $response;
@@ -102,6 +105,15 @@ abstract class Response
         }
 
         return ['code' => 0, 'message' => $this->error()];
+    }
+
+    public function verifier(): SignatureVerifier
+    {
+        if (!$this->verifier) {
+            $this->verifier = new SignatureVerifier($this->domResponse);
+        }
+
+        return $this->verifier;
     }
 
     protected function setDomResponse(): void
