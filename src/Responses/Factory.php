@@ -11,8 +11,8 @@ class Factory
 {
     protected const REQUEST_RESPONSE_MAP = [
         RegisterCashDepositRequest::class => RegisterCashDeposit::class,
-        RegisterInvoiceRequest::class => RegisterInvoice::class,
-        RegisterTCRRequest::class => RegisterTCR::class,
+        RegisterInvoiceRequest::class     => RegisterInvoice::class,
+        RegisterTCRRequest::class         => RegisterTCR::class,
     ];
 
     public static function make($response, $code, Request $request = null, string $connectionError = null): Response

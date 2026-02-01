@@ -19,13 +19,13 @@ trait HasPublicTestData
     protected function loadEnvCredentials(string $prefix = 'FISCAL_VAT'): void
     {
         $prefixed = [
-            'CERT_PATH' => 'certPath',
+            'CERT_PATH'       => 'certPath',
             'CERT_PASSPHRASE' => 'certPassphrase',
-            'ENU' => 'enu',
-            'SELLER' => 'seller',
-            'TIN' => 'tin',
-            'UNIT_CODE' => 'unitCode',
-            'OPERATOR_CODE' => 'operatorCode',
+            'ENU'             => 'enu',
+            'SELLER'          => 'seller',
+            'TIN'             => 'tin',
+            'UNIT_CODE'       => 'unitCode',
+            'OPERATOR_CODE'   => 'operatorCode',
         ];
 
         foreach ($prefixed as $suffix => $property) {
@@ -36,7 +36,7 @@ trait HasPublicTestData
         }
 
         $shared = [
-            'FISCAL_SOFTWARE_CODE' => 'softwareCode',
+            'FISCAL_SOFTWARE_CODE'   => 'softwareCode',
             'FISCAL_MAINTAINER_CODE' => 'maintainerCode',
         ];
 

@@ -15,6 +15,12 @@ return (new PhpCsFixer\Config())
         'ordered_imports' => ['sort_algorithm' => 'alpha'],
         'single_quote' => true,
         'trailing_comma_in_multiline' => ['elements' => ['arrays']],
+        'binary_operator_spaces' => [
+            'default' => 'single_space',
+            'operators' => [
+                '=>' => 'align_single_space_minimal_by_scope',
+            ],
+        ],
         'no_extra_blank_lines' => true,
         'no_whitespace_in_blank_line' => true,
     ])
