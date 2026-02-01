@@ -2,7 +2,7 @@
 
 namespace DeveloperItsMe\FiscalService\Models;
 
-class Countries extends Model
+class Countries
 {
     public const ME = 'MNE';
 
@@ -272,10 +272,5 @@ class Countries extends Model
     public static function names(): array
     {
         return array_values(static::$countries);
-    }
-
-    public function toXML(): string
-    {
-        return '';
     }
 }
