@@ -2,12 +2,10 @@
 
 namespace DeveloperItsMe\FiscalService\Models;
 
-use DeveloperItsMe\FiscalService\Traits\HasGroupedItems;
 use DeveloperItsMe\FiscalService\Traits\HasXmlWriter;
 
 class PaymentMethods extends Model
 {
-    use HasGroupedItems;
     use HasXmlWriter;
 
     /** @var array */
@@ -37,10 +35,5 @@ class PaymentMethods extends Model
         $writer->endElement();
 
         return $writer->outputMemory();
-    }
-
-    protected function getGroupableItems(): array
-    {
-        return $this->methods;
     }
 }

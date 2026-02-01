@@ -3,14 +3,12 @@
 namespace DeveloperItsMe\FiscalService\Models;
 
 use DeveloperItsMe\FiscalService\Traits\HasDecimals;
-use DeveloperItsMe\FiscalService\Traits\HasGroupedItems;
 use DeveloperItsMe\FiscalService\Traits\HasXmlWriter;
 use DeveloperItsMe\FiscalService\Traits\Vatable;
 
 class Items extends Model
 {
     use HasDecimals;
-    use HasGroupedItems;
     use HasXmlWriter;
     use Vatable;
 
@@ -47,10 +45,5 @@ class Items extends Model
         $writer->endElement();
 
         return $writer->outputMemory();
-    }
-
-    protected function getGroupableItems(): array
-    {
-        return $this->items;
     }
 }
