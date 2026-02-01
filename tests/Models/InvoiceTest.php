@@ -117,6 +117,21 @@ class InvoiceTest extends TestCase
     }
 
     /** @test */
+    public function it_throws_exception_when_iic_signing_fails()
+    {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Unable to sign invoice data for IIC generation');
+
+        set_error_handler(function () { return true; });
+        try {
+            $invoice = $this->getInvoice();
+            $invoice->generateIIC('invalid-key');
+        } finally {
+            restore_error_handler();
+        }
+    }
+
+    /** @test */
     public function it_rejects_zero_as_invoice_number()
     {
         $invoice = new Invoice();

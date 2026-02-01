@@ -326,7 +326,9 @@ class Invoice extends Model
             $this->formatNumber($this->totals('total'))
         ));
 
-        openssl_sign($data, $this->iicSignature, $pkey, OPENSSL_ALGO_SHA256);
+        if (!openssl_sign($data, $this->iicSignature, $pkey, OPENSSL_ALGO_SHA256)) {
+            throw new \Exception('Unable to sign invoice data for IIC generation');
+        }
 
         $this->iicSignature = strtoupper(bin2hex($this->iicSignature));
 

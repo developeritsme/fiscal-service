@@ -109,7 +109,7 @@ abstract class Response
         if ($this->response) {
             $this->domResponse = new DOMDocument();
 
-            $this->domResponse->loadXML($this->response);
+            $this->domResponse->loadXML($this->response, LIBXML_NONET);
         }
     }
 

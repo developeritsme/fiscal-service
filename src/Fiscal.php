@@ -81,7 +81,7 @@ class Fiscal
     protected function sign($xml): string
     {
         $XMLRequestDOMDoc = new DOMDocument();
-        $XMLRequestDOMDoc->loadXML($xml);
+        $XMLRequestDOMDoc->loadXML($xml, LIBXML_NONET);
 
         $digestValue = base64_encode(hash('sha256', $XMLRequestDOMDoc->C14N(), true));
 

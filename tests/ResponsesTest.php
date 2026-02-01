@@ -71,6 +71,29 @@ class ResponsesTest extends TestCase
     }
 
     /** @test */
+    public function it_does_not_resolve_external_entities_in_response()
+    {
+        $xxeXml = '<?xml version="1.0"?>'
+            . '<!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///etc/hostname">]>'
+            . '<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">'
+            . '<env:Header/><env:Body>'
+            . '<RegisterTCRResponse xmlns="https://efi.tax.gov.me/fs/schema" Id="Response" Version="1">'
+            . '<Header UUID="a8323e4a-4ceb-4ef0-8a38-6b315229a1f7" SendDateTime="2021-05-22T14:41:45+02:00"/>'
+            . '<TCRCode xmlns="https://efi.tax.gov.me/fs/schema">&xxe;</TCRCode>'
+            . '</RegisterTCRResponse>'
+            . '</env:Body></env:Envelope>';
+
+        $request = $this->getRegisterTCRRequest();
+        $response = Factory::make($xxeXml, 200, $request);
+        $data = $response->data();
+
+        $this->assertArrayHasKey('code', $data);
+        if (file_exists('/etc/hostname')) {
+            $this->assertNotEquals(trim(file_get_contents('/etc/hostname')), $data['code']);
+        }
+    }
+
+    /** @test */
     public function register_invoice_response_returns_null_fic_when_element_missing()
     {
         $responseContent = '<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">'

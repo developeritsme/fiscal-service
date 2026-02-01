@@ -76,10 +76,10 @@ abstract class Request
     public function envelope($xml = null): string
     {
         $xmlRequestDom = new DOMDocument();
-        $xmlRequestDom->loadXML($xml ?? $this->toXML());
+        $xmlRequestDom->loadXML($xml ?? $this->toXML(), LIBXML_NONET);
 
         $envelope = new DOMDocument();
-        $envelope->loadXML($this->getEnvelopeXml());
+        $envelope->loadXML($this->getEnvelopeXml(), LIBXML_NONET);
         $envelope->xmlVersion = '1.0';
         $envelope->encoding = 'UTF-8';
 
