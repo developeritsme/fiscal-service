@@ -116,6 +116,18 @@ class InvoiceTest extends TestCase
         $this->assertSame($expected, $invoice->securityCode($totals['total']));
     }
 
+    /** @test */
+    public function it_rejects_zero_as_invoice_number()
+    {
+        $invoice = new Invoice();
+        $invoice->setNumber(0);
+
+        $reflection = new \ReflectionProperty(Invoice::class, 'number');
+        $reflection->setAccessible(true);
+
+        $this->assertNull($reflection->getValue($invoice));
+    }
+
     protected function getInvoice()
     {
         $invoice = new Invoice();

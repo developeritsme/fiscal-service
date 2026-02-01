@@ -133,7 +133,7 @@ class Invoice extends Model
 
     public function setNumber(int $number): self
     {
-        if ($number >= 0) {
+        if ($number > 0) {
             $this->number = $number;
         }
 

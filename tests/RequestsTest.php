@@ -112,6 +112,26 @@ class RequestsTest extends TestCase
 
         $this->assertStringEqualsFile('./tests/xml/RegisterCashDeposit.xml', $request->toXML());
     }
+
+    /** @test */
+    public function it_defaults_verify_ssl_peer_to_true()
+    {
+        $request = new TestEnvelope();
+
+        $this->assertTrue($request->verifySslPeer());
+    }
+
+    /** @test */
+    public function it_allows_changing_verify_ssl_peer()
+    {
+        $request = new TestEnvelope();
+
+        $request->verifySslPeer(false);
+        $this->assertFalse($request->verifySslPeer());
+
+        $request->verifySslPeer(true);
+        $this->assertTrue($request->verifySslPeer());
+    }
 }
 
 class TestEnvelope extends Request

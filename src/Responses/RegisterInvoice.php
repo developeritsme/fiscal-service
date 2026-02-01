@@ -20,8 +20,10 @@ class RegisterInvoice extends Response
 
     protected function fic(): ?string
     {
-        return $this->domResponse
-            ? $this->domResponse->getElementsByTagName('FIC')->item(0)->nodeValue
+        $element = $this->domResponse
+            ? $this->domResponse->getElementsByTagName('FIC')->item(0)
             : null;
+
+        return $element ? $element->nodeValue : null;
     }
 }

@@ -13,8 +13,10 @@ class RegisterTCR extends Response
 
     protected function code(): ?string
     {
-        return $this->domResponse
-            ? $this->domResponse->getElementsByTagName('TCRCode')->item(0)->nodeValue
+        $element = $this->domResponse
+            ? $this->domResponse->getElementsByTagName('TCRCode')->item(0)
             : null;
+
+        return $element ? $element->nodeValue : null;
     }
 }

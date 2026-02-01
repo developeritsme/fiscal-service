@@ -30,6 +30,9 @@ abstract class Request
     /** @var int CURLOPT_TIMEOUT */
     protected $curl_timeout = self::DEFAULT_TIMEOUT;
 
+    /** @var bool CURLOPT_SSL_VERIFYPEER */
+    protected $curl_verify_peer = true;
+
     public function __construct(Model $model = null)
     {
         $this->model = $model;
@@ -108,6 +111,15 @@ abstract class Request
         }
 
         return $this->curl_connect_timeout;
+    }
+
+    public function verifySslPeer(bool $verify = null): bool
+    {
+        if (!is_null($verify)) {
+            $this->curl_verify_peer = $verify;
+        }
+
+        return $this->curl_verify_peer;
     }
 
     protected function getEnvelopeXml(): string

@@ -125,7 +125,7 @@ class Fiscal
         $signedInfoSignature = null;
 
         if (!openssl_sign($SignedInfoNode->C14N(true), $signedInfoSignature, $this->certificate()->getPrivateKey(), OPENSSL_ALGO_SHA256)) {
-            throw new Exception('Unable to sign the request');
+            throw new \Exception('Unable to sign the request');
         }
 
         $SignatureNode = $XMLRequestDOMDoc->getElementsByTagName('Signature')->item(0);
@@ -165,7 +165,7 @@ class Fiscal
             CURLOPT_POST           => true,
             CURLOPT_POSTFIELDS     => $payload,
             CURLOPT_SSL_VERIFYHOST => 2,
-            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYPEER => $this->request->verifySslPeer(),
             CURLOPT_SSLVERSION     => 6,
             CURLOPT_HTTPHEADER     => $headers,
         ];
