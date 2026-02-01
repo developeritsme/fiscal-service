@@ -4,6 +4,7 @@ namespace Tests\Models;
 
 use Carbon\Carbon;
 use DeveloperItsMe\FiscalService\Exceptions\FiscalException;
+use DeveloperItsMe\FiscalService\Models\CorrectiveInvoice;
 use DeveloperItsMe\FiscalService\Models\Invoice;
 use DeveloperItsMe\FiscalService\Models\Item;
 use DeveloperItsMe\FiscalService\Models\PaymentMethod;
@@ -144,6 +145,111 @@ class InvoiceTest extends TestCase
         $reflection->setAccessible(true);
 
         $this->assertNull($reflection->getValue($invoice));
+    }
+
+    /** @test */
+    public function setMethod_sets_cash()
+    {
+        $invoice = new Invoice();
+        $invoice->setMethod(Invoice::TYPE_CASH);
+
+        $reflection = new \ReflectionProperty(Invoice::class, 'method');
+        $reflection->setAccessible(true);
+
+        $this->assertSame(Invoice::TYPE_CASH, $reflection->getValue($invoice));
+    }
+
+    /** @test */
+    public function setMethod_sets_noncash()
+    {
+        $invoice = new Invoice();
+        $invoice->setMethod(Invoice::TYPE_NONCASH);
+
+        $reflection = new \ReflectionProperty(Invoice::class, 'method');
+        $reflection->setAccessible(true);
+
+        $this->assertSame(Invoice::TYPE_NONCASH, $reflection->getValue($invoice));
+    }
+
+    /** @test */
+    public function setMethod_ignores_invalid_value()
+    {
+        $invoice = new Invoice();
+        $invoice->setMethod('INVALID');
+
+        $reflection = new \ReflectionProperty(Invoice::class, 'method');
+        $reflection->setAccessible(true);
+
+        $this->assertSame(Invoice::TYPE_CASH, $reflection->getValue($invoice));
+    }
+
+    /** @test */
+    public function setInvoiceType_sets_type()
+    {
+        $invoice = new Invoice();
+        $invoice->setInvoiceType(Invoice::TYPE_ADVANCE);
+
+        $reflection = new \ReflectionProperty(Invoice::class, 'type');
+        $reflection->setAccessible(true);
+
+        $this->assertSame(Invoice::TYPE_ADVANCE, $reflection->getValue($invoice));
+    }
+
+    /** @test */
+    public function setInvoiceType_ignores_invalid_value()
+    {
+        $invoice = new Invoice();
+        $invoice->setInvoiceType('INVALID');
+
+        $reflection = new \ReflectionProperty(Invoice::class, 'type');
+        $reflection->setAccessible(true);
+
+        $this->assertSame(Invoice::TYPE_INVOICE, $reflection->getValue($invoice));
+    }
+
+    /** @test */
+    public function setCorrectiveInvoice_sets_type_to_corrective()
+    {
+        $invoice = new Invoice();
+        $invoice->setCorrectiveInvoice(new CorrectiveInvoice('ikof123', '2025-01-01'));
+
+        $reflection = new \ReflectionProperty(Invoice::class, 'type');
+        $reflection->setAccessible(true);
+
+        $this->assertSame(Invoice::TYPE_CORRECTIVE, $reflection->getValue($invoice));
+    }
+
+    /** @test */
+    public function deprecated_setType_routes_noncash_to_method()
+    {
+        $invoice = new Invoice();
+        $invoice->setType(Invoice::TYPE_NONCASH);
+
+        $methodRef = new \ReflectionProperty(Invoice::class, 'method');
+        $methodRef->setAccessible(true);
+
+        $this->assertSame(Invoice::TYPE_NONCASH, $methodRef->getValue($invoice));
+    }
+
+    /** @test */
+    public function deprecated_setType_routes_corrective_to_type()
+    {
+        $invoice = new Invoice();
+        $invoice->setType(Invoice::TYPE_CORRECTIVE);
+
+        $typeRef = new \ReflectionProperty(Invoice::class, 'type');
+        $typeRef->setAccessible(true);
+
+        $this->assertSame(Invoice::TYPE_CORRECTIVE, $typeRef->getValue($invoice));
+    }
+
+    /** @test */
+    public function setMethod_and_setInvoiceType_are_fluent()
+    {
+        $invoice = new Invoice();
+
+        $this->assertSame($invoice, $invoice->setMethod(Invoice::TYPE_CASH));
+        $this->assertSame($invoice, $invoice->setInvoiceType(Invoice::TYPE_INVOICE));
     }
 
     protected function getInvoice()

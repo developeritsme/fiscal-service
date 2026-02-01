@@ -188,15 +188,15 @@ $invoice->setTaxPeriod('01/2025');
 ### Invoice Types
 
 ```php
-// Cash vs Non-cash
-$invoice->setType(Invoice::TYPE_CASH);     // Default
-$invoice->setType(Invoice::TYPE_NONCASH);
+// Cash vs Non-cash (TypeOfInv)
+$invoice->setMethod(Invoice::TYPE_CASH);     // Default
+$invoice->setMethod(Invoice::TYPE_NONCASH);
 
-// Invoice types
-$invoice->setType(Invoice::TYPE_INVOICE);      // Regular invoice
-$invoice->setType(Invoice::TYPE_CORRECTIVE);   // Corrective invoice
-$invoice->setType(Invoice::TYPE_ADVANCE);      // Advance payment
-$invoice->setType(Invoice::TYPE_CREDIT_NOTE);  // Credit note
+// Invoice types (InvType)
+$invoice->setInvoiceType(Invoice::TYPE_INVOICE);      // Regular invoice
+$invoice->setInvoiceType(Invoice::TYPE_CORRECTIVE);   // Corrective invoice
+$invoice->setInvoiceType(Invoice::TYPE_ADVANCE);      // Advance payment
+$invoice->setInvoiceType(Invoice::TYPE_CREDIT_NOTE);  // Credit note
 ```
 
 ### Payment Methods

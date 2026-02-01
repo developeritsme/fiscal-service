@@ -106,22 +106,37 @@ class Invoice extends Model
         return $this->dateTime ? $this->dateTime->toIso8601String() : null;
     }
 
-    public function setType($type): self
+    public function setMethod(string $method): self
     {
-        if (in_array($type, [self::TYPE_CASH, self::TYPE_NONCASH])) {
-            $this->method = $type;
-
-            return $this;
+        if (in_array($method, [self::TYPE_CASH, self::TYPE_NONCASH])) {
+            $this->method = $method;
         }
 
-        if (in_array($type, $this->types())) {
+        return $this;
+    }
+
+    public function setInvoiceType(string $type): self
+    {
+        if (in_array($type, $this->invoiceTypes())) {
             $this->type = $type;
         }
 
         return $this;
     }
 
-    protected function types(): array
+    /**
+     * @deprecated Use setMethod() for CASH/NONCASH or setInvoiceType() for invoice types.
+     */
+    public function setType($type): self
+    {
+        if (in_array($type, [self::TYPE_CASH, self::TYPE_NONCASH])) {
+            return $this->setMethod($type);
+        }
+
+        return $this->setInvoiceType($type);
+    }
+
+    protected function invoiceTypes(): array
     {
         return [
             self::TYPE_INVOICE,
@@ -192,7 +207,7 @@ class Invoice extends Model
     public function setCorrectiveInvoice(CorrectiveInvoice $invoice): self
     {
         $this->corrective = $invoice;
-        $this->setType(self::TYPE_CORRECTIVE);
+        $this->setInvoiceType(self::TYPE_CORRECTIVE);
 
         return $this;
     }
