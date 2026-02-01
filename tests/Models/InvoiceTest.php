@@ -3,6 +3,7 @@
 namespace Tests\Models;
 
 use Carbon\Carbon;
+use DeveloperItsMe\FiscalService\Exceptions\FiscalException;
 use DeveloperItsMe\FiscalService\Models\Invoice;
 use DeveloperItsMe\FiscalService\Models\Item;
 use DeveloperItsMe\FiscalService\Models\PaymentMethod;
@@ -119,7 +120,7 @@ class InvoiceTest extends TestCase
     /** @test */
     public function it_throws_exception_when_iic_signing_fails()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(FiscalException::class);
         $this->expectExceptionMessage('Unable to sign invoice data for IIC generation');
 
         set_error_handler(function () {

@@ -2,6 +2,7 @@
 
 namespace DeveloperItsMe\FiscalService;
 
+use DeveloperItsMe\FiscalService\Exceptions\FiscalException;
 use DeveloperItsMe\FiscalService\Requests\Request;
 use DeveloperItsMe\FiscalService\Responses\Factory;
 use DeveloperItsMe\FiscalService\Responses\Response;
@@ -75,13 +76,15 @@ class Fiscal
             );
         }
 
-        throw new \Exception('No request set on Fiscal class');
+        throw new FiscalException('No request set on Fiscal class');
     }
 
     protected function sign($xml): string
     {
         $XMLRequestDOMDoc = new DOMDocument();
-        $XMLRequestDOMDoc->loadXML($xml, LIBXML_NONET);
+        if (!$XMLRequestDOMDoc->loadXML($xml, LIBXML_NONET)) {
+            throw new FiscalException('Failed to parse XML for signing');
+        }
 
         $digestValue = base64_encode(hash('sha256', $XMLRequestDOMDoc->C14N(), true));
 
@@ -125,7 +128,7 @@ class Fiscal
         $signedInfoSignature = null;
 
         if (!openssl_sign($SignedInfoNode->C14N(true), $signedInfoSignature, $this->certificate()->getPrivateKey(), OPENSSL_ALGO_SHA256)) {
-            throw new \Exception('Unable to sign the request');
+            throw new FiscalException('Unable to sign the request');
         }
 
         $SignatureNode = $XMLRequestDOMDoc->getElementsByTagName('Signature')->item(0);

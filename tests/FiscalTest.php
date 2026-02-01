@@ -4,6 +4,7 @@ namespace Tests;
 
 use DeveloperItsMe\FiscalService\Certificate;
 use DeveloperItsMe\FiscalService\Exceptions\CertificateException;
+use DeveloperItsMe\FiscalService\Exceptions\FiscalException;
 use PHPUnit\Framework\TestCase;
 
 class FiscalTest extends TestCase
@@ -47,6 +48,14 @@ class FiscalTest extends TestCase
     {
         $this->expectException(CertificateException::class);
         $this->expectExceptionMessage('Failed to read PKCS12 certificate');
+
+        new Certificate('invalid-certificate-data', 'password');
+    }
+
+    /** @test */
+    public function certificate_exception_is_catchable_as_fiscal_exception()
+    {
+        $this->expectException(FiscalException::class);
 
         new Certificate('invalid-certificate-data', 'password');
     }

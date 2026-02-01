@@ -20,7 +20,7 @@ class Factory
         $requestClass = get_class($request);
 
         if (!isset(self::REQUEST_RESPONSE_MAP[$requestClass])) {
-            throw new \Exception('Unknown response type: ' . $requestClass);
+            throw new \DeveloperItsMe\FiscalService\Exceptions\FiscalException('Unknown response type: ' . $requestClass);
         }
 
         $class = self::REQUEST_RESPONSE_MAP[$requestClass];

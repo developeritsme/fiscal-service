@@ -2,7 +2,7 @@
 
 namespace DeveloperItsMe\FiscalService\Exceptions;
 
-class CertificateException extends \Exception
+class CertificateException extends FiscalException
 {
     /** @var array */
     protected $opensslErrors = [];

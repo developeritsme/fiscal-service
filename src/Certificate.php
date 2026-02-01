@@ -84,7 +84,7 @@ class Certificate
     {
         $cert = @file_get_contents($path);
         if (false === $cert) {
-            throw new \Exception('Cannot read certificate from path: ' . $path, 1);
+            throw new CertificateException('Cannot read certificate from path: ' . $path);
         }
 
         return $cert;

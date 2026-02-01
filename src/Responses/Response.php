@@ -107,9 +107,9 @@ abstract class Response
     protected function setDomResponse(): void
     {
         if ($this->response) {
-            $this->domResponse = new DOMDocument();
+            $dom = new DOMDocument();
 
-            $this->domResponse->loadXML($this->response, LIBXML_NONET);
+            $this->domResponse = $dom->loadXML($this->response, LIBXML_NONET) ? $dom : null;
         }
     }
 

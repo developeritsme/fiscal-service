@@ -327,7 +327,7 @@ class Invoice extends Model
         ));
 
         if (!openssl_sign($data, $this->iicSignature, $pkey, OPENSSL_ALGO_SHA256)) {
-            throw new \Exception('Unable to sign invoice data for IIC generation');
+            throw new \DeveloperItsMe\FiscalService\Exceptions\FiscalException('Unable to sign invoice data for IIC generation');
         }
 
         $this->iicSignature = strtoupper(bin2hex($this->iicSignature));

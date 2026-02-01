@@ -2,6 +2,7 @@
 
 namespace DeveloperItsMe\FiscalService\Requests;
 
+use DeveloperItsMe\FiscalService\Exceptions\FiscalException;
 use DeveloperItsMe\FiscalService\Models\Model;
 use DeveloperItsMe\FiscalService\Traits\HasXmlWriter;
 use DOMDocument;
@@ -76,10 +77,14 @@ abstract class Request
     public function envelope($xml = null): string
     {
         $xmlRequestDom = new DOMDocument();
-        $xmlRequestDom->loadXML($xml ?? $this->toXML(), LIBXML_NONET);
+        if (!$xmlRequestDom->loadXML($xml ?? $this->toXML(), LIBXML_NONET)) {
+            throw new FiscalException('Failed to parse request XML');
+        }
 
         $envelope = new DOMDocument();
-        $envelope->loadXML($this->getEnvelopeXml(), LIBXML_NONET);
+        if (!$envelope->loadXML($this->getEnvelopeXml(), LIBXML_NONET)) {
+            throw new FiscalException('Failed to parse SOAP envelope XML');
+        }
         $envelope->xmlVersion = '1.0';
         $envelope->encoding = 'UTF-8';
 
