@@ -81,6 +81,19 @@ abstract class Business extends Model
         return $this;
     }
 
+    public function toArray(): array
+    {
+        return [
+            'name'      => $this->name,
+            'id_number' => $this->idNumber,
+            'id_type'   => $this->country === Countries::ME ? self::ID_TYPE_PIB : self::ID_TYPE_TAX_NUMBER,
+            'address'   => $this->address,
+            'town'      => $this->town,
+            'country'   => $this->country,
+            'is_vat'    => $this->getIsVat(),
+        ];
+    }
+
     public function toXML(): string
     {
         $writer = $this->getXmlWriter();

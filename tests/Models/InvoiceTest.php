@@ -4,6 +4,7 @@ namespace Tests\Models;
 
 use Carbon\Carbon;
 use DeveloperItsMe\FiscalService\Exceptions\FiscalException;
+use DeveloperItsMe\FiscalService\Models\Buyer;
 use DeveloperItsMe\FiscalService\Models\CorrectiveInvoice;
 use DeveloperItsMe\FiscalService\Models\Invoice;
 use DeveloperItsMe\FiscalService\Models\Item;
@@ -250,6 +251,164 @@ class InvoiceTest extends TestCase
 
         $this->assertSame($invoice, $invoice->setMethod(Invoice::TYPE_CASH));
         $this->assertSame($invoice, $invoice->setInvoiceType(Invoice::TYPE_INVOICE));
+    }
+
+    /** @test */
+    public function toArray_returns_complete_structure()
+    {
+        Carbon::setTestNow('2019-12-05T14:30:13+01:00');
+
+        $invoice = new Invoice();
+
+        $seller = new Seller('Test Seller', '12345678');
+        $seller->setAddress('Test Address')->setTown('Podgorica');
+
+        $buyer = new Buyer('Test Buyer', '87654321');
+        $buyer->setAddress('Buyer Address')->setTown('Niksic');
+
+        $item = new Item('Product A', 21);
+        $item->setCode('P001')->setUnitPrice(100)->setQuantity(2);
+
+        $pm = new PaymentMethod(200, PaymentMethod::TYPE_BANKNOTE);
+
+        $invoice->setUuid('test-uuid-1234')
+            ->setNumber(42)
+            ->setEnu('en123en123')
+            ->setOperatorCode('op123op123')
+            ->setBusinessUnitCode('bu123bu123')
+            ->setSoftwareCode('sw123sw123')
+            ->setIssuerCode($this->issuerCode)
+            ->setIicSignature($this->iicSignature)
+            ->setTaxPeriod('01/2019')
+            ->setSeller($seller)
+            ->setBuyer($buyer)
+            ->addItem($item)
+            ->addPaymentMethod($pm)
+            ->setCorrectiveInvoice(new CorrectiveInvoice('aabb0011ccdd2233eeff44556677aabb', '2019-11-01T10:00:00+01:00'))
+            ->setSupplyPeriod('2019-12-01', '2019-12-31');
+
+        $arr = $invoice->toArray();
+
+        $this->assertSame('test-uuid-1234', $arr['uuid']);
+        $this->assertSame('bu123bu123/42/2019/en123en123', $arr['number']);
+        $this->assertSame(42, $arr['ordinal_number']);
+        $this->assertSame('2019-12-05T14:30:13+01:00', $arr['date_time']);
+        $this->assertSame('CASH', $arr['method']);
+        $this->assertSame('CORRECTIVE', $arr['type']);
+        $this->assertSame('bu123bu123', $arr['business_unit_code']);
+        $this->assertSame('op123op123', $arr['operator_code']);
+        $this->assertSame('en123en123', $arr['tcr_code']);
+        $this->assertSame('sw123sw123', $arr['software_code']);
+        $this->assertSame($this->issuerCode, $arr['issuer_code']);
+        $this->assertSame($this->iicSignature, $arr['iic_signature']);
+        $this->assertSame('01/2019', $arr['tax_period']);
+
+        $this->assertArrayHasKey('total', $arr['totals']);
+        $this->assertArrayHasKey('base', $arr['totals']);
+        $this->assertArrayHasKey('vat', $arr['totals']);
+
+        $this->assertSame('Test Seller', $arr['seller']['name']);
+        $this->assertSame('12345678', $arr['seller']['id_number']);
+        $this->assertSame('TIN', $arr['seller']['id_type']);
+        $this->assertSame('Test Address', $arr['seller']['address']);
+        $this->assertSame('Podgorica', $arr['seller']['town']);
+        $this->assertSame('MNE', $arr['seller']['country']);
+        $this->assertTrue($arr['seller']['is_vat']);
+
+        $this->assertSame('Test Buyer', $arr['buyer']['name']);
+        $this->assertSame('87654321', $arr['buyer']['id_number']);
+
+        $this->assertCount(1, $arr['items']);
+        $this->assertSame('Product A', $arr['items'][0]['name']);
+        $this->assertSame('P001', $arr['items'][0]['code']);
+        $this->assertEquals(2, $arr['items'][0]['quantity']);
+        $this->assertEquals(100, $arr['items'][0]['unit_price']);
+        $this->assertEquals(21, $arr['items'][0]['vat_rate']);
+
+        $this->assertCount(1, $arr['payment_methods']);
+        $this->assertSame('BANKNOTE', $arr['payment_methods'][0]['type']);
+        $this->assertEquals(200, $arr['payment_methods'][0]['amount']);
+
+        $this->assertSame('aabb0011ccdd2233eeff44556677aabb', $arr['corrective_invoice']['ikof']);
+        $this->assertSame('CORRECTIVE', $arr['corrective_invoice']['type']);
+
+        $this->assertSame('2019-12-01', $arr['supply_period']['start']);
+        $this->assertSame('2019-12-31', $arr['supply_period']['end']);
+    }
+
+    /** @test */
+    public function toArray_has_null_for_optional_fields_when_absent()
+    {
+        Carbon::setTestNow('2019-12-05T14:30:13+01:00');
+
+        $invoice = new Invoice();
+
+        $seller = new Seller('Seller', '12345678');
+        $item = new Item('Item', 21);
+        $item->setUnitPrice(50);
+        $pm = new PaymentMethod(50);
+
+        $invoice->setUuid('uuid-test')
+            ->setNumber(1)
+            ->setEnu('en123en123')
+            ->setOperatorCode('op123op123')
+            ->setBusinessUnitCode('bu123bu123')
+            ->setSoftwareCode('sw123sw123')
+            ->setIssuerCode($this->issuerCode)
+            ->setIicSignature($this->iicSignature)
+            ->setSeller($seller)
+            ->addItem($item)
+            ->addPaymentMethod($pm);
+
+        $arr = $invoice->toArray();
+
+        $this->assertNull($arr['buyer']);
+        $this->assertNull($arr['corrective_invoice']);
+        $this->assertNull($arr['supply_period']);
+        $this->assertNull($arr['tax_period']);
+    }
+
+    /** @test */
+    public function toArray_includes_multiple_items_and_payment_methods()
+    {
+        Carbon::setTestNow('2019-12-05T14:30:13+01:00');
+
+        $invoice = new Invoice();
+
+        $seller = new Seller('Seller', '12345678');
+
+        $item1 = (new Item('Item A', 21))->setUnitPrice(10);
+        $item2 = (new Item('Item B', 7))->setUnitPrice(20);
+        $item3 = (new Item('Item C', 0))->setUnitPrice(30);
+
+        $pm1 = new PaymentMethod(30, PaymentMethod::TYPE_BANKNOTE);
+        $pm2 = new PaymentMethod(30, PaymentMethod::TYPE_CARD);
+
+        $invoice->setUuid('uuid-multi')
+            ->setNumber(5)
+            ->setEnu('en123en123')
+            ->setOperatorCode('op123op123')
+            ->setBusinessUnitCode('bu123bu123')
+            ->setSoftwareCode('sw123sw123')
+            ->setIssuerCode($this->issuerCode)
+            ->setIicSignature($this->iicSignature)
+            ->setSeller($seller)
+            ->addItem($item1)
+            ->addItem($item2)
+            ->addItem($item3)
+            ->addPaymentMethod($pm1)
+            ->addPaymentMethod($pm2);
+
+        $arr = $invoice->toArray();
+
+        $this->assertCount(3, $arr['items']);
+        $this->assertSame('Item A', $arr['items'][0]['name']);
+        $this->assertSame('Item B', $arr['items'][1]['name']);
+        $this->assertSame('Item C', $arr['items'][2]['name']);
+
+        $this->assertCount(2, $arr['payment_methods']);
+        $this->assertSame('BANKNOTE', $arr['payment_methods'][0]['type']);
+        $this->assertSame('CARD', $arr['payment_methods'][1]['type']);
     }
 
     protected function getInvoice()

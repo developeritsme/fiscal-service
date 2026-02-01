@@ -229,6 +229,17 @@ if ($response->failed()) {
 }
 ```
 
+### Array Serialization
+
+All models support `toArray()` for inspection, logging, or JSON encoding. Validation runs automatically before serialization.
+
+```php
+$arr = $invoice->toArray();
+// ['uuid' => '...', 'number' => 'bu001/1/2025/en001', 'seller' => [...], 'items' => [...], ...]
+
+json_encode($invoice->toArray());
+```
+
 ### Request Timeouts
 
 ```php

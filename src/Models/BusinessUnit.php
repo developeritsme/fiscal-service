@@ -103,6 +103,23 @@ class BusinessUnit extends Model
         }
     }
 
+    public function toArray(): array
+    {
+        $this->validate();
+
+        return [
+            'uuid'             => $this->uuid,
+            'unit_code'        => $this->unitCode,
+            'id_number'        => $this->idNumber,
+            'internal_id'      => $this->internalId,
+            'maintainer_code'  => $this->maintainerCode,
+            'software_code'    => $this->softwareCode,
+            'valid_from'       => ($this->validFrom ?? Carbon::now('Europe/Podgorica'))->format('Y-m-d'),
+            'valid_to'         => $this->validTo ? $this->validTo->format('Y-m-d') : null,
+            'type'             => $this->type,
+        ];
+    }
+
     public function toXML(): string
     {
         $writer = $this->getXmlWriter();

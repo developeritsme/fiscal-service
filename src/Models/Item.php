@@ -142,6 +142,23 @@ class Item extends Model
         }
     }
 
+    public function toArray(): array
+    {
+        return [
+            'name'                => $this->name,
+            'code'                => $this->code,
+            'unit'                => $this->unit,
+            'quantity'            => $this->quantity,
+            'unit_price'          => $this->unitPrice,
+            'vat_rate'            => $this->vatRate,
+            'rebate'              => $this->rebate,
+            'rebate_reduces_base' => $this->rebateReducesBase,
+            'base_unit_price'     => $this->baseUnitPrice(),
+            'total_price'         => $this->totalPrice(),
+            'total_base_price'    => $this->totalBasePrice(),
+        ];
+    }
+
     public function toXML(): string
     {
         $writer = $this->getXmlWriter();

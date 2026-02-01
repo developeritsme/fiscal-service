@@ -33,6 +33,14 @@ class SupplyPeriod extends Model
         }
     }
 
+    public function toArray(): array
+    {
+        return [
+            'start' => $this->start,
+            'end'   => $this->end ?? $this->start,
+        ];
+    }
+
     public function toXML(): string
     {
         $writer = $this->getXmlWriter();

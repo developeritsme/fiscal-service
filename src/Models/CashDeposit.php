@@ -80,6 +80,20 @@ class CashDeposit extends Model
         }
     }
 
+    public function toArray(): array
+    {
+        $this->validate();
+
+        return [
+            'uuid'       => $this->uuid,
+            'date'       => $this->date->toIso8601String(),
+            'id_number'  => $this->idNumber,
+            'operation'  => $this->operation,
+            'amount'     => $this->amount,
+            'tcr_code'   => $this->enu,
+        ];
+    }
+
     public function toXML(): string
     {
         $writer = $this->getXmlWriter();

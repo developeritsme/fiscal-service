@@ -39,6 +39,15 @@ class CorrectiveInvoice extends Model
         }
     }
 
+    public function toArray(): array
+    {
+        return [
+            'ikof'      => $this->ikof,
+            'date_time' => $this->dateTime->toIso8601String(),
+            'type'      => $this->type,
+        ];
+    }
+
     public function toXML(): string
     {
         $writer = $this->getXmlWriter();

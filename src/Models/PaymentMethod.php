@@ -49,6 +49,14 @@ class PaymentMethod extends Model
         $this->type = $type;
     }
 
+    public function toArray(): array
+    {
+        return [
+            'type'   => $this->type,
+            'amount' => $this->amount,
+        ];
+    }
+
     public function toXML(): string
     {
         $writer = $this->getXmlWriter();

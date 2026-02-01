@@ -448,6 +448,33 @@ class Invoice extends Model
 
     public function toArray(): array
     {
-        return [];
+        $this->validate();
+
+        return [
+            'uuid'               => $this->uuid,
+            'number'             => $this->number(),
+            'ordinal_number'     => $this->number,
+            'date_time'          => $this->getDateTime(),
+            'method'             => $this->method,
+            'type'               => $this->type,
+            'business_unit_code' => $this->businessUnitCode,
+            'operator_code'      => $this->operatorCode,
+            'tcr_code'           => $this->enu,
+            'software_code'      => $this->softwareCode,
+            'issuer_code'        => $this->issuerCode,
+            'iic_signature'      => $this->iicSignature,
+            'tax_period'         => $this->taxPeriod,
+            'totals'             => [
+                'total' => $this->totals('total'),
+                'base'  => $this->totals('base'),
+                'vat'   => $this->totals('vat'),
+            ],
+            'seller'             => $this->seller->toArray(),
+            'buyer'              => $this->buyer ? $this->buyer->toArray() : null,
+            'items'              => array_map(fn (Item $item) => $item->toArray(), $this->items->all()),
+            'payment_methods'    => array_map(fn (PaymentMethod $pm) => $pm->toArray(), $this->paymentMethods->all()),
+            'corrective_invoice' => $this->corrective ? $this->corrective->toArray() : null,
+            'supply_period'      => $this->supplyPeriod ? $this->supplyPeriod->toArray() : null,
+        ];
     }
 }
