@@ -3,8 +3,10 @@
 namespace DeveloperItsMe\FiscalService\Models;
 
 use Carbon\Carbon;
+use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
 use DeveloperItsMe\FiscalService\Traits\HasSoftwareCode;
 use DeveloperItsMe\FiscalService\Traits\HasUUID;
+use DeveloperItsMe\FiscalService\Validation\ValidationHelper;
 
 class BusinessUnit extends Model
 {
@@ -84,6 +86,21 @@ class BusinessUnit extends Model
         }
 
         return $this;
+    }
+
+    public function validate(): void
+    {
+        $errors = [];
+
+        ValidationHelper::requiredAndPattern($errors, $this->unitCode, ValidationHelper::REGISTRATION_CODE, 'unitCode', 'Unit code', 'registration code');
+        ValidationHelper::requiredAndPattern($errors, $this->idNumber, ValidationHelper::TIN, 'idNumber', 'ID number', 'TIN');
+        ValidationHelper::required($errors, $this->internalId, 'internalId', 'Internal ID');
+        ValidationHelper::pattern($errors, $this->maintainerCode, ValidationHelper::REGISTRATION_CODE, 'maintainerCode', 'Maintainer code', 'registration code');
+        ValidationHelper::pattern($errors, $this->softwareCode, ValidationHelper::REGISTRATION_CODE, 'softwareCode', 'Software code', 'registration code');
+
+        if (!empty($errors)) {
+            throw new ValidationException($errors);
+        }
     }
 
     public function toXML(): string

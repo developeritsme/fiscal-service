@@ -2,9 +2,11 @@
 
 namespace DeveloperItsMe\FiscalService\Models;
 
+use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
 use DeveloperItsMe\FiscalService\Traits\HasDecimals;
 use DeveloperItsMe\FiscalService\Traits\HasXmlWriter;
 use DeveloperItsMe\FiscalService\Traits\Vatable;
+use DeveloperItsMe\FiscalService\Validation\ValidationHelper;
 
 class Item extends Model
 {
@@ -96,6 +98,19 @@ class Item extends Model
     public function totalBasePrice(): float
     {
         return $this->quantity * $this->baseUnitPrice();
+    }
+
+    public function validate(): void
+    {
+        $errors = [];
+
+        ValidationHelper::required($errors, $this->name, 'name', 'Name');
+        ValidationHelper::required($errors, $this->unitPrice, 'unitPrice', 'Unit price');
+        ValidationHelper::required($errors, $this->vatRate, 'vatRate', 'VAT rate');
+
+        if (!empty($errors)) {
+            throw new ValidationException($errors);
+        }
     }
 
     public function toXML(): string

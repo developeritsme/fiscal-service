@@ -3,7 +3,9 @@
 namespace DeveloperItsMe\FiscalService\Models;
 
 use Carbon\Carbon;
+use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
 use DeveloperItsMe\FiscalService\Traits\HasUUID;
+use DeveloperItsMe\FiscalService\Validation\ValidationHelper;
 
 class CashDeposit extends Model
 {
@@ -62,6 +64,20 @@ class CashDeposit extends Model
         $this->enu = $enu;
 
         return $this;
+    }
+
+    public function validate(): void
+    {
+        $errors = [];
+
+        ValidationHelper::required($errors, $this->date, 'date', 'Date');
+        ValidationHelper::requiredAndPattern($errors, $this->idNumber, ValidationHelper::TIN, 'idNumber', 'ID number', 'TIN');
+        ValidationHelper::required($errors, $this->amount, 'amount', 'Amount');
+        ValidationHelper::requiredAndPattern($errors, $this->enu, ValidationHelper::REGISTRATION_CODE, 'enu', 'TCR code (ENU)', 'registration code');
+
+        if (!empty($errors)) {
+            throw new ValidationException($errors);
+        }
     }
 
     public function toXML(): string

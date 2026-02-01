@@ -3,9 +3,11 @@
 namespace DeveloperItsMe\FiscalService\Models;
 
 use Carbon\Carbon;
+use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
 use DeveloperItsMe\FiscalService\Traits\HasDecimals;
 use DeveloperItsMe\FiscalService\Traits\HasSoftwareCode;
 use DeveloperItsMe\FiscalService\Traits\HasUUID;
+use DeveloperItsMe\FiscalService\Validation\ValidationHelper;
 
 class Invoice extends Model
 {
@@ -228,6 +230,55 @@ class Invoice extends Model
     public function number(): string
     {
         return implode('/', [$this->businessUnitCode, $this->number, $this->dateTime->year, $this->enu]);
+    }
+
+    public function validate(): void
+    {
+        $errors = [];
+
+        ValidationHelper::requiredAndPattern($errors, $this->enu, ValidationHelper::REGISTRATION_CODE, 'enu', 'TCR code (ENU)', 'registration code');
+        ValidationHelper::requiredAndPattern($errors, $this->operatorCode, ValidationHelper::REGISTRATION_CODE, 'operatorCode', 'Operator code', 'registration code');
+        ValidationHelper::requiredAndPattern($errors, $this->businessUnitCode, ValidationHelper::REGISTRATION_CODE, 'businessUnitCode', 'Business unit code', 'registration code');
+        ValidationHelper::requiredAndPattern($errors, $this->softwareCode, ValidationHelper::REGISTRATION_CODE, 'softwareCode', 'Software code', 'registration code');
+        ValidationHelper::required($errors, $this->number, 'number', 'Invoice number');
+        ValidationHelper::positive($errors, $this->number, 'number', 'Invoice number');
+        ValidationHelper::required($errors, $this->seller, 'seller', 'Seller');
+        ValidationHelper::notEmpty($errors, $this->items->all(), 'items', 'Items');
+        ValidationHelper::notEmpty($errors, $this->paymentMethods->all(), 'paymentMethods', 'Payment methods');
+        ValidationHelper::pattern($errors, $this->taxPeriod, ValidationHelper::TAX_PERIOD, 'taxPeriod', 'Tax period', 'tax period');
+
+        $this->validateChild($errors, $this->seller, 'seller');
+        $this->validateChild($errors, $this->buyer, 'buyer');
+
+        foreach ($this->items->all() as $index => $item) {
+            $this->validateChild($errors, $item, "items[{$index}]");
+        }
+
+        $this->validateChild($errors, $this->corrective, 'corrective');
+        $this->validateChild($errors, $this->supplyPeriod, 'supplyPeriod');
+
+        if (!empty($errors)) {
+            throw new ValidationException($errors);
+        }
+    }
+
+    private function validateChild(array &$errors, $child, string $prefix): void
+    {
+        if ($child === null) {
+            return;
+        }
+
+        if (!method_exists($child, 'validate')) {
+            return;
+        }
+
+        try {
+            $child->validate();
+        } catch (ValidationException $e) {
+            foreach ($e->getErrors() as $field => $messages) {
+                $errors["{$prefix}.{$field}"] = $messages;
+            }
+        }
     }
 
     public function toXML(): string

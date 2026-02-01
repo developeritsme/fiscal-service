@@ -2,7 +2,9 @@
 
 namespace DeveloperItsMe\FiscalService\Models;
 
+use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
 use DeveloperItsMe\FiscalService\Traits\Vatable;
+use DeveloperItsMe\FiscalService\Validation\ValidationHelper;
 
 abstract class Business extends Model
 {
@@ -97,6 +99,22 @@ abstract class Business extends Model
         $writer->endElement();
 
         return $writer->outputMemory();
+    }
+
+    public function validate(): void
+    {
+        $errors = [];
+
+        ValidationHelper::required($errors, $this->name, 'name', 'Name');
+        ValidationHelper::required($errors, $this->idNumber, 'idNumber', 'ID number');
+
+        if ($this->country === Countries::ME) {
+            ValidationHelper::pattern($errors, $this->idNumber, ValidationHelper::TIN, 'idNumber', 'ID number', 'TIN');
+        }
+
+        if (!empty($errors)) {
+            throw new ValidationException($errors);
+        }
     }
 
     abstract protected function getXmlNodeName(): string;

@@ -2,6 +2,9 @@
 
 namespace DeveloperItsMe\FiscalService\Models;
 
+use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
+use DeveloperItsMe\FiscalService\Validation\ValidationHelper;
+
 class SupplyPeriod extends Model
 {
     /** @var string */
@@ -16,6 +19,18 @@ class SupplyPeriod extends Model
     {
         $this->start = $start;
         $this->end = $end;
+    }
+
+    public function validate(): void
+    {
+        $errors = [];
+
+        ValidationHelper::requiredAndPattern($errors, $this->start, ValidationHelper::DATE, 'start', 'Start date', 'date');
+        ValidationHelper::pattern($errors, $this->end, ValidationHelper::DATE, 'end', 'End date', 'date');
+
+        if (!empty($errors)) {
+            throw new ValidationException($errors);
+        }
     }
 
     public function toXML(): string

@@ -54,6 +54,10 @@ class Fiscal
     {
         $model = $this->request->model();
 
+        if (method_exists($model, 'validate')) {
+            $model->validate();
+        }
+
         if (method_exists($model, 'generateIIC')) {
             $model->generateIIC($this->certificate()->getPrivateKey());
         }

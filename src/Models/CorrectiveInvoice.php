@@ -3,6 +3,8 @@
 namespace DeveloperItsMe\FiscalService\Models;
 
 use Carbon\Carbon;
+use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
+use DeveloperItsMe\FiscalService\Validation\ValidationHelper;
 
 class CorrectiveInvoice extends Model
 {
@@ -23,6 +25,18 @@ class CorrectiveInvoice extends Model
         $this->ikof = $ikof;
         $this->dateTime = Carbon::parse($issueDateTime);
         $this->type = $type;
+    }
+
+    public function validate(): void
+    {
+        $errors = [];
+
+        ValidationHelper::requiredAndPattern($errors, $this->ikof, ValidationHelper::HEX_32, 'ikof', 'IIC reference (IKOF)', 'HEX-32');
+        ValidationHelper::required($errors, $this->dateTime, 'dateTime', 'Issue date/time');
+
+        if (!empty($errors)) {
+            throw new ValidationException($errors);
+        }
     }
 
     public function toXML(): string
