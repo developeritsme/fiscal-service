@@ -32,6 +32,12 @@ class Item extends Model
     /** @var float */
     protected $vatRate;
 
+    /** @var float */
+    protected $rebate = 0;
+
+    /** @var bool */
+    protected $rebateReducesBase = true;
+
     public function __construct($name = null, $vatRate = null)
     {
         $this->setName($name)
@@ -66,9 +72,17 @@ class Item extends Model
         return $this;
     }
 
-    public function setUnitPrice($unitPrice, $vatAndDiscountIncluded = true, $rebate = 0): self
+    public function setUnitPrice($unitPrice): self
     {
         $this->unitPrice = $unitPrice;
+
+        return $this;
+    }
+
+    public function setRebate($percent, $reducesBasePrice = true): self
+    {
+        $this->rebate = $percent;
+        $this->rebateReducesBase = $reducesBasePrice;
 
         return $this;
     }
@@ -87,12 +101,27 @@ class Item extends Model
 
     public function baseUnitPrice(): float
     {
-        return $this->unitPrice / (1 + $this->vatRate / 100);
+        $base = $this->unitPrice / (1 + $this->vatRate / 100);
+
+        if ($this->rebateReducesBase) {
+            return $base * (1 - $this->rebate / 100);
+        }
+
+        return $base;
+    }
+
+    public function effectiveUnitPrice(): float
+    {
+        if ($this->rebateReducesBase) {
+            return $this->baseUnitPrice() * (1 + $this->vatRate / 100);
+        }
+
+        return $this->unitPrice * (1 - $this->rebate / 100);
     }
 
     public function totalPrice(): float
     {
-        return $this->quantity * $this->unitPrice;
+        return $this->quantity * $this->effectiveUnitPrice();
     }
 
     public function totalBasePrice(): float
@@ -124,13 +153,12 @@ class Item extends Model
         $writer->writeAttribute('PA', $this->formatNumber($this->totalPrice(), $this->decimals));
         $writer->writeAttribute('PB', $this->formatNumber($this->totalBasePrice(), $this->decimals));
         $writer->writeAttribute('Q', $this->formatNumber($this->quantity, 2));
-        // TODO: Make rebate configurable via setRebate($percent, $reducesBasePrice)
-        $writer->writeAttribute('R', '0');   // Rebate percentage
-        $writer->writeAttribute('RR', 'true'); // Rebate reduces base price
+        $writer->writeAttribute('R', $this->formatNumber($this->rebate, $this->decimals));
+        $writer->writeAttribute('RR', $this->rebateReducesBase ? 'true' : 'false');
         $writer->writeAttribute('U', $this->unit);
 
         $writer->writeAttribute('UPB', $this->formatNumber($this->baseUnitPrice(), $this->decimals));
-        $writer->writeAttribute('UPA', $this->formatNumber($this->unitPrice, $this->decimals));
+        $writer->writeAttribute('UPA', $this->formatNumber($this->effectiveUnitPrice(), $this->decimals));
 
         if ($this->getIsVat()) {
             $writer->writeAttribute('VA', $this->formatNumber($this->totalPrice() - $this->totalBasePrice(), $this->decimals));

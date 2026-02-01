@@ -3,8 +3,8 @@
 <PayMethod Amt="24.00" Type="CARD"/>
 </PayMethods>
 <Seller Address="ADRESA PRODAVAOCA" Country="MNE" IDNum="ID BROJ PRODAVAOCA" IDType="TIN" Name="IME PREZIME PRODAVAOCA" Town="GRAD PRODAVAOCA"/>
-<Items><I C="501234567890" N="NAZIV PROIZVODA" PA="20.00" PB="16.00" Q="1.00" R="0" RR="true" U="unit" UPB="16.00" UPA="20.00" VA="4.00" VR="25.00"/>
-<I N="NAZIV PROIZVODA 2" PA="24.00" PB="20.00" Q="2.00" R="0" RR="true" U="unit" UPB="10.00" UPA="12.00" VA="4.00" VR="20.00"/>
+<Items><I C="501234567890" N="NAZIV PROIZVODA" PA="20.00" PB="16.00" Q="1.00" R="0.00" RR="true" U="unit" UPB="16.00" UPA="20.00" VA="4.00" VR="25.00"/>
+<I N="NAZIV PROIZVODA 2" PA="24.00" PB="20.00" Q="2.00" R="0.00" RR="true" U="unit" UPB="10.00" UPA="12.00" VA="4.00" VR="20.00"/>
 </Items>
 <SameTaxes>
     <SameTax NumOfItems="1" PriceBefVAT="20.00" VATAmt="4.00" VATRate="20.00"/>
