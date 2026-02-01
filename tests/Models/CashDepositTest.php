@@ -45,4 +45,59 @@ class CashDepositTest extends TestCase
         $this->assertEquals(2000.00, $arr['amount']);
         $this->assertSame('en123en123', $arr['tcr_code']);
     }
+
+    /** @test */
+    public function setSubsequentDeliveryType_is_fluent()
+    {
+        $cashDeposit = new CashDeposit();
+
+        $this->assertSame($cashDeposit, $cashDeposit->setSubsequentDeliveryType('NOINTERNET'));
+    }
+
+    /** @test */
+    public function setSubsequentDeliveryType_ignores_invalid_value()
+    {
+        $cashDeposit = new CashDeposit();
+        $cashDeposit->setSubsequentDeliveryType('INVALID');
+
+        $reflection = new \ReflectionProperty(CashDeposit::class, 'subsequentDeliveryType');
+        $reflection->setAccessible(true);
+
+        $this->assertNull($reflection->getValue($cashDeposit));
+    }
+
+    /** @test */
+    public function toArray_includes_subseq_deliv_type()
+    {
+        Carbon::setTestNow('2019-12-05T14:35:00+01:00');
+
+        $cashDeposit = new CashDeposit();
+        $cashDeposit->setUuid('3389b9c4-bb24-4673-b952-456e451cd3c3')
+            ->setDate('2019-12-05T14:35:00+01:00')
+            ->setIdNumber('12345678')
+            ->setAmount(2000.00)
+            ->setEnu('en123en123')
+            ->setSubsequentDeliveryType('SERVICE');
+
+        $arr = $cashDeposit->toArray();
+
+        $this->assertSame('SERVICE', $arr['subseq_deliv_type']);
+    }
+
+    /** @test */
+    public function toArray_has_null_subseq_deliv_type_when_absent()
+    {
+        Carbon::setTestNow('2019-12-05T14:35:00+01:00');
+
+        $cashDeposit = new CashDeposit();
+        $cashDeposit->setUuid('3389b9c4-bb24-4673-b952-456e451cd3c3')
+            ->setDate('2019-12-05T14:35:00+01:00')
+            ->setIdNumber('12345678')
+            ->setAmount(2000.00)
+            ->setEnu('en123en123');
+
+        $arr = $cashDeposit->toArray();
+
+        $this->assertNull($arr['subseq_deliv_type']);
+    }
 }

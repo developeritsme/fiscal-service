@@ -4,12 +4,14 @@ namespace DeveloperItsMe\FiscalService\Models;
 
 use Carbon\Carbon;
 use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
+use DeveloperItsMe\FiscalService\Traits\HasSubsequentDelivery;
 use DeveloperItsMe\FiscalService\Traits\HasUUID;
 use DeveloperItsMe\FiscalService\Validation\ValidationHelper;
 
 class CashDeposit extends Model
 {
     use HasUUID;
+    use HasSubsequentDelivery;
 
     public const OPERATION_INITIAL = 'INITIAL';
     public const OPERATION_WITHDRAW = 'WITHDRAW';
@@ -85,12 +87,13 @@ class CashDeposit extends Model
         $this->validate();
 
         return [
-            'uuid'       => $this->uuid,
-            'date'       => $this->date->toIso8601String(),
-            'id_number'  => $this->idNumber,
-            'operation'  => $this->operation,
-            'amount'     => $this->amount,
-            'tcr_code'   => $this->enu,
+            'uuid'              => $this->uuid,
+            'date'              => $this->date->toIso8601String(),
+            'id_number'         => $this->idNumber,
+            'operation'         => $this->operation,
+            'amount'            => $this->amount,
+            'tcr_code'          => $this->enu,
+            'subseq_deliv_type' => $this->subsequentDeliveryType,
         ];
     }
 
@@ -102,6 +105,9 @@ class CashDeposit extends Model
         $writer->startElementNs(null, 'Header', null);
         $writer->writeAttribute('SendDateTime', Carbon::now()->toIso8601String());
         $writer->writeAttribute('UUID', $this->uuid ?? $this->generateUUID());
+        if ($this->subsequentDeliveryType) {
+            $writer->writeAttribute('SubseqDelivType', $this->subsequentDeliveryType);
+        }
         $writer->endElement();
 
         $writer->startElementNs(null, 'CashDeposit', null);

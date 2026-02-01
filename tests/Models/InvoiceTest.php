@@ -397,6 +397,101 @@ class InvoiceTest extends TestCase
     }
 
     /** @test */
+    public function setSubsequentDeliveryType_is_fluent()
+    {
+        $invoice = new Invoice();
+
+        $this->assertSame($invoice, $invoice->setSubsequentDeliveryType('NOINTERNET'));
+    }
+
+    /** @test */
+    public function setSubsequentDeliveryType_ignores_invalid_value()
+    {
+        $invoice = new Invoice();
+        $invoice->setSubsequentDeliveryType('INVALID');
+
+        $reflection = new \ReflectionProperty(Invoice::class, 'subsequentDeliveryType');
+        $reflection->setAccessible(true);
+
+        $this->assertNull($reflection->getValue($invoice));
+    }
+
+    /** @test */
+    public function setSubsequentDeliveryType_accepts_all_valid_values()
+    {
+        $values = ['NOINTERNET', 'BOUNDBOOK', 'SERVICE', 'TECHNICALERROR', 'BUSINESSNEEDS'];
+
+        foreach ($values as $value) {
+            $invoice = new Invoice();
+            $invoice->setSubsequentDeliveryType($value);
+
+            $reflection = new \ReflectionProperty(Invoice::class, 'subsequentDeliveryType');
+            $reflection->setAccessible(true);
+
+            $this->assertSame($value, $reflection->getValue($invoice));
+        }
+    }
+
+    /** @test */
+    public function toArray_includes_subseq_deliv_type()
+    {
+        Carbon::setTestNow('2019-12-05T14:30:13+01:00');
+
+        $invoice = new Invoice();
+
+        $seller = new Seller('Seller', '12345678');
+        $item = new Item('Item', 21);
+        $item->setUnitPrice(50);
+        $pm = new PaymentMethod(50);
+
+        $invoice->setUuid('uuid-test')
+            ->setNumber(1)
+            ->setEnu('en123en123')
+            ->setOperatorCode('op123op123')
+            ->setBusinessUnitCode('bu123bu123')
+            ->setSoftwareCode('sw123sw123')
+            ->setIssuerCode($this->issuerCode)
+            ->setIicSignature($this->iicSignature)
+            ->setSeller($seller)
+            ->addItem($item)
+            ->addPaymentMethod($pm)
+            ->setSubsequentDeliveryType('NOINTERNET');
+
+        $arr = $invoice->toArray();
+
+        $this->assertSame('NOINTERNET', $arr['subseq_deliv_type']);
+    }
+
+    /** @test */
+    public function toArray_has_null_subseq_deliv_type_when_absent()
+    {
+        Carbon::setTestNow('2019-12-05T14:30:13+01:00');
+
+        $invoice = new Invoice();
+
+        $seller = new Seller('Seller', '12345678');
+        $item = new Item('Item', 21);
+        $item->setUnitPrice(50);
+        $pm = new PaymentMethod(50);
+
+        $invoice->setUuid('uuid-test')
+            ->setNumber(1)
+            ->setEnu('en123en123')
+            ->setOperatorCode('op123op123')
+            ->setBusinessUnitCode('bu123bu123')
+            ->setSoftwareCode('sw123sw123')
+            ->setIssuerCode($this->issuerCode)
+            ->setIicSignature($this->iicSignature)
+            ->setSeller($seller)
+            ->addItem($item)
+            ->addPaymentMethod($pm);
+
+        $arr = $invoice->toArray();
+
+        $this->assertNull($arr['subseq_deliv_type']);
+    }
+
+    /** @test */
     public function setPayDeadline_is_fluent()
     {
         $invoice = new Invoice();

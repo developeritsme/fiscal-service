@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
 use DeveloperItsMe\FiscalService\Traits\HasDecimals;
 use DeveloperItsMe\FiscalService\Traits\HasSoftwareCode;
+use DeveloperItsMe\FiscalService\Traits\HasSubsequentDelivery;
 use DeveloperItsMe\FiscalService\Traits\HasUUID;
 use DeveloperItsMe\FiscalService\Validation\ValidationHelper;
 
@@ -14,6 +15,7 @@ class Invoice extends Model
     use HasDecimals;
     use HasUUID;
     use HasSoftwareCode;
+    use HasSubsequentDelivery;
 
     public const TYPE_CASH = 'CASH';
     public const TYPE_NONCASH = 'NONCASH';
@@ -341,6 +343,9 @@ class Invoice extends Model
         $writer->startElementNs(null, 'Header', null);
         $writer->writeAttribute('SendDateTime', $this->dateTime->toIso8601String());
         $writer->writeAttribute('UUID', $this->uuid ?? $this->generateUUID());
+        if ($this->subsequentDeliveryType) {
+            $writer->writeAttribute('SubseqDelivType', $this->subsequentDeliveryType);
+        }
         $writer->endElement();
 
         $writer->startElementNs(null, 'Invoice', null);
@@ -512,6 +517,7 @@ class Invoice extends Model
             'pay_deadline'       => $this->payDeadline,
             'bank_acc_num'       => $this->bankAccNum,
             'note'               => $this->note,
+            'subseq_deliv_type'  => $this->subsequentDeliveryType,
             'totals'             => [
                 'total' => $this->totals('total'),
                 'base'  => $this->totals('base'),
