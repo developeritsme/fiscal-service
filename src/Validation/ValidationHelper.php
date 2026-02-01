@@ -49,4 +49,15 @@ class ValidationHelper
             $errors[$field][] = "{$label} must not be empty.";
         }
     }
+
+    public static function maxLength(array &$errors, $value, int $max, string $field, string $label): void
+    {
+        if ($value === null || $value === '') {
+            return;
+        }
+
+        if (mb_strlen($value) > $max) {
+            $errors[$field][] = "{$label} must not exceed {$max} characters.";
+        }
+    }
 }

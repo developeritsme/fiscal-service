@@ -396,6 +396,95 @@ class InvoiceTest extends TestCase
         $this->assertSame('CARD', $arr['payment_methods'][1]['type']);
     }
 
+    /** @test */
+    public function setPayDeadline_is_fluent()
+    {
+        $invoice = new Invoice();
+
+        $this->assertSame($invoice, $invoice->setPayDeadline('2024-12-31'));
+    }
+
+    /** @test */
+    public function setBankAccNum_is_fluent()
+    {
+        $invoice = new Invoice();
+
+        $this->assertSame($invoice, $invoice->setBankAccNum('550-12332-44'));
+    }
+
+    /** @test */
+    public function setNote_is_fluent()
+    {
+        $invoice = new Invoice();
+
+        $this->assertSame($invoice, $invoice->setNote('Test note'));
+    }
+
+    /** @test */
+    public function toArray_includes_pay_deadline_bank_acc_num_note()
+    {
+        Carbon::setTestNow('2019-12-05T14:30:13+01:00');
+
+        $invoice = new Invoice();
+
+        $seller = new Seller('Seller', '12345678');
+        $item = new Item('Item', 21);
+        $item->setUnitPrice(50);
+        $pm = new PaymentMethod(50);
+
+        $invoice->setUuid('uuid-test')
+            ->setNumber(1)
+            ->setEnu('en123en123')
+            ->setOperatorCode('op123op123')
+            ->setBusinessUnitCode('bu123bu123')
+            ->setSoftwareCode('sw123sw123')
+            ->setIssuerCode($this->issuerCode)
+            ->setIicSignature($this->iicSignature)
+            ->setSeller($seller)
+            ->addItem($item)
+            ->addPaymentMethod($pm)
+            ->setPayDeadline('2024-12-31')
+            ->setBankAccNum('550-12332-44')
+            ->setNote('Please pay within 30 days');
+
+        $arr = $invoice->toArray();
+
+        $this->assertSame('2024-12-31', $arr['pay_deadline']);
+        $this->assertSame('550-12332-44', $arr['bank_acc_num']);
+        $this->assertSame('Please pay within 30 days', $arr['note']);
+    }
+
+    /** @test */
+    public function toArray_has_null_for_new_optional_fields_when_absent()
+    {
+        Carbon::setTestNow('2019-12-05T14:30:13+01:00');
+
+        $invoice = new Invoice();
+
+        $seller = new Seller('Seller', '12345678');
+        $item = new Item('Item', 21);
+        $item->setUnitPrice(50);
+        $pm = new PaymentMethod(50);
+
+        $invoice->setUuid('uuid-test')
+            ->setNumber(1)
+            ->setEnu('en123en123')
+            ->setOperatorCode('op123op123')
+            ->setBusinessUnitCode('bu123bu123')
+            ->setSoftwareCode('sw123sw123')
+            ->setIssuerCode($this->issuerCode)
+            ->setIicSignature($this->iicSignature)
+            ->setSeller($seller)
+            ->addItem($item)
+            ->addPaymentMethod($pm);
+
+        $arr = $invoice->toArray();
+
+        $this->assertNull($arr['pay_deadline']);
+        $this->assertNull($arr['bank_acc_num']);
+        $this->assertNull($arr['note']);
+    }
+
     protected function getInvoice()
     {
         $invoice = new Invoice();

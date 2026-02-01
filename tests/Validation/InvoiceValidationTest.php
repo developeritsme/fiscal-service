@@ -250,6 +250,97 @@ class InvoiceValidationTest extends TestCase
         }
     }
 
+    /** @test */
+    public function it_validates_pay_deadline_date_pattern()
+    {
+        $invoice = $this->buildValidInvoice();
+        $invoice->setPayDeadline('31-12-2024');
+
+        try {
+            $invoice->validate();
+            $this->fail('Expected ValidationException was not thrown');
+        } catch (ValidationException $e) {
+            $errors = $e->getErrors();
+            $this->assertArrayHasKey('payDeadline', $errors);
+            $this->assertStringContainsString('date', $errors['payDeadline'][0]);
+        }
+    }
+
+    /** @test */
+    public function it_allows_valid_pay_deadline()
+    {
+        $invoice = $this->buildValidInvoice();
+        $invoice->setPayDeadline('2024-12-31');
+
+        $invoice->validate();
+
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_allows_null_pay_deadline()
+    {
+        $invoice = $this->buildValidInvoice();
+
+        $invoice->validate();
+
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_validates_bank_acc_num_max_length()
+    {
+        $invoice = $this->buildValidInvoice();
+        $invoice->setBankAccNum(str_repeat('a', 51));
+
+        try {
+            $invoice->validate();
+            $this->fail('Expected ValidationException was not thrown');
+        } catch (ValidationException $e) {
+            $errors = $e->getErrors();
+            $this->assertArrayHasKey('bankAccNum', $errors);
+            $this->assertStringContainsString('50', $errors['bankAccNum'][0]);
+        }
+    }
+
+    /** @test */
+    public function it_allows_valid_bank_acc_num()
+    {
+        $invoice = $this->buildValidInvoice();
+        $invoice->setBankAccNum('550-12332-44');
+
+        $invoice->validate();
+
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_validates_note_max_length()
+    {
+        $invoice = $this->buildValidInvoice();
+        $invoice->setNote(str_repeat('a', 201));
+
+        try {
+            $invoice->validate();
+            $this->fail('Expected ValidationException was not thrown');
+        } catch (ValidationException $e) {
+            $errors = $e->getErrors();
+            $this->assertArrayHasKey('note', $errors);
+            $this->assertStringContainsString('200', $errors['note'][0]);
+        }
+    }
+
+    /** @test */
+    public function it_allows_valid_note()
+    {
+        $invoice = $this->buildValidInvoice();
+        $invoice->setNote('Please remit payment within 30 days.');
+
+        $invoice->validate();
+
+        $this->assertTrue(true);
+    }
+
     private function buildValidInvoice(): Invoice
     {
         $seller = new Seller('Test Seller', '12345678');

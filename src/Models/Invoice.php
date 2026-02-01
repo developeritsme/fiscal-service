@@ -86,6 +86,15 @@ class Invoice extends Model
     /** @var string */
     protected $taxPeriod;
 
+    /** @var string|null */
+    protected $payDeadline;
+
+    /** @var string|null */
+    protected $bankAccNum;
+
+    /** @var string|null */
+    protected $note;
+
     public function __construct($itemsDecimals = 2)
     {
         $this->paymentMethods = new PaymentMethods();
@@ -233,6 +242,27 @@ class Invoice extends Model
         return $this;
     }
 
+    public function setPayDeadline($date): self
+    {
+        $this->payDeadline = $date;
+
+        return $this;
+    }
+
+    public function setBankAccNum($account): self
+    {
+        $this->bankAccNum = $account;
+
+        return $this;
+    }
+
+    public function setNote($note): self
+    {
+        $this->note = $note;
+
+        return $this;
+    }
+
     public function setSupplyPeriod($start, $end = null): self
     {
         unset($this->supplyPeriod);
@@ -261,6 +291,9 @@ class Invoice extends Model
         ValidationHelper::notEmpty($errors, $this->items->all(), 'items', 'Items');
         ValidationHelper::notEmpty($errors, $this->paymentMethods->all(), 'paymentMethods', 'Payment methods');
         ValidationHelper::pattern($errors, $this->taxPeriod, ValidationHelper::TAX_PERIOD, 'taxPeriod', 'Tax period', 'tax period');
+        ValidationHelper::pattern($errors, $this->payDeadline, ValidationHelper::DATE, 'payDeadline', 'Payment deadline', 'date');
+        ValidationHelper::maxLength($errors, $this->bankAccNum, 50, 'bankAccNum', 'Bank account number');
+        ValidationHelper::maxLength($errors, $this->note, 200, 'note', 'Note');
 
         $this->validateChild($errors, $this->seller, 'seller');
         $this->validateChild($errors, $this->buyer, 'buyer');
@@ -338,6 +371,18 @@ class Invoice extends Model
         // Tax period
         if ($this->taxPeriod) {
             $writer->writeAttribute('TaxPeriod', $this->taxPeriod);
+        }
+
+        if ($this->payDeadline) {
+            $writer->writeAttribute('PayDeadline', $this->payDeadline);
+        }
+
+        if ($this->bankAccNum) {
+            $writer->writeAttribute('BankAccNum', $this->bankAccNum);
+        }
+
+        if ($this->note) {
+            $writer->writeAttribute('Note', $this->note);
         }
 
         // Supply period
@@ -464,6 +509,9 @@ class Invoice extends Model
             'issuer_code'        => $this->issuerCode,
             'iic_signature'      => $this->iicSignature,
             'tax_period'         => $this->taxPeriod,
+            'pay_deadline'       => $this->payDeadline,
+            'bank_acc_num'       => $this->bankAccNum,
+            'note'               => $this->note,
             'totals'             => [
                 'total' => $this->totals('total'),
                 'base'  => $this->totals('base'),

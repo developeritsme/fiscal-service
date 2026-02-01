@@ -242,4 +242,41 @@ class ValidationHelperTest extends TestCase
 
         $this->assertEmpty($errors);
     }
+
+    /** @test */
+    public function maxLength_adds_error_when_exceeded()
+    {
+        $errors = [];
+        ValidationHelper::maxLength($errors, str_repeat('a', 51), 50, 'field', 'Field');
+
+        $this->assertArrayHasKey('field', $errors);
+        $this->assertSame('Field must not exceed 50 characters.', $errors['field'][0]);
+    }
+
+    /** @test */
+    public function maxLength_does_not_add_error_when_within_limit()
+    {
+        $errors = [];
+        ValidationHelper::maxLength($errors, str_repeat('a', 50), 50, 'field', 'Field');
+
+        $this->assertEmpty($errors);
+    }
+
+    /** @test */
+    public function maxLength_skips_null()
+    {
+        $errors = [];
+        ValidationHelper::maxLength($errors, null, 50, 'field', 'Field');
+
+        $this->assertEmpty($errors);
+    }
+
+    /** @test */
+    public function maxLength_skips_empty_string()
+    {
+        $errors = [];
+        ValidationHelper::maxLength($errors, '', 50, 'field', 'Field');
+
+        $this->assertEmpty($errors);
+    }
 }
