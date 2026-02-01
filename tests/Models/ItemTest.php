@@ -2,6 +2,7 @@
 
 namespace Tests\Models;
 
+use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
 use DeveloperItsMe\FiscalService\Models\Item;
 use PHPUnit\Framework\TestCase;
 
@@ -144,5 +145,113 @@ class ItemTest extends TestCase
 
         $this->assertStringContainsString('R="0.00"', $xml);
         $this->assertStringContainsString('RR="true"', $xml);
+    }
+
+    /** @test */
+    public function setExemptFromVAT_sets_reason()
+    {
+        $item = (new Item('Product', 0))->setUnitPrice(100);
+        $item->setExemptFromVAT(Item::EXEMPT_CL26);
+
+        $this->assertSame('VAT_CL26', $item->getExemptFromVAT());
+    }
+
+    /** @test */
+    public function setExemptFromVAT_is_fluent()
+    {
+        $item = new Item('Product', 0);
+        $result = $item->setExemptFromVAT(Item::EXEMPT_CL26);
+
+        $this->assertSame($item, $result);
+    }
+
+    /** @test */
+    public function setExemptFromVAT_ignores_invalid_value()
+    {
+        $item = (new Item('Product', 0))->setUnitPrice(100);
+        $item->setExemptFromVAT('INVALID_VALUE');
+
+        $this->assertNull($item->getExemptFromVAT());
+    }
+
+    /** @test */
+    public function setExemptFromVAT_accepts_null_to_clear()
+    {
+        $item = (new Item('Product', 0))->setUnitPrice(100);
+        $item->setExemptFromVAT(Item::EXEMPT_CL26);
+        $item->setExemptFromVAT(null);
+
+        $this->assertNull($item->getExemptFromVAT());
+    }
+
+    /** @test */
+    public function xml_output_includes_exempt_attribute_for_vat_item()
+    {
+        $item = (new Item('Product', 0))
+            ->setIsVat(true)
+            ->setUnitPrice(100)
+            ->setExemptFromVAT(Item::EXEMPT_CL26);
+
+        $xml = $item->toXML();
+
+        $this->assertStringContainsString('EX="VAT_CL26"', $xml);
+    }
+
+    /** @test */
+    public function xml_output_omits_exempt_when_not_set()
+    {
+        $item = (new Item('Product', 21))
+            ->setIsVat(true)
+            ->setUnitPrice(121);
+
+        $xml = $item->toXML();
+
+        $this->assertStringNotContainsString('EX=', $xml);
+    }
+
+    /** @test */
+    public function validate_fails_when_exempt_and_vat_rate_positive()
+    {
+        $item = (new Item('Product', 21))
+            ->setUnitPrice(121)
+            ->setExemptFromVAT(Item::EXEMPT_CL26);
+
+        $this->expectException(ValidationException::class);
+        $item->validate();
+    }
+
+    /** @test */
+    public function validate_passes_when_exempt_and_vat_rate_zero()
+    {
+        $item = (new Item('Product', 0))
+            ->setUnitPrice(100)
+            ->setExemptFromVAT(Item::EXEMPT_CL26);
+
+        $item->validate();
+        $this->addToAssertionCount(1);
+    }
+
+    /** @test */
+    public function toArray_includes_exempt_from_vat()
+    {
+        $item = (new Item('Product', 0))
+            ->setUnitPrice(100)
+            ->setExemptFromVAT(Item::EXEMPT_CL26);
+
+        $array = $item->toArray();
+
+        $this->assertSame('VAT_CL26', $array['exempt_from_vat']);
+    }
+
+    /** @test */
+    public function toArray_includes_null_exempt_from_vat_when_not_set()
+    {
+        $item = (new Item('Product', 21))
+            ->setUnitPrice(121);
+
+        $array = $item->toArray();
+
+        $this->assertArrayHasKey('exempt_from_vat', $array);
+        $this->assertNull($array['exempt_from_vat']);
     }
 }

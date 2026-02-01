@@ -136,4 +136,60 @@ class SameTaxesTest extends TestCase
 
         $this->assertSame($first, $second);
     }
+
+    /** @test */
+    public function exempt_items_produce_group_with_exempt_attribute()
+    {
+        $item = (new Item('Exempt Product', 0))
+            ->setUnitPrice(100)
+            ->setExemptFromVAT(Item::EXEMPT_CL26);
+
+        $taxes = SameTaxes::make([$item]);
+        $xml = $taxes->toXML();
+
+        $this->assertStringContainsString('ExemptFromVAT="VAT_CL26"', $xml);
+        $this->assertStringContainsString('VATRate="0.00"', $xml);
+        $this->assertStringContainsString('VATAmt="0.00"', $xml);
+    }
+
+    /** @test */
+    public function items_with_different_exempt_reasons_produce_separate_groups()
+    {
+        $item1 = (new Item('Product A', 0))
+            ->setUnitPrice(100)
+            ->setExemptFromVAT(Item::EXEMPT_CL26);
+        $item2 = (new Item('Product B', 0))
+            ->setUnitPrice(200)
+            ->setExemptFromVAT(Item::EXEMPT_CL27);
+
+        $taxes = SameTaxes::make([$item1, $item2]);
+        $xml = $taxes->toXML();
+
+        $this->assertSame(2, substr_count($xml, '<SameTax '));
+        $this->assertStringContainsString('ExemptFromVAT="VAT_CL26"', $xml);
+        $this->assertStringContainsString('ExemptFromVAT="VAT_CL27"', $xml);
+    }
+
+    /** @test */
+    public function mixed_exempt_and_taxed_items_produce_correct_groups()
+    {
+        // Taxed item: 100 base, 21% VAT → unit price 121
+        $taxed = (new Item('Taxed', 21))->setUnitPrice(121);
+        // Exempt item: 100 base, 0% VAT
+        $exempt = (new Item('Exempt', 0))
+            ->setUnitPrice(100)
+            ->setExemptFromVAT(Item::EXEMPT_CL26);
+
+        $taxes = SameTaxes::make([$taxed, $exempt]);
+        $totals = $taxes->getTotals();
+
+        // base = 100 + 100 = 200, vat = 21 + 0 = 21, total = 221
+        $this->assertEqualsWithDelta(200.0, $totals['base'], 0.01);
+        $this->assertEqualsWithDelta(21.0, $totals['vat'], 0.01);
+        $this->assertEqualsWithDelta(221.0, $totals['total'], 0.01);
+
+        $xml = $taxes->toXML();
+        $this->assertSame(2, substr_count($xml, '<SameTax '));
+        $this->assertStringContainsString('ExemptFromVAT="VAT_CL26"', $xml);
+    }
 }

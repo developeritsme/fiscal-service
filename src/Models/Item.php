@@ -14,6 +14,15 @@ class Item extends Model
     use HasXmlWriter;
     use Vatable;
 
+    public const EXEMPT_CL17 = 'VAT_CL17';
+    public const EXEMPT_CL20 = 'VAT_CL20';
+    public const EXEMPT_CL26 = 'VAT_CL26';
+    public const EXEMPT_CL27 = 'VAT_CL27';
+    public const EXEMPT_CL28 = 'VAT_CL28';
+    public const EXEMPT_CL29 = 'VAT_CL29';
+    public const EXEMPT_CL30 = 'VAT_CL30';
+    public const EXEMPT_CL44 = 'VAT_CL44';
+
     /** @var string */
     protected $code;
 
@@ -37,6 +46,9 @@ class Item extends Model
 
     /** @var bool */
     protected $rebateReducesBase = true;
+
+    /** @var string|null */
+    protected $exemptFromVAT;
 
     public function __construct($name = null, $vatRate = null)
     {
@@ -99,6 +111,34 @@ class Item extends Model
         return $this->vatRate;
     }
 
+    public function setExemptFromVAT($reason): self
+    {
+        if ($reason === null || in_array($reason, $this->exemptTypes())) {
+            $this->exemptFromVAT = $reason;
+        }
+
+        return $this;
+    }
+
+    public function getExemptFromVAT(): ?string
+    {
+        return $this->exemptFromVAT;
+    }
+
+    protected function exemptTypes(): array
+    {
+        return [
+            self::EXEMPT_CL17,
+            self::EXEMPT_CL20,
+            self::EXEMPT_CL26,
+            self::EXEMPT_CL27,
+            self::EXEMPT_CL28,
+            self::EXEMPT_CL29,
+            self::EXEMPT_CL30,
+            self::EXEMPT_CL44,
+        ];
+    }
+
     public function baseUnitPrice(): float
     {
         $base = $this->unitPrice / (1 + $this->vatRate / 100);
@@ -137,6 +177,10 @@ class Item extends Model
         ValidationHelper::required($errors, $this->unitPrice, 'unitPrice', 'Unit price');
         ValidationHelper::required($errors, $this->vatRate, 'vatRate', 'VAT rate');
 
+        if ($this->exemptFromVAT !== null && $this->vatRate > 0) {
+            $errors['exemptFromVAT'][] = 'ExemptFromVAT cannot be set when VAT rate is greater than 0.';
+        }
+
         if (!empty($errors)) {
             throw new ValidationException($errors);
         }
@@ -153,6 +197,7 @@ class Item extends Model
             'vat_rate'            => $this->vatRate,
             'rebate'              => $this->rebate,
             'rebate_reduces_base' => $this->rebateReducesBase,
+            'exempt_from_vat'     => $this->exemptFromVAT,
             'base_unit_price'     => $this->baseUnitPrice(),
             'total_price'         => $this->totalPrice(),
             'total_base_price'    => $this->totalBasePrice(),
@@ -180,6 +225,9 @@ class Item extends Model
         if ($this->getIsVat()) {
             $writer->writeAttribute('VA', $this->formatNumber($this->totalPrice() - $this->totalBasePrice(), $this->decimals));
             $writer->writeAttribute('VR', $this->formatNumber($this->vatRate, $this->decimals));
+            if ($this->exemptFromVAT) {
+                $writer->writeAttribute('EX', $this->exemptFromVAT);
+            }
         }
 
         $writer->endElement();
