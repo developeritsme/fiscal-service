@@ -16,26 +16,39 @@ class Fiscal
     private const QR_URL_PRODUCTION = 'https://mapr.tax.gov.me/ic/#/verify';
     private const QR_URL_TEST = 'https://efitest.tax.gov.me/ic/#/verify';
 
-    /** @var string */
-    private $serviceUrl = self::SERVICE_URL_PRODUCTION;
+    private string $serviceUrl = self::SERVICE_URL_PRODUCTION;
 
-    /** @var string */
-    private $qrUrl = self::QR_URL_PRODUCTION;
+    private string $qrUrl = self::QR_URL_PRODUCTION;
 
-    /** @var \DeveloperItsMe\FiscalService\Certificate */
-    protected $certificate;
+    protected Certificate $certificate;
 
-    /** @var Request */
-    protected $request;
+    protected ?Request $request = null;
 
-    public function __construct($certificatePath, $certificatePassphrase, $test = false)
+    protected function __construct()
     {
+    }
+
+    public static function fromFile(string $path, string $passphrase, bool $test = false): self
+    {
+        return self::fromCertificate(Certificate::fromFile($path, $passphrase), $test);
+    }
+
+    public static function fromContent(string $content, string $passphrase, bool $test = false): self
+    {
+        return self::fromCertificate(Certificate::fromContent($content, $passphrase), $test);
+    }
+
+    public static function fromCertificate(Certificate $certificate, bool $test = false): self
+    {
+        $instance = new self();
+        $instance->certificate = $certificate;
+
         if ($test) {
-            $this->serviceUrl = self::SERVICE_URL_TEST;
-            $this->qrUrl = self::QR_URL_TEST;
+            $instance->serviceUrl = self::SERVICE_URL_TEST;
+            $instance->qrUrl = self::QR_URL_TEST;
         }
 
-        $this->certificate = new Certificate($certificatePath, $certificatePassphrase);
+        return $instance;
     }
 
     public function certificate(): Certificate

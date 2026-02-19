@@ -6,38 +6,39 @@ use DeveloperItsMe\FiscalService\Exceptions\CertificateException;
 
 class Certificate
 {
-    protected $rawCertificate;
+    protected string $rawCertificate;
 
-    protected $certificate;
+    protected array $certificate;
 
-    /** @var false|resource */
-    protected $privateKeyResource = false;
+    protected \OpenSSLAsymmetricKey|false $privateKeyResource = false;
 
-    protected $publicCertificateData;
+    protected array|false $publicCertificateData;
 
-    public function __construct($path, $passphrase)
+    protected function __construct()
     {
-        if (@file_exists($path)) {
-            $this->rawCertificate = $this->readCertificateFromDisk($path);
-        } else {
-            $this->rawCertificate = $path;
+    }
+
+    public static function fromFile(string $path, string $passphrase): self
+    {
+        $cert = @file_get_contents($path);
+        if (false === $cert) {
+            throw new CertificateException('Cannot read certificate from path: ' . $path);
         }
 
-        $read = openssl_pkcs12_read($this->rawCertificate, $this->certificate, $passphrase);
-        if ($read === false) {
-            $errors = [];
-            while ($e = openssl_error_string()) {
-                $errors[] = $e;
-            }
-            throw new CertificateException(
-                'Failed to read PKCS12 certificate: ' . ($errors[0] ?? 'Unknown error'),
-                $errors
-            );
-        }
+        $instance = new self();
+        $instance->rawCertificate = $cert;
+        $instance->parsePkcs12($passphrase);
 
-        $this->privateKeyResource = openssl_pkey_get_private($this->certificate['pkey'], $passphrase);
+        return $instance;
+    }
 
-        $this->publicCertificateData = openssl_x509_parse($this->certificate['cert']);
+    public static function fromContent(string $content, string $passphrase): self
+    {
+        $instance = new self();
+        $instance->rawCertificate = $content;
+        $instance->parsePkcs12($passphrase);
+
+        return $instance;
     }
 
     public function public(): string
@@ -50,18 +51,12 @@ class Certificate
         return $this->rawCertificate;
     }
 
-    /**
-     * @return resource|false
-     */
-    public function getPrivateKey()
+    public function getPrivateKey(): \OpenSSLAsymmetricKey|false
     {
         return $this->privateKeyResource;
     }
 
-    /**
-     * @return array|false
-     */
-    public function getPublicData()
+    public function getPublicData(): array|false
     {
         return $this->publicCertificateData;
     }
@@ -80,13 +75,23 @@ class Certificate
             : null;
     }
 
-    protected function readCertificateFromDisk($path): string
+    private function parsePkcs12(string $passphrase): void
     {
-        $cert = @file_get_contents($path);
-        if (false === $cert) {
-            throw new CertificateException('Cannot read certificate from path: ' . $path);
+        $parsed = [];
+        $read = openssl_pkcs12_read($this->rawCertificate, $parsed, $passphrase);
+        if ($read === false) {
+            $errors = [];
+            while ($e = openssl_error_string()) {
+                $errors[] = $e;
+            }
+            throw new CertificateException(
+                'Failed to read PKCS12 certificate: ' . ($errors[0] ?? 'Unknown error'),
+                $errors
+            );
         }
 
-        return $cert;
+        $this->certificate = $parsed;
+        $this->privateKeyResource = openssl_pkey_get_private($this->certificate['pkey'], $passphrase);
+        $this->publicCertificateData = openssl_x509_parse($this->certificate['cert']);
     }
 }

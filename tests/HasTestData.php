@@ -36,14 +36,18 @@ trait HasTestData
             Carbon::setTestNow();
         }
 
-        return new Fiscal($certContent ?? $this->certPath, $this->certPassphrase, $test);
+        if ($certContent !== null) {
+            return Fiscal::fromContent($certContent, $this->certPassphrase, $test);
+        }
+
+        return Fiscal::fromFile($this->certPath, $this->certPassphrase, $test);
     }
 
     protected function mockFiscal(): MockObject
     {
         return $this->getMockBuilder(Fiscal::class)
             ->onlyMethods(['request', 'send'])
-            ->setConstructorArgs([$this->certPath, $this->certPassphrase])
+            ->disableOriginalConstructor()
             ->getMock();
     }
 

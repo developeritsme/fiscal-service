@@ -49,7 +49,7 @@ class FiscalTest extends TestCase
         $this->expectException(CertificateException::class);
         $this->expectExceptionMessage('Failed to read PKCS12 certificate');
 
-        new Certificate('invalid-certificate-data', 'password');
+        Certificate::fromContent('invalid-certificate-data', 'password');
     }
 
     /** @test */
@@ -57,7 +57,7 @@ class FiscalTest extends TestCase
     {
         $this->expectException(FiscalException::class);
 
-        new Certificate('invalid-certificate-data', 'password');
+        Certificate::fromContent('invalid-certificate-data', 'password');
     }
 
     /** @test */
@@ -65,14 +65,14 @@ class FiscalTest extends TestCase
     {
         $this->expectException(CertificateException::class);
 
-        new Certificate($this->certPath, 'wrong-passphrase');
+        Certificate::fromFile($this->certPath, 'wrong-passphrase');
     }
 
     /** @test */
     public function it_provides_openssl_errors_in_certificate_exception()
     {
         try {
-            new Certificate('invalid-certificate-data', 'password');
+            Certificate::fromContent('invalid-certificate-data', 'password');
             $this->fail('Expected CertificateException was not thrown');
         } catch (CertificateException $e) {
             $this->assertIsArray($e->getOpensslErrors());

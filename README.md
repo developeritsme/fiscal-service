@@ -4,7 +4,7 @@ PHP library for integrating with Montenegro's fiscal service (Poreska Uprava). H
 
 ## Requirements
 
-- PHP 7.3 or higher
+- PHP 8.0 or higher
 - Extensions: `xmlwriter`, `dom`, `openssl`, `curl`
 - PKCS12 certificate from Montenegro Tax Authority
 
@@ -20,12 +20,20 @@ composer require developeritsme/fiscal-service
 
 ```php
 use DeveloperItsMe\FiscalService\Fiscal;
+use DeveloperItsMe\FiscalService\Certificate;
 
-// Production
-$fiscal = new Fiscal('/path/to/certificate.pfx', 'certificate-password');
+// From file (production)
+$fiscal = Fiscal::fromFile('/path/to/certificate.pfx', 'certificate-password');
 
-// Test environment
-$fiscal = new Fiscal('/path/to/certificate.pfx', 'certificate-password', true);
+// From file (test environment)
+$fiscal = Fiscal::fromFile('/path/to/certificate.pfx', 'certificate-password', true);
+
+// From raw PKCS12 content
+$fiscal = Fiscal::fromContent($pkcs12Content, 'certificate-password', true);
+
+// From a pre-built Certificate instance
+$certificate = Certificate::fromFile('/path/to/certificate.pfx', 'certificate-password');
+$fiscal = Fiscal::fromCertificate($certificate, true);
 
 // Check certificate expiration date
 $expiresAt = $fiscal->certificate()->expiresAt(); // Returns DateTimeImmutable
@@ -215,7 +223,7 @@ PaymentMethod::TYPE_OTHER     // Other
 use DeveloperItsMe\FiscalService\Exceptions\CertificateException;
 
 try {
-    $fiscal = new Fiscal('/path/to/cert.pfx', 'password');
+    $fiscal = Fiscal::fromFile('/path/to/cert.pfx', 'password');
 } catch (CertificateException $e) {
     // Invalid certificate or wrong password
     $errors = $e->getOpensslErrors();
