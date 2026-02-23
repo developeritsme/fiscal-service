@@ -2,6 +2,7 @@
 
 namespace Tests\Validation;
 
+use DeveloperItsMe\FiscalService\Exceptions\FiscalException;
 use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
 use DeveloperItsMe\FiscalService\Models\Buyer;
 use DeveloperItsMe\FiscalService\Models\CorrectiveInvoice;
@@ -216,7 +217,7 @@ class InvoiceValidationTest extends TestCase
     /** @test */
     public function validation_exception_is_catchable_as_fiscal_exception()
     {
-        $this->expectException(\DeveloperItsMe\FiscalService\Exceptions\FiscalException::class);
+        $this->expectException(FiscalException::class);
 
         $invoice = new Invoice();
         $invoice->validate();

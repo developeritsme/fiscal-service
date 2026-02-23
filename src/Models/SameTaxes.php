@@ -52,7 +52,7 @@ class SameTaxes extends Model
     protected function setGroupedItems(): self
     {
         $this->totals = [];
-        /** @var \DeveloperItsMe\FiscalService\Models\Item $item */
+        /** @var Item $item */
         foreach ($this->items as $item) {
             $rate = $item->getVatRate();
             $exempt = $item->getExemptFromVAT();

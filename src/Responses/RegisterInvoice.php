@@ -2,11 +2,13 @@
 
 namespace DeveloperItsMe\FiscalService\Responses;
 
+use DeveloperItsMe\FiscalService\Models\Invoice;
+
 class RegisterInvoice extends Response
 {
     public function toArray(): array
     {
-        /** @var \DeveloperItsMe\FiscalService\Models\Invoice $model */
+        /** @var Invoice $model */
         $model = $this->request->model();
 
         return [

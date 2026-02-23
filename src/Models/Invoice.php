@@ -3,6 +3,7 @@
 namespace DeveloperItsMe\FiscalService\Models;
 
 use Carbon\Carbon;
+use DeveloperItsMe\FiscalService\Certificate;
 use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
 use DeveloperItsMe\FiscalService\Traits\HasDecimals;
 use DeveloperItsMe\FiscalService\Traits\HasSoftwareCode;
@@ -58,25 +59,25 @@ class Invoice extends Model
      */
     protected $issuerCode;
 
-    /** @var \DeveloperItsMe\FiscalService\Models\Seller */
+    /** @var Seller */
     protected $seller;
 
-    /** @var \DeveloperItsMe\FiscalService\Models\Buyer */
+    /** @var Buyer */
     protected $buyer;
 
-    /** @var \DeveloperItsMe\FiscalService\Models\PaymentMethods */
+    /** @var PaymentMethods */
     protected $paymentMethods;
 
-    /** @var \DeveloperItsMe\FiscalService\Models\Items */
+    /** @var Items */
     protected $items;
 
-    /** @var \DeveloperItsMe\FiscalService\Models\SameTaxes */
+    /** @var SameTaxes */
     protected $taxes;
 
-    /** @var \DeveloperItsMe\FiscalService\Models\CorrectiveInvoice */
+    /** @var CorrectiveInvoice */
     protected $corrective;
 
-    /** @var \DeveloperItsMe\FiscalService\Models\SupplyPeriod */
+    /** @var SupplyPeriod */
     protected $supplyPeriod;
 
     /** @var array */
@@ -436,7 +437,7 @@ class Invoice extends Model
         ]);
     }
 
-    public function generateIIC(\DeveloperItsMe\FiscalService\Certificate $certificate): void
+    public function generateIIC(Certificate $certificate): void
     {
         $data = hash('sha256', $this->concatenate(
             $this->formatNumber($this->totals('total'))

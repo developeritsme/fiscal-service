@@ -2,6 +2,7 @@
 
 namespace DeveloperItsMe\FiscalService\Responses;
 
+use DeveloperItsMe\FiscalService\Exceptions\FiscalException;
 use DeveloperItsMe\FiscalService\Requests\RegisterCashDeposit as RegisterCashDepositRequest;
 use DeveloperItsMe\FiscalService\Requests\RegisterInvoice as RegisterInvoiceRequest;
 use DeveloperItsMe\FiscalService\Requests\RegisterTCR as RegisterTCRRequest;
@@ -20,7 +21,7 @@ class Factory
         $requestClass = get_class($request);
 
         if (!isset(self::REQUEST_RESPONSE_MAP[$requestClass])) {
-            throw new \DeveloperItsMe\FiscalService\Exceptions\FiscalException('Unknown response type: ' . $requestClass);
+            throw new FiscalException('Unknown response type: ' . $requestClass);
         }
 
         $class = self::REQUEST_RESPONSE_MAP[$requestClass];

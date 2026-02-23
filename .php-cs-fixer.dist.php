@@ -21,7 +21,8 @@ return (new PhpCsFixer\Config())
                 '=>' => 'align_single_space_minimal_by_scope',
             ],
         ],
-        'no_extra_blank_lines' => true,
+        'fully_qualified_strict_types' => ['import_symbols' => true],
+        'no_extra_blank_lines'        => true,
         'no_whitespace_in_blank_line' => true,
     ])
     ->setFinder($finder)

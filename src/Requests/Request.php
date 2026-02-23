@@ -19,7 +19,7 @@ abstract class Request
     /** @var string */
     protected $requestName;
 
-    /** @var \DeveloperItsMe\FiscalService\Requests\Request */
+    /** @var Request */
     protected $model;
 
     /** @var string */

@@ -33,7 +33,7 @@ class Items extends Model
         $writer = $this->getXmlWriter();
         $writer->startElementNs(null, 'Items', null);
 
-        /** @var \DeveloperItsMe\FiscalService\Models\Item $item */
+        /** @var Item $item */
         foreach ($this->items as $item) {
             $writer->writeRaw(
                 $item->setDecimals($this->decimals)
