@@ -72,7 +72,7 @@ class Fiscal
         }
 
         if (method_exists($model, 'generateIIC')) {
-            $model->generateIIC($this->certificate()->getPrivateKey());
+            $model->generateIIC($this->certificate());
         }
 
         if (method_exists($model, 'setQrBaseUrl')) {
@@ -142,11 +142,7 @@ class Fiscal
         $publicCertificatePureString = str_replace('-----BEGIN CERTIFICATE-----', '', $this->certificate()->public());
         $publicCertificatePureString = str_replace('-----END CERTIFICATE-----', '', $publicCertificatePureString);
 
-        $signedInfoSignature = null;
-
-        if (!openssl_sign($SignedInfoNode->C14N(true), $signedInfoSignature, $this->certificate()->getPrivateKey(), OPENSSL_ALGO_SHA256)) {
-            throw new FiscalException('Unable to sign the request');
-        }
+        $signedInfoSignature = $this->certificate()->sign($SignedInfoNode->C14N(true));
 
         $SignatureNode = $XMLRequestDOMDoc->getElementsByTagName('Signature')->item(0);
         $SignatureValueNode = new DOMElement('SignatureValue', base64_encode($signedInfoSignature));

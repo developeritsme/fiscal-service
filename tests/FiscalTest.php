@@ -17,7 +17,7 @@ class FiscalTest extends TestCase
         $fiscal = $this->fiscal();
         $cert = $fiscal->certificate();
 
-        $this->assertNotFalse($cert->getPrivateKey());
+        $this->assertInstanceOf(\OpenSSLAsymmetricKey::class, $this->getPrivateKeyViaReflection($cert));
         $this->assertNotFalse($cert->getPublicData());
     }
 
@@ -28,7 +28,7 @@ class FiscalTest extends TestCase
         $fiscal = $this->fiscal($content);
         $cert = $fiscal->certificate();
 
-        $this->assertNotFalse($cert->getPrivateKey());
+        $this->assertInstanceOf(\OpenSSLAsymmetricKey::class, $this->getPrivateKeyViaReflection($cert));
         $this->assertNotFalse($cert->getPublicData());
     }
 
@@ -78,5 +78,13 @@ class FiscalTest extends TestCase
             $this->assertIsArray($e->getOpensslErrors());
             $this->assertNotEmpty($e->getOpensslErrors());
         }
+    }
+
+    private function getPrivateKeyViaReflection(Certificate $cert): mixed
+    {
+        $ref = new \ReflectionProperty($cert, 'privateKeyResource');
+        $ref->setAccessible(true);
+
+        return $ref->getValue($cert);
     }
 }

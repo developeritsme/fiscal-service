@@ -436,17 +436,15 @@ class Invoice extends Model
         ]);
     }
 
-    public function generateIIC($pkey): void
+    public function generateIIC(\DeveloperItsMe\FiscalService\Certificate $certificate): void
     {
         $data = hash('sha256', $this->concatenate(
             $this->formatNumber($this->totals('total'))
         ));
 
-        if (!openssl_sign($data, $this->iicSignature, $pkey, OPENSSL_ALGO_SHA256)) {
-            throw new \DeveloperItsMe\FiscalService\Exceptions\FiscalException('Unable to sign invoice data for IIC generation');
-        }
+        $signature = $certificate->sign($data);
 
-        $this->iicSignature = strtoupper(bin2hex($this->iicSignature));
+        $this->iicSignature = strtoupper(bin2hex($signature));
 
         $this->issuerCode = strtoupper(md5($this->iicSignature));
     }

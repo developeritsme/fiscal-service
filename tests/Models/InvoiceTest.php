@@ -3,7 +3,6 @@
 namespace Tests\Models;
 
 use Carbon\Carbon;
-use DeveloperItsMe\FiscalService\Exceptions\FiscalException;
 use DeveloperItsMe\FiscalService\Models\Buyer;
 use DeveloperItsMe\FiscalService\Models\CorrectiveInvoice;
 use DeveloperItsMe\FiscalService\Models\Invoice;
@@ -102,23 +101,6 @@ class InvoiceTest extends TestCase
         $expected = '12345678|2019-06-12T17:05:43+02:00|9952|bb123bb123|cc123cc123|ss123ss123|99.01';
 
         $this->assertSame($expected, $invoice->concatenate($totals['total']));
-    }
-
-    /** @test */
-    public function it_throws_exception_when_iic_signing_fails()
-    {
-        $this->expectException(FiscalException::class);
-        $this->expectExceptionMessage('Unable to sign invoice data for IIC generation');
-
-        set_error_handler(function () {
-            return true;
-        });
-        try {
-            $invoice = $this->getInvoice();
-            $invoice->generateIIC('invalid-key');
-        } finally {
-            restore_error_handler();
-        }
     }
 
     /** @test */

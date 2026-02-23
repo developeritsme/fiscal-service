@@ -51,9 +51,18 @@ class Certificate
         return $this->rawCertificate;
     }
 
-    public function getPrivateKey(): \OpenSSLAsymmetricKey|false
+    /**
+     * Sign data using the certificate's private key.
+     *
+     * @throws Exceptions\FiscalException
+     */
+    public function sign(string $data, int $algorithm = OPENSSL_ALGO_SHA256): string
     {
-        return $this->privateKeyResource;
+        if (! openssl_sign($data, $signature, $this->privateKeyResource, $algorithm)) {
+            throw new Exceptions\FiscalException('Unable to sign data');
+        }
+
+        return $signature;
     }
 
     public function getPublicData(): array|false
