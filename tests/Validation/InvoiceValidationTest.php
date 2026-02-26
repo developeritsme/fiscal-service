@@ -6,6 +6,7 @@ use DeveloperItsMe\FiscalService\Exceptions\FiscalException;
 use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
 use DeveloperItsMe\FiscalService\Models\Buyer;
 use DeveloperItsMe\FiscalService\Models\CorrectiveInvoice;
+use DeveloperItsMe\FiscalService\Models\IICRef;
 use DeveloperItsMe\FiscalService\Models\Invoice;
 use DeveloperItsMe\FiscalService\Models\Item;
 use DeveloperItsMe\FiscalService\Models\PaymentMethod;
@@ -340,6 +341,83 @@ class InvoiceValidationTest extends TestCase
         $invoice->validate();
 
         $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_fails_when_advance_payment_method_lacks_adv_iic()
+    {
+        $invoice = $this->buildValidNoncashInvoice();
+        $invoice->addPaymentMethod(new PaymentMethod(10, PaymentMethod::TYPE_ADVANCE));
+
+        try {
+            $invoice->validate();
+            $this->fail('Expected ValidationException was not thrown');
+        } catch (ValidationException $e) {
+            $errors = $e->getErrors();
+            $this->assertArrayHasKey('paymentMethods[0].advIIC', $errors);
+        }
+    }
+
+    /** @test */
+    public function it_passes_when_advance_payment_method_has_valid_adv_iic()
+    {
+        $invoice = $this->buildValidNoncashInvoice();
+        $pm = (new PaymentMethod(10, PaymentMethod::TYPE_ADVANCE))
+            ->setAdvIIC('aabb0011ccdd2233eeff44556677aabb');
+        $invoice->addPaymentMethod($pm);
+
+        $invoice->validate();
+
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_fails_when_company_payment_method_lacks_comp_card()
+    {
+        $invoice = $this->buildValidNoncashInvoice();
+        $invoice->addPaymentMethod(new PaymentMethod(10, PaymentMethod::TYPE_COMPANY));
+
+        try {
+            $invoice->validate();
+            $this->fail('Expected ValidationException was not thrown');
+        } catch (ValidationException $e) {
+            $errors = $e->getErrors();
+            $this->assertArrayHasKey('paymentMethods[0].compCard', $errors);
+        }
+    }
+
+    /** @test */
+    public function it_fails_when_iic_ref_has_invalid_iic()
+    {
+        $invoice = $this->buildValidInvoice();
+        $invoice->addIICRef(new IICRef('not-hex', '2024-01-01'));
+
+        try {
+            $invoice->validate();
+            $this->fail('Expected ValidationException was not thrown');
+        } catch (ValidationException $e) {
+            $errors = $e->getErrors();
+            $this->assertArrayHasKey('iicRefs[0].iic', $errors);
+        }
+    }
+
+    private function buildValidNoncashInvoice(): Invoice
+    {
+        $seller = new Seller('Test Seller', '12345678');
+        $item = new Item('Product', 21);
+        $item->setUnitPrice(10);
+
+        $invoice = new Invoice();
+        $invoice->setNumber(1)
+            ->setEnu('ab123cd456')
+            ->setOperatorCode('ab123cd456')
+            ->setBusinessUnitCode('ab123cd456')
+            ->setSoftwareCode('ab123cd456')
+            ->setMethod(Invoice::TYPE_NONCASH)
+            ->setSeller($seller)
+            ->addItem($item);
+
+        return $invoice;
     }
 
     private function buildValidInvoice(): Invoice

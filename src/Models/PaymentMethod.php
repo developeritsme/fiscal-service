@@ -2,6 +2,9 @@
 
 namespace DeveloperItsMe\FiscalService\Models;
 
+use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
+use DeveloperItsMe\FiscalService\Validation\ValidationHelper;
+
 class PaymentMethod extends Model
 {
     public const TYPE_BANKNOTE = 'BANKNOTE';
@@ -43,17 +46,72 @@ class PaymentMethod extends Model
      */
     protected $type;
 
+    /** @var string|null */
+    protected $advIIC;
+
+    /** @var string|null */
+    protected $compCard;
+
+    /** @var string|null */
+    protected $bankAcc;
+
     public function __construct($amount = 0.00, $type = self::TYPE_BANKNOTE)
     {
         $this->amount = $amount;
         $this->type = $type;
     }
 
+    public function setAdvIIC(string $advIIC): self
+    {
+        $this->advIIC = $advIIC;
+
+        return $this;
+    }
+
+    public function setCompCard(string $compCard): self
+    {
+        $this->compCard = $compCard;
+
+        return $this;
+    }
+
+    public function setBankAcc(string $bankAcc): self
+    {
+        $this->bankAcc = $bankAcc;
+
+        return $this;
+    }
+
+    public function validate(): void
+    {
+        $errors = [];
+
+        if (in_array($this->type, [self::TYPE_ADVANCE, self::TYPE_VOUCHER])) {
+            ValidationHelper::requiredAndPattern($errors, $this->advIIC, ValidationHelper::HEX_32, 'advIIC', 'Advance IIC (AdvIIC)', 'HEX-32');
+        } else {
+            ValidationHelper::pattern($errors, $this->advIIC, ValidationHelper::HEX_32, 'advIIC', 'Advance IIC (AdvIIC)', 'HEX-32');
+        }
+
+        if ($this->type === self::TYPE_COMPANY) {
+            ValidationHelper::required($errors, $this->compCard, 'compCard', 'Company card (CompCard)');
+        }
+        ValidationHelper::maxLength($errors, $this->compCard, 50, 'compCard', 'Company card (CompCard)');
+
+        ValidationHelper::maxLength($errors, $this->bankAcc, 50, 'bankAcc', 'Bank account (BankAcc)');
+
+        if (!empty($errors)) {
+            throw new ValidationException($errors);
+        }
+    }
+
     public function toArray(): array
     {
         return [
-            'type'   => $this->type,
-            'amount' => $this->amount,
+            'type'      => $this->type,
+            'amount'    => $this->amount,
+            'adv_iic'   => $this->advIIC,
+            'comp_card' => $this->compCard,
+            'bank_acc'  => $this->bankAcc,
         ];
     }
 
@@ -63,6 +121,15 @@ class PaymentMethod extends Model
         $writer->startElementNs(null, 'PayMethod', null);
         $writer->writeAttribute('Amt', $this->formatNumber($this->amount, 2));
         $writer->writeAttribute('Type', $this->type);
+        if ($this->advIIC) {
+            $writer->writeAttribute('AdvIIC', $this->advIIC);
+        }
+        if ($this->compCard) {
+            $writer->writeAttribute('CompCard', $this->compCard);
+        }
+        if ($this->bankAcc) {
+            $writer->writeAttribute('BankAcc', $this->bankAcc);
+        }
         $writer->endElement();
 
         return $writer->outputMemory();

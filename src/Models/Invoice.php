@@ -77,6 +77,9 @@ class Invoice extends Model
     /** @var CorrectiveInvoice */
     protected $corrective;
 
+    /** @var IICRefs */
+    protected $iicRefs;
+
     /** @var SupplyPeriod */
     protected $supplyPeriod;
 
@@ -102,6 +105,7 @@ class Invoice extends Model
     {
         $this->paymentMethods = new PaymentMethods();
         $this->items = new Items();
+        $this->iicRefs = new IICRefs();
         $this->setDecimals($itemsDecimals);
         $this->dateTime = Carbon::now();
     }
@@ -216,6 +220,13 @@ class Invoice extends Model
         return $this->items->all();
     }
 
+    public function addIICRef(IICRef $ref): self
+    {
+        $this->iicRefs->add($ref);
+
+        return $this;
+    }
+
     public function setCorrectiveInvoice(CorrectiveInvoice $invoice): self
     {
         $this->corrective = $invoice;
@@ -303,6 +314,14 @@ class Invoice extends Model
 
         foreach ($this->items->all() as $index => $item) {
             $this->validateChild($errors, $item, "items[{$index}]");
+        }
+
+        foreach ($this->paymentMethods->all() as $index => $paymentMethod) {
+            $this->validateChild($errors, $paymentMethod, "paymentMethods[{$index}]");
+        }
+
+        foreach ($this->iicRefs->all() as $index => $iicRef) {
+            $this->validateChild($errors, $iicRef, "iicRefs[{$index}]");
         }
 
         $this->validateChild($errors, $this->corrective, 'corrective');
@@ -419,6 +438,10 @@ class Invoice extends Model
             $writer->writeRaw($this->taxes->toXML());
         }
 
+        if (!empty($this->iicRefs->all())) {
+            $writer->writeRaw($this->iicRefs->toXML());
+        }
+
         $writer->endElement();
 
         return $writer->outputMemory();
@@ -526,6 +549,7 @@ class Invoice extends Model
             'buyer'              => $this->buyer ? $this->buyer->toArray() : null,
             'items'              => array_map(fn (Item $item) => $item->toArray(), $this->items->all()),
             'payment_methods'    => array_map(fn (PaymentMethod $pm) => $pm->toArray(), $this->paymentMethods->all()),
+            'iic_refs'           => array_map(fn (IICRef $ref) => $ref->toArray(), $this->iicRefs->all()),
             'corrective_invoice' => $this->corrective ? $this->corrective->toArray() : null,
             'supply_period'      => $this->supplyPeriod ? $this->supplyPeriod->toArray() : null,
         ];

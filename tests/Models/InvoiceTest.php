@@ -5,6 +5,7 @@ namespace Tests\Models;
 use Carbon\Carbon;
 use DeveloperItsMe\FiscalService\Models\Buyer;
 use DeveloperItsMe\FiscalService\Models\CorrectiveInvoice;
+use DeveloperItsMe\FiscalService\Models\IICRef;
 use DeveloperItsMe\FiscalService\Models\Invoice;
 use DeveloperItsMe\FiscalService\Models\Item;
 use DeveloperItsMe\FiscalService\Models\PaymentMethod;
@@ -560,6 +561,168 @@ class InvoiceTest extends TestCase
         $this->assertNull($arr['pay_deadline']);
         $this->assertNull($arr['bank_acc_num']);
         $this->assertNull($arr['note']);
+    }
+
+    /** @test */
+    public function payment_method_with_adv_iic_appears_in_xml()
+    {
+        Carbon::setTestNow('2019-12-05T14:30:13+01:00');
+
+        $invoice = new Invoice();
+
+        $pm = (new PaymentMethod(20, PaymentMethod::TYPE_ADVANCE))
+            ->setAdvIIC('aabb0011ccdd2233eeff44556677aabb');
+
+        $seller = new Seller('Test Seller', '12345678');
+        $item = (new Item('Product', 21))->setUnitPrice(20);
+
+        $invoice->setUuid('8d216f9a-55bb-445a-be32-30137f11b964')
+            ->setNumber(1)
+            ->setEnu('ab123ab123')
+            ->setOperatorCode('ab123ab123')
+            ->setBusinessUnitCode('ab123ab123')
+            ->setSoftwareCode('ab123ab123')
+            ->setMethod(Invoice::TYPE_NONCASH)
+            ->setIssuerCode($this->issuerCode)
+            ->setIicSignature($this->iicSignature)
+            ->addPaymentMethod($pm)
+            ->setSeller($seller)
+            ->addItem($item);
+
+        $xml = $invoice->toXML();
+
+        $this->assertStringContainsString('AdvIIC="aabb0011ccdd2233eeff44556677aabb"', $xml);
+        $this->assertStringContainsString('Type="ADVANCE"', $xml);
+    }
+
+    /** @test */
+    public function iic_refs_appear_in_xml()
+    {
+        Carbon::setTestNow('2019-12-05T14:30:13+01:00');
+
+        $invoice = new Invoice();
+
+        $seller = new Seller('Test Seller', '12345678');
+        $item = (new Item('Product', 21))->setUnitPrice(20);
+        $pm = new PaymentMethod(20);
+
+        $invoice->setUuid('8d216f9a-55bb-445a-be32-30137f11b964')
+            ->setNumber(1)
+            ->setEnu('ab123ab123')
+            ->setOperatorCode('ab123ab123')
+            ->setBusinessUnitCode('ab123ab123')
+            ->setSoftwareCode('ab123ab123')
+            ->setIssuerCode($this->issuerCode)
+            ->setIicSignature($this->iicSignature)
+            ->addPaymentMethod($pm)
+            ->setSeller($seller)
+            ->addItem($item)
+            ->addIICRef(new IICRef('aabb0011ccdd2233eeff44556677aabb', '2024-01-15T10:00:00+01:00', 100.00));
+
+        $xml = $invoice->toXML();
+
+        $this->assertStringContainsString('<IICRefs>', $xml);
+        $this->assertStringContainsString('IIC="aabb0011ccdd2233eeff44556677aabb"', $xml);
+        $this->assertStringContainsString('IssueDateTime="2024-01-15T10:00:00+01:00"', $xml);
+        $this->assertStringContainsString('Amount="100.00"', $xml);
+        $this->assertStringContainsString('</IICRefs>', $xml);
+    }
+
+    /** @test */
+    public function iic_refs_not_in_xml_when_empty()
+    {
+        Carbon::setTestNow('2019-12-05T14:30:13+01:00');
+
+        $invoice = new Invoice();
+
+        $seller = new Seller('Test Seller', '12345678');
+        $item = (new Item('Product', 21))->setUnitPrice(20);
+        $pm = new PaymentMethod(20);
+
+        $invoice->setUuid('8d216f9a-55bb-445a-be32-30137f11b964')
+            ->setNumber(1)
+            ->setEnu('ab123ab123')
+            ->setOperatorCode('ab123ab123')
+            ->setBusinessUnitCode('ab123ab123')
+            ->setSoftwareCode('ab123ab123')
+            ->setIssuerCode($this->issuerCode)
+            ->setIicSignature($this->iicSignature)
+            ->addPaymentMethod($pm)
+            ->setSeller($seller)
+            ->addItem($item);
+
+        $xml = $invoice->toXML();
+
+        $this->assertStringNotContainsString('IICRefs', $xml);
+    }
+
+    /** @test */
+    public function addIICRef_is_fluent()
+    {
+        $invoice = new Invoice();
+        $ref = new IICRef('aabb0011ccdd2233eeff44556677aabb', '2024-01-01');
+
+        $this->assertSame($invoice, $invoice->addIICRef($ref));
+    }
+
+    /** @test */
+    public function toArray_includes_iic_refs()
+    {
+        Carbon::setTestNow('2019-12-05T14:30:13+01:00');
+
+        $invoice = new Invoice();
+
+        $seller = new Seller('Seller', '12345678');
+        $item = (new Item('Item', 21))->setUnitPrice(50);
+        $pm = new PaymentMethod(50);
+
+        $invoice->setUuid('uuid-test')
+            ->setNumber(1)
+            ->setEnu('en123en123')
+            ->setOperatorCode('op123op123')
+            ->setBusinessUnitCode('bu123bu123')
+            ->setSoftwareCode('sw123sw123')
+            ->setIssuerCode($this->issuerCode)
+            ->setIicSignature($this->iicSignature)
+            ->setSeller($seller)
+            ->addItem($item)
+            ->addPaymentMethod($pm)
+            ->addIICRef(new IICRef('aabb0011ccdd2233eeff44556677aabb', '2024-01-15T10:00:00+01:00', 50.00));
+
+        $arr = $invoice->toArray();
+
+        $this->assertCount(1, $arr['iic_refs']);
+        $this->assertSame('aabb0011ccdd2233eeff44556677aabb', $arr['iic_refs'][0]['iic']);
+        $this->assertSame('2024-01-15T10:00:00+01:00', $arr['iic_refs'][0]['date_time']);
+        $this->assertEquals(50.00, $arr['iic_refs'][0]['amount']);
+    }
+
+    /** @test */
+    public function toArray_has_empty_iic_refs_when_none_added()
+    {
+        Carbon::setTestNow('2019-12-05T14:30:13+01:00');
+
+        $invoice = new Invoice();
+
+        $seller = new Seller('Seller', '12345678');
+        $item = (new Item('Item', 21))->setUnitPrice(50);
+        $pm = new PaymentMethod(50);
+
+        $invoice->setUuid('uuid-test')
+            ->setNumber(1)
+            ->setEnu('en123en123')
+            ->setOperatorCode('op123op123')
+            ->setBusinessUnitCode('bu123bu123')
+            ->setSoftwareCode('sw123sw123')
+            ->setIssuerCode($this->issuerCode)
+            ->setIicSignature($this->iicSignature)
+            ->setSeller($seller)
+            ->addItem($item)
+            ->addPaymentMethod($pm);
+
+        $arr = $invoice->toArray();
+
+        $this->assertEmpty($arr['iic_refs']);
     }
 
     protected function getInvoice()
