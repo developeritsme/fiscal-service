@@ -20,7 +20,7 @@ class PaymentMethod extends Model implements Validatable
     public const TYPE_OTHER = 'OTHER';
     public const TYPE_OTHER_CASH = 'OTHER-CASH';
 
-    protected $allowedInvoices = [
+    protected array $allowedInvoices = [
         Invoice::TYPE_CASH    => [
             self::TYPE_BANKNOTE,
             self::TYPE_CARD,
@@ -39,29 +39,22 @@ class PaymentMethod extends Model implements Validatable
         ],
     ];
 
-    /** @var float|mixed */
-    protected $amount;
+    protected float $amount;
 
-    /**
-     * @var string
-     */
-    protected $type;
+    protected string $type;
 
-    /** @var string|null */
-    protected $advIIC;
+    protected ?string $advIIC = null;
 
-    /** @var string|null */
-    protected $compCard;
+    protected ?string $compCard = null;
 
-    /** @var string|null */
-    protected $bankAcc;
+    protected ?string $bankAcc = null;
 
     public function getType(): string
     {
         return $this->type;
     }
 
-    public function __construct($amount = 0.00, $type = self::TYPE_BANKNOTE)
+    public function __construct(float $amount = 0.00, string $type = self::TYPE_BANKNOTE)
     {
         $this->amount = $amount;
         $this->type = $type;
@@ -142,7 +135,7 @@ class PaymentMethod extends Model implements Validatable
         return $writer->outputMemory();
     }
 
-    public function isAllowedForInvoiceType($invoiceType): bool
+    public function isAllowedForInvoiceType(string $invoiceType): bool
     {
         return in_array($this->type, $this->allowedInvoices[$invoiceType]);
     }

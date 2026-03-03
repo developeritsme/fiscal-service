@@ -5,7 +5,7 @@ namespace DeveloperItsMe\FiscalService\Models;
 class IICRefs extends Model
 {
     /** @var IICRef[] */
-    protected $refs = [];
+    protected array $refs = [];
 
     public function add(IICRef $ref): self
     {

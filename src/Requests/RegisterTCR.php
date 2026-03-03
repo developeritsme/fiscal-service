@@ -4,6 +4,5 @@ namespace DeveloperItsMe\FiscalService\Requests;
 
 class RegisterTCR extends Request
 {
-    /** @var string */
-    protected $requestName = 'RegisterTCRRequest';
+    protected string $requestName = 'RegisterTCRRequest';
 }

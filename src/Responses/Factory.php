@@ -17,7 +17,7 @@ class Factory
     ];
 
     /** @throws FiscalException */
-    public static function make($response, $code, Request $request = null, string $connectionError = null): Response
+    public static function make(string|false $response, int $code, Request $request, ?string $connectionError = null): Response
     {
         $requestClass = get_class($request);
 

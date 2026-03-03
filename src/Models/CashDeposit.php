@@ -18,44 +18,39 @@ class CashDeposit extends Model implements Validatable
     public const OPERATION_INITIAL = 'INITIAL';
     public const OPERATION_WITHDRAW = 'WITHDRAW';
 
-    /** @var Carbon */
-    protected $date;
+    protected ?Carbon $date = null;
 
-    /** @var string */
-    protected $idNumber;
+    protected ?string $idNumber = null;
 
-    /** @var string */
-    protected $operation = self::OPERATION_INITIAL;
+    protected string $operation = self::OPERATION_INITIAL;
 
-    /** @var float */
-    protected $amount;
+    protected ?float $amount = null;
 
-    /** @var string */
-    protected $enu;
+    protected ?string $enu = null;
 
-    public function setDate($date): self
+    public function setDate(Carbon|string $date): self
     {
         $this->date = Carbon::parse($date);
 
         return $this;
     }
 
-    public function setIdNumber($id): self
+    public function setIdNumber(string $id): self
     {
         $this->idNumber = $id;
 
         return $this;
     }
 
-    public function setAmount($amount): self
+    public function setAmount(float $amount): self
     {
-        $this->amount = floatval($amount);
+        $this->amount = $amount;
 
         return $this;
     }
 
     /** @throws InvalidArgumentException */
-    public function setOperation($operation): self
+    public function setOperation(string $operation): self
     {
         $allowed = [self::OPERATION_INITIAL, self::OPERATION_WITHDRAW];
 
@@ -70,7 +65,7 @@ class CashDeposit extends Model implements Validatable
         return $this;
     }
 
-    public function setEnu($enu): self
+    public function setEnu(string $enu): self
     {
         $this->enu = $enu;
 

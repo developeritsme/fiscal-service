@@ -16,23 +16,17 @@ abstract class Request
     protected const DEFAULT_CONNECT_TIMEOUT = 10;
     protected const DEFAULT_TIMEOUT = 30;
 
-    /** @var string */
-    protected $requestName;
+    protected string $requestName;
 
-    /** @var Model */
-    protected $model;
+    protected ?Model $model;
 
-    /** @var string */
-    protected $payload;
+    protected ?string $payload = null;
 
-    /** @var int CURLOPT_CONNECTTIMEOUT */
-    protected $curl_connect_timeout = self::DEFAULT_CONNECT_TIMEOUT;
+    protected int $curl_connect_timeout = self::DEFAULT_CONNECT_TIMEOUT;
 
-    /** @var int CURLOPT_TIMEOUT */
-    protected $curl_timeout = self::DEFAULT_TIMEOUT;
+    protected int $curl_timeout = self::DEFAULT_TIMEOUT;
 
-    /** @var bool CURLOPT_SSL_VERIFYPEER */
-    protected $curl_verify_peer = true;
+    protected bool $curl_verify_peer = true;
 
     public function __construct(Model $model = null)
     {
@@ -62,7 +56,7 @@ abstract class Request
         return $writer->outputMemory();
     }
 
-    public function setPayload($payload): self
+    public function setPayload(string $payload): self
     {
         $this->payload = $payload;
 
@@ -75,7 +69,7 @@ abstract class Request
     }
 
     /** @throws FiscalException */
-    public function envelope($xml = null): string
+    public function envelope(?string $xml = null): string
     {
         $xmlRequestDom = new DOMDocument();
         if (!$xmlRequestDom->loadXML($xml ?? $this->toXML(), LIBXML_NONET)) {
@@ -101,25 +95,25 @@ abstract class Request
         return $envelope->saveXML();
     }
 
-    public function timeout($seconds = null): int
+    public function timeout(?int $seconds = null): int
     {
-        if (intval($seconds) > 0) {
+        if ($seconds !== null && $seconds > 0) {
             $this->curl_timeout = $seconds;
         }
 
         return $this->curl_timeout;
     }
 
-    public function connect_timeout($seconds = null): int
+    public function connect_timeout(?int $seconds = null): int
     {
-        if (intval($seconds) > 0) {
+        if ($seconds !== null && $seconds > 0) {
             $this->curl_connect_timeout = $seconds;
         }
 
         return $this->curl_connect_timeout;
     }
 
-    public function verifySslPeer(bool $verify = null): bool
+    public function verifySslPeer(?bool $verify = null): bool
     {
         if (!is_null($verify)) {
             $this->curl_verify_peer = $verify;

@@ -6,8 +6,7 @@ use DeveloperItsMe\FiscalService\Exceptions\InvalidArgumentException;
 
 trait HasDecimals
 {
-    /** @var int */
-    protected $decimals = 2;
+    protected int $decimals = 2;
 
     /** @throws InvalidArgumentException */
     public function setDecimals(int $decimals): self

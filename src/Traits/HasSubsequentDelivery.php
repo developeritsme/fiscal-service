@@ -6,11 +6,10 @@ use DeveloperItsMe\FiscalService\Exceptions\InvalidArgumentException;
 
 trait HasSubsequentDelivery
 {
-    /** @var string|null */
-    protected $subsequentDeliveryType;
+    protected ?string $subsequentDeliveryType = null;
 
     /** @throws InvalidArgumentException */
-    public function setSubsequentDeliveryType($type): self
+    public function setSubsequentDeliveryType(string $type): self
     {
         if (!in_array($type, $this->subsequentDeliveryTypes())) {
             throw new InvalidArgumentException(

@@ -12,16 +12,13 @@ class CorrectiveInvoice extends Model implements Validatable
     public const TYPE_CORRECTIVE = 'CORRECTIVE';
     public const TYPE_ERROR_CORRECTIVE = 'ERROR_CORRECTIVE';
 
-    /** @var string */
-    protected $ikof;
+    protected string $ikof;
 
-    /** @var Carbon */
-    protected $dateTime;
+    protected Carbon $dateTime;
 
-    /** @var string */
-    protected $type;
+    protected string $type;
 
-    public function __construct($ikof, $issueDateTime, $type = self::TYPE_CORRECTIVE)
+    public function __construct(string $ikof, Carbon|string $issueDateTime, string $type = self::TYPE_CORRECTIVE)
     {
         $this->ikof = $ikof;
         $this->dateTime = Carbon::parse($issueDateTime);

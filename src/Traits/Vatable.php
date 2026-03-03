@@ -4,10 +4,9 @@ namespace DeveloperItsMe\FiscalService\Traits;
 
 trait Vatable
 {
-    /** @var boolean */
-    protected $isVat;
+    protected bool $isVat;
 
-    public function setIsVat($isVat): self
+    public function setIsVat(bool $isVat): self
     {
         $this->isVat = $isVat;
 

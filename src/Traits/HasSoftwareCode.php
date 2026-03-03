@@ -4,10 +4,9 @@ namespace DeveloperItsMe\FiscalService\Traits;
 
 trait HasSoftwareCode
 {
-    /** @var string */
-    protected $softwareCode;
+    protected ?string $softwareCode = null;
 
-    public function setSoftwareCode($code): self
+    public function setSoftwareCode(string $code): self
     {
         $this->softwareCode = $code;
 
@@ -15,11 +14,9 @@ trait HasSoftwareCode
     }
 
     /**
-     * @param null $code
-     *
      * @return string|$this
      */
-    public function softwareCode($code = null)
+    public function softwareCode(?string $code = null)
     {
         return empty($code) ? $this->softwareCode : $this->setSoftwareCode($code);
     }

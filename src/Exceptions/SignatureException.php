@@ -4,8 +4,7 @@ namespace DeveloperItsMe\FiscalService\Exceptions;
 
 class SignatureException extends FiscalException
 {
-    /** @var string */
-    protected $reason;
+    protected string $reason;
 
     public function __construct(string $reason, int $code = 0, ?\Throwable $previous = null)
     {

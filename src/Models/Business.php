@@ -19,29 +19,24 @@ abstract class Business extends Model implements Validatable
     public const ID_TYPE_TAX_NUMBER = 'TAX';
     public const ID_TYPE_SOCIAL_SECURITY_NUMBER = 'SOC';
 
-    /** @var string */
-    protected $idNumber;
+    protected ?string $idNumber = null;
 
-    /** @var string */
-    protected $name;
+    protected ?string $name = null;
 
-    /** @var string */
-    protected $address;
+    protected ?string $address = null;
 
-    /** @var string */
-    protected $town;
+    protected ?string $town = null;
 
-    /** @var string */
-    protected $country = Countries::ME;
+    protected string $country = Countries::ME;
 
-    public function __construct($name, $idNumber, $isVat = true)
+    public function __construct(string $name, string $idNumber, bool $isVat = true)
     {
         $this->setName($name)
             ->setIdNumber($idNumber)
             ->setIsVat($isVat);
     }
 
-    public function setIdNumber($id): self
+    public function setIdNumber(string $id): self
     {
         $this->idNumber = $id;
 
@@ -53,21 +48,21 @@ abstract class Business extends Model implements Validatable
         return $this->idNumber;
     }
 
-    public function setName($name): self
+    public function setName(string $name): self
     {
         $this->name = $name;
 
         return $this;
     }
 
-    public function setAddress($address): self
+    public function setAddress(string $address): self
     {
         $this->address = $address;
 
         return $this;
     }
 
-    public function setTown($town): self
+    public function setTown(string $town): self
     {
         $this->town = $town;
 
@@ -75,7 +70,7 @@ abstract class Business extends Model implements Validatable
     }
 
     /** @throws InvalidArgumentException */
-    public function setCountry($country): self
+    public function setCountry(string $country): self
     {
         if (!in_array($country, Countries::codes())) {
             throw new InvalidArgumentException(

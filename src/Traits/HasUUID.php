@@ -4,10 +4,9 @@ namespace DeveloperItsMe\FiscalService\Traits;
 
 trait HasUUID
 {
-    /** @var string */
-    protected $uuid;
+    protected ?string $uuid = null;
 
-    public function setUuid($uuid): self
+    public function setUuid(string $uuid): self
     {
         $this->uuid = $uuid;
 

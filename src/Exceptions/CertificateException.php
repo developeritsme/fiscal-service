@@ -4,8 +4,7 @@ namespace DeveloperItsMe\FiscalService\Exceptions;
 
 class CertificateException extends FiscalException
 {
-    /** @var array */
-    protected $opensslErrors = [];
+    protected array $opensslErrors = [];
 
     public function __construct(string $message = '', array $opensslErrors = [], int $code = 0, ?\Throwable $previous = null)
     {

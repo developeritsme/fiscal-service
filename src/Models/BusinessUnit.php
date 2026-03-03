@@ -18,63 +18,56 @@ class BusinessUnit extends Model implements Validatable
     public const TYPE_REGULAR = 'REGULAR';
     public const TYPE_VENDING = 'VENDING';
 
-    /** @var string */
-    protected $unitCode;
+    protected ?string $unitCode = null;
 
-    /** @var string */
-    protected $idNumber;
+    protected ?string $idNumber = null;
 
-    /** @var string */
-    protected $internalId;
+    protected ?string $internalId = null;
 
-    /** @var string */
-    protected $maintainerCode;
+    protected ?string $maintainerCode = null;
 
-    /** @var Carbon */
-    protected $validFrom;
+    protected ?Carbon $validFrom = null;
 
-    /** @var Carbon */
-    protected $validTo;
+    protected ?Carbon $validTo = null;
 
-    /** @var string */
-    protected $type = self::TYPE_REGULAR;
+    protected string $type = self::TYPE_REGULAR;
 
-    public function setUnitCode($code): self
+    public function setUnitCode(string $code): self
     {
         $this->unitCode = $code;
 
         return $this;
     }
 
-    public function setIdNumber($id): self
+    public function setIdNumber(string $id): self
     {
         $this->idNumber = $id;
 
         return $this;
     }
 
-    public function setInternalId($id): self
+    public function setInternalId(string $id): self
     {
         $this->internalId = $id;
 
         return $this;
     }
 
-    public function setMaintainerCode($code): self
+    public function setMaintainerCode(string $code): self
     {
         $this->maintainerCode = $code;
 
         return $this;
     }
 
-    public function setValidFrom($date): self
+    public function setValidFrom(Carbon|string $date): self
     {
         $this->validFrom = Carbon::parse($date);
 
         return $this;
     }
 
-    public function setValidTo($date): self
+    public function setValidTo(Carbon|string $date): self
     {
         $this->validTo = Carbon::parse($date);
 
@@ -82,7 +75,7 @@ class BusinessUnit extends Model implements Validatable
     }
 
     /** @throws InvalidArgumentException */
-    public function setType($type): self
+    public function setType(string $type): self
     {
         $allowed = [self::TYPE_REGULAR, self::TYPE_VENDING];
 

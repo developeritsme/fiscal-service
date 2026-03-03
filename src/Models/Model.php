@@ -13,7 +13,7 @@ abstract class Model
         return $value ? 'true' : 'false';
     }
 
-    protected function formatNumber($value, $decimals = 2): string
+    protected function formatNumber(float|int $value, int $decimals = 2): string
     {
         return number_format($value, $decimals, '.', '');
     }

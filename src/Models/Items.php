@@ -10,11 +10,10 @@ class Items extends Model
     use HasDecimals;
     use Vatable;
 
-    /** @var bool */
-    protected $includeVat = true;
+    protected bool $includeVat = true;
 
-    /** @var array */
-    protected $items = [];
+    /** @var Item[] */
+    protected array $items = [];
 
     public function all(): array
     {

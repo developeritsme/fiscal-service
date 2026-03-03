@@ -7,25 +7,19 @@ use DOMDocument;
 
 abstract class Response
 {
-    /** @var string */
-    protected $response;
+    protected string|false $response;
 
-    /** @var int */
-    protected $code;
+    protected int $code;
 
-    /** @var Request */
-    protected $request;
+    protected ?Request $request;
 
-    /** @var DOMDocument */
-    protected $domResponse;
+    protected ?DOMDocument $domResponse = null;
 
-    /** @var string */
-    protected $connectionError;
+    protected ?string $connectionError;
 
-    /** @var SignatureVerifier */
-    protected $verifier;
+    protected ?SignatureVerifier $verifier = null;
 
-    public function __construct($response, $code, Request $request = null, string $connectionError = null)
+    public function __construct(string|false $response, int $code, ?Request $request = null, ?string $connectionError = null)
     {
         $this->response = $response;
         $this->code = $code;

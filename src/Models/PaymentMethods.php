@@ -3,14 +3,11 @@
 namespace DeveloperItsMe\FiscalService\Models;
 
 use DeveloperItsMe\FiscalService\Exceptions\InvalidArgumentException;
-use DeveloperItsMe\FiscalService\Traits\HasXmlWriter;
 
 class PaymentMethods extends Model
 {
-    use HasXmlWriter;
-
-    /** @var array */
-    protected $methods = [];
+    /** @var PaymentMethod[] */
+    protected array $methods = [];
 
     public function all(): array
     {
@@ -18,7 +15,7 @@ class PaymentMethods extends Model
     }
 
     /** @throws InvalidArgumentException */
-    public function add(PaymentMethod $method, $invoiceType): self
+    public function add(PaymentMethod $method, string $invoiceType): self
     {
         if (!$method->isAllowedForInvoiceType($invoiceType)) {
             throw new InvalidArgumentException(

@@ -6,7 +6,7 @@ class Countries
 {
     public const ME = 'MNE';
 
-    protected static $countries = [
+    protected static array $countries = [
         'ABW'    => 'Aruba',
         'AFG'    => 'Afghanistan',
         'AGO'    => 'Angola',

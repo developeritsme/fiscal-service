@@ -30,80 +30,54 @@ class Invoice extends Model implements Validatable
     public const TYPE_ADVANCE = 'ADVANCE';
     public const TYPE_CREDIT_NOTE = 'CREDIT_NOTE';
 
-    /** @var string */
-    protected $qrBaseUrl;
+    protected ?string $qrBaseUrl = null;
 
-    /** @var Carbon */
-    protected $dateTime;
+    protected Carbon $dateTime;
 
-    /** @var string */
-    protected $method = self::TYPE_CASH;
+    protected string $method = self::TYPE_CASH;
 
-    /** @var string */
-    protected $type = self::TYPE_INVOICE;
+    protected string $type = self::TYPE_INVOICE;
 
-    /** @var int */
-    protected $number;
+    protected ?int $number = null;
 
-    /** @var string */
-    protected $enu;
+    protected ?string $enu = null;
 
-    /** @var string */
-    protected $operatorCode;
+    protected ?string $operatorCode = null;
 
-    /** @var string */
-    protected $businessUnitCode;
+    protected ?string $businessUnitCode = null;
 
-    /**
-     * IKOF code - issuer code
-     *
-     * @var string
-     */
-    protected $issuerCode;
+    /** IKOF code - issuer code */
+    protected ?string $issuerCode = null;
 
-    /** @var Seller */
-    protected $seller;
+    protected ?Seller $seller = null;
 
-    /** @var Buyer */
-    protected $buyer;
+    protected ?Buyer $buyer = null;
 
-    /** @var PaymentMethods */
-    protected $paymentMethods;
+    protected PaymentMethods $paymentMethods;
 
-    /** @var Items */
-    protected $items;
+    protected Items $items;
 
-    /** @var SameTaxes */
-    protected $taxes;
+    protected ?SameTaxes $taxes = null;
 
-    /** @var CorrectiveInvoice */
-    protected $corrective;
+    protected ?CorrectiveInvoice $corrective = null;
 
-    /** @var IICRefs */
-    protected $iicRefs;
+    protected IICRefs $iicRefs;
 
-    /** @var SupplyPeriod */
-    protected $supplyPeriod;
+    protected ?SupplyPeriod $supplyPeriod = null;
 
-    /** @var array */
-    protected $totals = [];
+    protected array $totals = [];
 
-    /** @var string */
-    protected $iicSignature;
+    protected ?string $iicSignature = null;
 
-    /** @var string */
-    protected $taxPeriod;
+    protected ?string $taxPeriod = null;
 
-    /** @var string|null */
-    protected $payDeadline;
+    protected ?string $payDeadline = null;
 
-    /** @var string|null */
-    protected $bankAccNum;
+    protected ?string $bankAccNum = null;
 
-    /** @var string|null */
-    protected $note;
+    protected ?string $note = null;
 
-    public function __construct($itemsDecimals = 2)
+    public function __construct(int $itemsDecimals = 2)
     {
         $this->paymentMethods = new PaymentMethods();
         $this->items = new Items();
@@ -112,7 +86,7 @@ class Invoice extends Model implements Validatable
         $this->dateTime = Carbon::now();
     }
 
-    public function setDateTime($dateTime): self
+    public function setDateTime(Carbon|string $dateTime): self
     {
         $this->dateTime = Carbon::parse($dateTime);
 
@@ -157,7 +131,7 @@ class Invoice extends Model implements Validatable
     /**
      * @deprecated Use setMethod() for CASH/NONCASH or setInvoiceType() for invoice types.
      */
-    public function setType($type): self
+    public function setType(string $type): self
     {
         if (in_array($type, [self::TYPE_CASH, self::TYPE_NONCASH])) {
             return $this->setMethod($type);
@@ -190,28 +164,28 @@ class Invoice extends Model implements Validatable
         return $this;
     }
 
-    public function setEnu($enu): self
+    public function setEnu(string $enu): self
     {
         $this->enu = $enu;
 
         return $this;
     }
 
-    public function setOperatorCode($code): self
+    public function setOperatorCode(string $code): self
     {
         $this->operatorCode = $code;
 
         return $this;
     }
 
-    public function setBusinessUnitCode($code): self
+    public function setBusinessUnitCode(string $code): self
     {
         $this->businessUnitCode = $code;
 
         return $this;
     }
 
-    public function setIssuerCode($code): self
+    public function setIssuerCode(string $code): self
     {
         $this->issuerCode = $code;
 
@@ -266,35 +240,35 @@ class Invoice extends Model implements Validatable
         return $this;
     }
 
-    public function setTaxPeriod($period): self
+    public function setTaxPeriod(string $period): self
     {
         $this->taxPeriod = $period;
 
         return $this;
     }
 
-    public function setPayDeadline($date): self
+    public function setPayDeadline(string $date): self
     {
         $this->payDeadline = $date;
 
         return $this;
     }
 
-    public function setBankAccNum($account): self
+    public function setBankAccNum(string $account): self
     {
         $this->bankAccNum = $account;
 
         return $this;
     }
 
-    public function setNote($note): self
+    public function setNote(string $note): self
     {
         $this->note = $note;
 
         return $this;
     }
 
-    public function setSupplyPeriod($start, $end = null): self
+    public function setSupplyPeriod(string $start, ?string $end = null): self
     {
         $this->supplyPeriod = new SupplyPeriod($start, $end);
 
@@ -348,9 +322,9 @@ class Invoice extends Model implements Validatable
         }
     }
 
-    private function validateChild(array &$errors, $child, string $prefix): void
+    protected function validateChild(array &$errors, ?Validatable $child, string $prefix): void
     {
-        if (!$child instanceof Validatable) {
+        if ($child === null) {
             return;
         }
 
@@ -459,7 +433,7 @@ class Invoice extends Model implements Validatable
         return $writer->outputMemory();
     }
 
-    public function concatenate($total): string
+    public function concatenate(string $total): string
     {
         return implode('|', [
             $this->seller->getIdNumber(),
@@ -485,7 +459,7 @@ class Invoice extends Model implements Validatable
         $this->issuerCode = strtoupper(md5($this->iicSignature));
     }
 
-    public function setIicSignature($signature): self
+    public function setIicSignature(string $signature): self
     {
         $this->iicSignature = $signature;
 
@@ -499,7 +473,7 @@ class Invoice extends Model implements Validatable
         return $this;
     }
 
-    protected function totals($key = null)
+    protected function totals(?string $key = null): array|float
     {
         if (empty($this->totals)) {
             $this->taxes = SameTaxes::make($this->getItems());

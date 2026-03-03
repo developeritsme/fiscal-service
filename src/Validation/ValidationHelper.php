@@ -10,14 +10,14 @@ class ValidationHelper
     public const TAX_PERIOD = '/^((0[1-9])|(1[0-2]))\/(\d{4})$/';
     public const DATE = '/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/';
 
-    public static function required(array &$errors, $value, string $field, string $label): void
+    public static function required(array &$errors, mixed $value, string $field, string $label): void
     {
         if ($value === null || $value === '') {
             $errors[$field][] = "{$label} is required.";
         }
     }
 
-    public static function pattern(array &$errors, $value, string $pattern, string $field, string $label, string $patternName): void
+    public static function pattern(array &$errors, mixed $value, string $pattern, string $field, string $label, string $patternName): void
     {
         if ($value === null || $value === '') {
             return;
@@ -28,27 +28,27 @@ class ValidationHelper
         }
     }
 
-    public static function requiredAndPattern(array &$errors, $value, string $pattern, string $field, string $label, string $patternName): void
+    public static function requiredAndPattern(array &$errors, mixed $value, string $pattern, string $field, string $label, string $patternName): void
     {
         self::required($errors, $value, $field, $label);
         self::pattern($errors, $value, $pattern, $field, $label, $patternName);
     }
 
-    public static function positive(array &$errors, $value, string $field, string $label): void
+    public static function positive(array &$errors, mixed $value, string $field, string $label): void
     {
         if ($value !== null && $value <= 0) {
             $errors[$field][] = "{$label} must be greater than 0.";
         }
     }
 
-    public static function notEmpty(array &$errors, $items, string $field, string $label): void
+    public static function notEmpty(array &$errors, mixed $items, string $field, string $label): void
     {
         if (empty($items)) {
             $errors[$field][] = "{$label} must not be empty.";
         }
     }
 
-    public static function maxLength(array &$errors, $value, int $max, string $field, string $label): void
+    public static function maxLength(array &$errors, mixed $value, int $max, string $field, string $label): void
     {
         if ($value === null || $value === '') {
             return;

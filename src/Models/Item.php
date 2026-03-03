@@ -23,75 +23,66 @@ class Item extends Model implements Validatable
     public const EXEMPT_CL30 = 'VAT_CL30';
     public const EXEMPT_CL44 = 'VAT_CL44';
 
-    /** @var string */
-    protected $code;
+    protected ?string $code = null;
 
-    /** @var string */
-    protected $name;
+    protected ?string $name = null;
 
-    /** @var string */
-    protected $unit = 'unit';
+    protected string $unit = 'unit';
 
-    /** @var float */
-    protected $quantity = 1.0;
+    protected float $quantity = 1.0;
 
-    /** @var float */
-    protected $unitPrice;
+    protected ?float $unitPrice = null;
 
-    /** @var float */
-    protected $vatRate;
+    protected ?float $vatRate = null;
 
-    /** @var float */
-    protected $rebate = 0;
+    protected float $rebate = 0;
 
-    /** @var bool */
-    protected $rebateReducesBase = true;
+    protected bool $rebateReducesBase = true;
 
-    /** @var string|null */
-    protected $exemptFromVAT;
+    protected ?string $exemptFromVAT = null;
 
-    public function __construct($name = null, $vatRate = null)
+    public function __construct(?string $name = null, ?float $vatRate = null)
     {
         $this->setName($name)
             ->setVatRate($vatRate);
     }
 
-    public function setCode($code): self
+    public function setCode(string $code): self
     {
         $this->code = $code;
 
         return $this;
     }
 
-    public function setName($name): self
+    public function setName(?string $name): self
     {
         $this->name = $name;
 
         return $this;
     }
 
-    public function setUnit($unit): self
+    public function setUnit(string $unit): self
     {
         $this->unit = $unit;
 
         return $this;
     }
 
-    public function setQuantity($quantity): self
+    public function setQuantity(float $quantity): self
     {
         $this->quantity = $quantity;
 
         return $this;
     }
 
-    public function setUnitPrice($unitPrice): self
+    public function setUnitPrice(float $unitPrice): self
     {
         $this->unitPrice = $unitPrice;
 
         return $this;
     }
 
-    public function setRebate($percent, $reducesBasePrice = true): self
+    public function setRebate(float $percent, bool $reducesBasePrice = true): self
     {
         $this->rebate = $percent;
         $this->rebateReducesBase = $reducesBasePrice;
@@ -99,7 +90,7 @@ class Item extends Model implements Validatable
         return $this;
     }
 
-    public function setVatRate($percent): self
+    public function setVatRate(?float $percent): self
     {
         $this->vatRate = $percent;
 
@@ -112,7 +103,7 @@ class Item extends Model implements Validatable
     }
 
     /** @throws InvalidArgumentException */
-    public function setExemptFromVAT($reason): self
+    public function setExemptFromVAT(?string $reason): self
     {
         if ($reason !== null && !in_array($reason, $this->exemptTypes())) {
             throw new InvalidArgumentException(

@@ -86,7 +86,7 @@ class Certificate
             : null;
     }
 
-    private function parsePkcs12(string $passphrase): void
+    protected function parsePkcs12(string $passphrase): void
     {
         $parsed = [];
         $read = openssl_pkcs12_read($this->rawCertificate, $parsed, $passphrase);

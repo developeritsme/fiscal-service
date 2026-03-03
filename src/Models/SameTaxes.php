@@ -4,11 +4,11 @@ namespace DeveloperItsMe\FiscalService\Models;
 
 class SameTaxes extends Model
 {
-    protected $items = [];
+    protected array $items = [];
 
-    protected $grouped = [];
+    protected array $grouped = [];
 
-    protected $totals = [];
+    protected array $totals = [];
 
     public function __construct(array $items)
     {

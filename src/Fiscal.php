@@ -13,14 +13,14 @@ use DOMElement;
 
 class Fiscal
 {
-    private const SERVICE_URL_PRODUCTION = 'https://efi.tax.gov.me/fs-v1';
-    private const SERVICE_URL_TEST = 'https://efitest.tax.gov.me/fs-v1';
-    private const QR_URL_PRODUCTION = 'https://mapr.tax.gov.me/ic/#/verify';
-    private const QR_URL_TEST = 'https://efitest.tax.gov.me/ic/#/verify';
+    protected const SERVICE_URL_PRODUCTION = 'https://efi.tax.gov.me/fs-v1';
+    protected const SERVICE_URL_TEST = 'https://efitest.tax.gov.me/fs-v1';
+    protected const QR_URL_PRODUCTION = 'https://mapr.tax.gov.me/ic/#/verify';
+    protected const QR_URL_TEST = 'https://efitest.tax.gov.me/ic/#/verify';
 
-    private string $serviceUrl = self::SERVICE_URL_PRODUCTION;
+    protected string $serviceUrl = self::SERVICE_URL_PRODUCTION;
 
-    private string $qrUrl = self::QR_URL_PRODUCTION;
+    protected string $qrUrl = self::QR_URL_PRODUCTION;
 
     protected Certificate $certificate;
 
@@ -94,7 +94,7 @@ class Fiscal
     }
 
     /** @throws FiscalException */
-    protected function sign($xml): string
+    protected function sign(string $xml): string
     {
         $XMLRequestDOMDoc = new DOMDocument();
         if (!$XMLRequestDOMDoc->loadXML($xml, LIBXML_NONET)) {
@@ -155,7 +155,7 @@ class Fiscal
         return $XMLRequestDOMDoc->saveXML();
     }
 
-    protected function soap($payload): Response
+    protected function soap(string $payload): Response
     {
         // PHP's XMLWriter adds 'default:' prefix to elements in the default namespace.
         // The fiscal service expects unprefixed elements, so we strip it from tags only.

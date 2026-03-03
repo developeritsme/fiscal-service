@@ -9,16 +9,13 @@ use DeveloperItsMe\FiscalService\Validation\ValidationHelper;
 
 class IICRef extends Model implements Validatable
 {
-    /** @var string */
-    protected $iic;
+    protected string $iic;
 
-    /** @var Carbon */
-    protected $dateTime;
+    protected Carbon $dateTime;
 
-    /** @var float|null */
-    protected $amount;
+    protected ?float $amount;
 
-    public function __construct($iic, $issueDateTime, $amount = null)
+    public function __construct(string $iic, Carbon|string $issueDateTime, ?float $amount = null)
     {
         $this->iic = $iic;
         $this->dateTime = Carbon::parse($issueDateTime);

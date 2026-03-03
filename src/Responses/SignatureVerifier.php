@@ -9,21 +9,15 @@ use DOMXPath;
 
 class SignatureVerifier
 {
-    private const DSIG_NS = 'http://www.w3.org/2000/09/xmldsig#';
+    protected const DSIG_NS = 'http://www.w3.org/2000/09/xmldsig#';
 
-    /** @var DOMDocument|null */
-    private $doc;
+    protected ?DOMDocument $doc = null;
 
-    /** @var bool|null */
-    private $valid;
+    protected ?bool $valid = null;
 
-    /** @var string|null */
-    private $error;
+    protected ?string $error = null;
 
-    /**
-     * @param DOMDocument|string|null $xml
-     */
-    public function __construct($xml)
+    public function __construct(DOMDocument|string|null $xml)
     {
         if ($xml instanceof DOMDocument) {
             $this->doc = $xml;
@@ -51,7 +45,7 @@ class SignatureVerifier
         return $this->error;
     }
 
-    private function verify(): void
+    protected function verify(): void
     {
         if (!$this->doc) {
             $this->valid = false;
@@ -79,7 +73,7 @@ class SignatureVerifier
     /**
      * @throws SignatureException
      */
-    private function parseClean(): DOMDocument
+    protected function parseClean(): DOMDocument
     {
         $clean = new DOMDocument();
         $clean->preserveWhiteSpace = false;
@@ -95,7 +89,7 @@ class SignatureVerifier
     /**
      * @throws SignatureException
      */
-    private function findResponseElement(DOMDocument $doc): DOMElement
+    protected function findResponseElement(DOMDocument $doc): DOMElement
     {
         $xpath = new DOMXPath($doc);
         $nodes = $xpath->query('//*[@Id="Response"]');
@@ -110,7 +104,7 @@ class SignatureVerifier
     /**
      * @throws SignatureException
      */
-    private function findSignatureElement(DOMElement $responseElement): DOMElement
+    protected function findSignatureElement(DOMElement $responseElement): DOMElement
     {
         $signatures = $responseElement->getElementsByTagNameNS(self::DSIG_NS, 'Signature');
 
@@ -124,7 +118,7 @@ class SignatureVerifier
     /**
      * @throws SignatureException
      */
-    private function verifyDigest(DOMElement $responseElement, DOMElement $signatureElement): void
+    protected function verifyDigest(DOMElement $responseElement, DOMElement $signatureElement): void
     {
         $expectedDigest = $this->getElementValue($signatureElement, 'DigestValue');
 
@@ -155,7 +149,7 @@ class SignatureVerifier
     /**
      * @throws SignatureException
      */
-    private function verifySignatureValue(DOMElement $signatureElement): void
+    protected function verifySignatureValue(DOMElement $signatureElement): void
     {
         $signatureValue = $this->getElementValue($signatureElement, 'SignatureValue');
 
@@ -201,7 +195,7 @@ class SignatureVerifier
         }
     }
 
-    private function getElementValue(DOMElement $parent, string $localName): ?string
+    protected function getElementValue(DOMElement $parent, string $localName): ?string
     {
         $nodes = $parent->getElementsByTagNameNS(self::DSIG_NS, $localName);
 

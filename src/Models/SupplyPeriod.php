@@ -8,15 +8,11 @@ use DeveloperItsMe\FiscalService\Validation\ValidationHelper;
 
 class SupplyPeriod extends Model implements Validatable
 {
-    /** @var string */
-    protected $start;
+    protected string $start;
 
-    /**
-     * @var string
-     */
-    protected $end;
+    protected ?string $end;
 
-    public function __construct($start, $end = null)
+    public function __construct(string $start, ?string $end = null)
     {
         $this->start = $start;
         $this->end = $end;
