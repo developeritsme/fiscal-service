@@ -106,6 +106,21 @@ class InvoiceTest extends TestCase
     }
 
     /** @test */
+    public function constructor_defaults_to_cash_method_and_invoice_type()
+    {
+        $invoice = new Invoice();
+
+        $method = new \ReflectionProperty(Invoice::class, 'method');
+        $method->setAccessible(true);
+
+        $type = new \ReflectionProperty(Invoice::class, 'type');
+        $type->setAccessible(true);
+
+        $this->assertSame(Invoice::TYPE_CASH, $method->getValue($invoice));
+        $this->assertSame(Invoice::TYPE_INVOICE, $type->getValue($invoice));
+    }
+
+    /** @test */
     public function it_rejects_zero_as_invoice_number()
     {
         $this->expectException(InvalidArgumentException::class);
