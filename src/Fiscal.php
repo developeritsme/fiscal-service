@@ -78,7 +78,7 @@ class Fiscal
             $model->setQrBaseUrl($this->qrUrl);
         }
 
-        return str_replace('default:', '', $this->sign($this->request->toXML()));
+        return preg_replace('/<(\/?)default:/', '<$1', $this->sign($this->request->toXML()));
     }
 
     /** @throws FiscalException */
@@ -158,8 +158,8 @@ class Fiscal
     protected function soap($payload): Response
     {
         // PHP's XMLWriter adds 'default:' prefix to elements in the default namespace.
-        // The fiscal service expects unprefixed elements, so we strip it out.
-        $payload = str_replace('default:', '', $payload);
+        // The fiscal service expects unprefixed elements, so we strip it from tags only.
+        $payload = preg_replace('/<(\/?)default:/', '<$1', $payload);
 
         $ch = curl_init();
 

@@ -80,6 +80,29 @@ class FiscalTest extends TestCase
         }
     }
 
+    /** @test */
+    public function payload_strips_default_namespace_prefix_from_xml_tags()
+    {
+        $fiscal = $this->fiscal();
+        $request = $this->getRegisterInvoiceRequest();
+
+        $payload = $fiscal->request($request)->payload();
+
+        $this->assertDoesNotMatchRegularExpression('/<\/?default:/', $payload);
+    }
+
+    /** @test */
+    public function payload_preserves_default_colon_in_attribute_values()
+    {
+        $fiscal = $this->fiscal();
+        $request = $this->getRegisterInvoiceRequest();
+        $request->model()->setNote('This invoice is by default: unaccepted');
+
+        $payload = $fiscal->request($request)->payload();
+
+        $this->assertStringContainsString('default: unaccepted', $payload);
+    }
+
     private function getPrivateKeyViaReflection(Certificate $cert): mixed
     {
         $ref = new \ReflectionProperty($cert, 'privateKeyResource');
