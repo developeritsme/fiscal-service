@@ -2,6 +2,7 @@
 
 namespace DeveloperItsMe\FiscalService\Models;
 
+use DeveloperItsMe\FiscalService\Exceptions\InvalidArgumentException;
 use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
 use DeveloperItsMe\FiscalService\Traits\HasDecimals;
 use DeveloperItsMe\FiscalService\Traits\HasXmlWriter;
@@ -113,9 +114,13 @@ class Item extends Model
 
     public function setExemptFromVAT($reason): self
     {
-        if ($reason === null || in_array($reason, $this->exemptTypes())) {
-            $this->exemptFromVAT = $reason;
+        if ($reason !== null && !in_array($reason, $this->exemptTypes())) {
+            throw new InvalidArgumentException(
+                sprintf('Invalid exempt from VAT: "%s". Allowed values: %s.', $reason, implode(', ', $this->exemptTypes()))
+            );
         }
+
+        $this->exemptFromVAT = $reason;
 
         return $this;
     }

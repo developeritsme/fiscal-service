@@ -2,6 +2,8 @@
 
 namespace DeveloperItsMe\FiscalService\Traits;
 
+use DeveloperItsMe\FiscalService\Exceptions\InvalidArgumentException;
+
 trait HasSubsequentDelivery
 {
     /** @var string|null */
@@ -9,9 +11,13 @@ trait HasSubsequentDelivery
 
     public function setSubsequentDeliveryType($type): self
     {
-        if (in_array($type, $this->subsequentDeliveryTypes())) {
-            $this->subsequentDeliveryType = $type;
+        if (!in_array($type, $this->subsequentDeliveryTypes())) {
+            throw new InvalidArgumentException(
+                sprintf('Invalid subsequent delivery type: "%s". Allowed values: %s.', $type, implode(', ', $this->subsequentDeliveryTypes()))
+            );
         }
+
+        $this->subsequentDeliveryType = $type;
 
         return $this;
     }

@@ -2,6 +2,7 @@
 
 namespace DeveloperItsMe\FiscalService\Models;
 
+use DeveloperItsMe\FiscalService\Exceptions\InvalidArgumentException;
 use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
 use DeveloperItsMe\FiscalService\Traits\Vatable;
 use DeveloperItsMe\FiscalService\Validation\ValidationHelper;
@@ -74,9 +75,13 @@ abstract class Business extends Model
 
     public function setCountry($country): self
     {
-        if (in_array($country, Countries::codes())) {
-            $this->country = $country;
+        if (!in_array($country, Countries::codes())) {
+            throw new InvalidArgumentException(
+                sprintf('Invalid country: "%s".', $country)
+            );
         }
+
+        $this->country = $country;
 
         return $this;
     }

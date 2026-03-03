@@ -3,6 +3,7 @@
 namespace Tests\Models;
 
 use Carbon\Carbon;
+use DeveloperItsMe\FiscalService\Exceptions\InvalidArgumentException;
 use DeveloperItsMe\FiscalService\Models\CashDeposit;
 use PHPUnit\Framework\TestCase;
 
@@ -47,6 +48,15 @@ class CashDepositTest extends TestCase
     }
 
     /** @test */
+    public function setOperation_throws_on_invalid_value()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $cashDeposit = new CashDeposit();
+        $cashDeposit->setOperation('INVALID');
+    }
+
+    /** @test */
     public function setSubsequentDeliveryType_is_fluent()
     {
         $cashDeposit = new CashDeposit();
@@ -55,15 +65,12 @@ class CashDepositTest extends TestCase
     }
 
     /** @test */
-    public function setSubsequentDeliveryType_ignores_invalid_value()
+    public function setSubsequentDeliveryType_throws_on_invalid_value()
     {
+        $this->expectException(InvalidArgumentException::class);
+
         $cashDeposit = new CashDeposit();
         $cashDeposit->setSubsequentDeliveryType('INVALID');
-
-        $reflection = new \ReflectionProperty(CashDeposit::class, 'subsequentDeliveryType');
-        $reflection->setAccessible(true);
-
-        $this->assertNull($reflection->getValue($cashDeposit));
     }
 
     /** @test */

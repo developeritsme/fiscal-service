@@ -52,7 +52,7 @@ class RequestsTest extends TestCase
 
         $pm = new PaymentMethod(20);
 
-        $seller = new Seller('IME PREZIME PRODAVAOCA', 'ID BROJ PRODAVAOCA');
+        $seller = new Seller('IME PREZIME PRODAVAOCA', '12345678');
         $seller->setAddress('ADRESA PRODAVAOCA')
             ->setTown('GRAD PRODAVAOCA');
 

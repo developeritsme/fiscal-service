@@ -3,6 +3,7 @@
 namespace Tests\Models;
 
 use Carbon\Carbon;
+use DeveloperItsMe\FiscalService\Exceptions\InvalidArgumentException;
 use DeveloperItsMe\FiscalService\Models\Buyer;
 use DeveloperItsMe\FiscalService\Models\CorrectiveInvoice;
 use DeveloperItsMe\FiscalService\Models\IICRef;
@@ -28,7 +29,7 @@ class InvoiceTest extends TestCase
 
         $pm = new PaymentMethod(20);
 
-        $seller = new Seller('IME PREZIME PRODAVAOCA', 'ID BROJ PRODAVAOCA');
+        $seller = new Seller('IME PREZIME PRODAVAOCA', '12345678');
         $seller->setAddress('ADRESA PRODAVAOCA')
             ->setTown('GRAD PRODAVAOCA');
 
@@ -61,7 +62,7 @@ class InvoiceTest extends TestCase
         $pm = new PaymentMethod(20);
         $pm2 = new PaymentMethod(24, PaymentMethod::TYPE_CARD);
 
-        $seller = new Seller('IME PREZIME PRODAVAOCA', 'ID BROJ PRODAVAOCA');
+        $seller = new Seller('IME PREZIME PRODAVAOCA', '12345678');
         $seller->setAddress('ADRESA PRODAVAOCA')
             ->setTown('GRAD PRODAVAOCA');
 
@@ -107,13 +108,10 @@ class InvoiceTest extends TestCase
     /** @test */
     public function it_rejects_zero_as_invoice_number()
     {
+        $this->expectException(InvalidArgumentException::class);
+
         $invoice = new Invoice();
         $invoice->setNumber(0);
-
-        $reflection = new \ReflectionProperty(Invoice::class, 'number');
-        $reflection->setAccessible(true);
-
-        $this->assertNull($reflection->getValue($invoice));
     }
 
     /** @test */
@@ -141,15 +139,12 @@ class InvoiceTest extends TestCase
     }
 
     /** @test */
-    public function setMethod_ignores_invalid_value()
+    public function setMethod_throws_on_invalid_value()
     {
+        $this->expectException(InvalidArgumentException::class);
+
         $invoice = new Invoice();
         $invoice->setMethod('INVALID');
-
-        $reflection = new \ReflectionProperty(Invoice::class, 'method');
-        $reflection->setAccessible(true);
-
-        $this->assertSame(Invoice::TYPE_CASH, $reflection->getValue($invoice));
     }
 
     /** @test */
@@ -165,15 +160,12 @@ class InvoiceTest extends TestCase
     }
 
     /** @test */
-    public function setInvoiceType_ignores_invalid_value()
+    public function setInvoiceType_throws_on_invalid_value()
     {
+        $this->expectException(InvalidArgumentException::class);
+
         $invoice = new Invoice();
         $invoice->setInvoiceType('INVALID');
-
-        $reflection = new \ReflectionProperty(Invoice::class, 'type');
-        $reflection->setAccessible(true);
-
-        $this->assertSame(Invoice::TYPE_INVOICE, $reflection->getValue($invoice));
     }
 
     /** @test */
@@ -388,15 +380,12 @@ class InvoiceTest extends TestCase
     }
 
     /** @test */
-    public function setSubsequentDeliveryType_ignores_invalid_value()
+    public function setSubsequentDeliveryType_throws_on_invalid_value()
     {
+        $this->expectException(InvalidArgumentException::class);
+
         $invoice = new Invoice();
         $invoice->setSubsequentDeliveryType('INVALID');
-
-        $reflection = new \ReflectionProperty(Invoice::class, 'subsequentDeliveryType');
-        $reflection->setAccessible(true);
-
-        $this->assertNull($reflection->getValue($invoice));
     }
 
     /** @test */
@@ -723,6 +712,15 @@ class InvoiceTest extends TestCase
         $arr = $invoice->toArray();
 
         $this->assertEmpty($arr['iic_refs']);
+    }
+
+    /** @test */
+    public function addPaymentMethod_throws_when_not_allowed_for_invoice_type()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $invoice = new Invoice();
+        $invoice->addPaymentMethod(new PaymentMethod(100, PaymentMethod::TYPE_COMPANY));
     }
 
     protected function getInvoice()

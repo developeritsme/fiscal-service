@@ -4,6 +4,7 @@ namespace DeveloperItsMe\FiscalService\Models;
 
 use Carbon\Carbon;
 use DeveloperItsMe\FiscalService\Certificate;
+use DeveloperItsMe\FiscalService\Exceptions\InvalidArgumentException;
 use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
 use DeveloperItsMe\FiscalService\Traits\HasDecimals;
 use DeveloperItsMe\FiscalService\Traits\HasSoftwareCode;
@@ -124,18 +125,28 @@ class Invoice extends Model
 
     public function setMethod(string $method): self
     {
-        if (in_array($method, [self::TYPE_CASH, self::TYPE_NONCASH])) {
-            $this->method = $method;
+        $allowed = [self::TYPE_CASH, self::TYPE_NONCASH];
+
+        if (!in_array($method, $allowed)) {
+            throw new InvalidArgumentException(
+                sprintf('Invalid method: "%s". Allowed values: %s.', $method, implode(', ', $allowed))
+            );
         }
+
+        $this->method = $method;
 
         return $this;
     }
 
     public function setInvoiceType(string $type): self
     {
-        if (in_array($type, $this->invoiceTypes())) {
-            $this->type = $type;
+        if (!in_array($type, $this->invoiceTypes())) {
+            throw new InvalidArgumentException(
+                sprintf('Invalid invoice type: "%s". Allowed values: %s.', $type, implode(', ', $this->invoiceTypes()))
+            );
         }
+
+        $this->type = $type;
 
         return $this;
     }
@@ -166,9 +177,11 @@ class Invoice extends Model
 
     public function setNumber(int $number): self
     {
-        if ($number > 0) {
-            $this->number = $number;
+        if ($number <= 0) {
+            throw new InvalidArgumentException('Invoice number must be greater than 0.');
         }
+
+        $this->number = $number;
 
         return $this;
     }

@@ -2,6 +2,7 @@
 
 namespace DeveloperItsMe\FiscalService\Models;
 
+use DeveloperItsMe\FiscalService\Exceptions\InvalidArgumentException;
 use DeveloperItsMe\FiscalService\Traits\HasXmlWriter;
 
 class PaymentMethods extends Model
@@ -18,9 +19,13 @@ class PaymentMethods extends Model
 
     public function add(PaymentMethod $method, $invoiceType): self
     {
-        if ($method->isAllowedForInvoiceType($invoiceType)) {
-            $this->methods[] = $method;
+        if (!$method->isAllowedForInvoiceType($invoiceType)) {
+            throw new InvalidArgumentException(
+                sprintf('Payment method "%s" is not allowed for invoice type "%s".', $method->getType(), $invoiceType)
+            );
         }
+
+        $this->methods[] = $method;
 
         return $this;
     }

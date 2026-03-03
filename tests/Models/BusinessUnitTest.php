@@ -3,6 +3,7 @@
 namespace Tests\Models;
 
 use Carbon\Carbon;
+use DeveloperItsMe\FiscalService\Exceptions\InvalidArgumentException;
 use DeveloperItsMe\FiscalService\Models\BusinessUnit;
 use PHPUnit\Framework\TestCase;
 
@@ -51,6 +52,15 @@ class BusinessUnitTest extends TestCase
         $this->assertSame('2019-12-05', $arr['valid_from']);
         $this->assertSame('2020-12-05', $arr['valid_to']);
         $this->assertSame(BusinessUnit::TYPE_REGULAR, $arr['type']);
+    }
+
+    /** @test */
+    public function setType_throws_on_invalid_value()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $businessUnit = new BusinessUnit();
+        $businessUnit->setType('INVALID');
     }
 
     /** @test */

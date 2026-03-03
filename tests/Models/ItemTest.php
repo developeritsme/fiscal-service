@@ -2,6 +2,7 @@
 
 namespace Tests\Models;
 
+use DeveloperItsMe\FiscalService\Exceptions\InvalidArgumentException;
 use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
 use DeveloperItsMe\FiscalService\Models\Item;
 use PHPUnit\Framework\TestCase;
@@ -166,12 +167,12 @@ class ItemTest extends TestCase
     }
 
     /** @test */
-    public function setExemptFromVAT_ignores_invalid_value()
+    public function setExemptFromVAT_throws_on_invalid_value()
     {
+        $this->expectException(InvalidArgumentException::class);
+
         $item = (new Item('Product', 0))->setUnitPrice(100);
         $item->setExemptFromVAT('INVALID_VALUE');
-
-        $this->assertNull($item->getExemptFromVAT());
     }
 
     /** @test */

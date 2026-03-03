@@ -55,6 +55,11 @@ class PaymentMethod extends Model
     /** @var string|null */
     protected $bankAcc;
 
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
     public function __construct($amount = 0.00, $type = self::TYPE_BANKNOTE)
     {
         $this->amount = $amount;

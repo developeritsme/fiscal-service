@@ -108,7 +108,7 @@ class InvoiceValidationTest extends TestCase
             ->setOperatorCode('ab123cd456')
             ->setBusinessUnitCode('ab123cd456')
             ->setSoftwareCode('ab123cd456')
-            ->setSeller(new Seller('', ''))
+            ->setSeller(new Seller('', '12345678'))
             ->addItem(new Item('Product', 21))
             ->addPaymentMethod(new PaymentMethod(10));
 
@@ -121,7 +121,6 @@ class InvoiceValidationTest extends TestCase
         } catch (ValidationException $e) {
             $errors = $e->getErrors();
             $this->assertArrayHasKey('seller.name', $errors);
-            $this->assertArrayHasKey('seller.idNumber', $errors);
         }
     }
 

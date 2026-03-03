@@ -3,6 +3,7 @@
 namespace DeveloperItsMe\FiscalService\Models;
 
 use Carbon\Carbon;
+use DeveloperItsMe\FiscalService\Exceptions\InvalidArgumentException;
 use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
 use DeveloperItsMe\FiscalService\Traits\HasSubsequentDelivery;
 use DeveloperItsMe\FiscalService\Traits\HasUUID;
@@ -54,9 +55,15 @@ class CashDeposit extends Model
 
     public function setOperation($operation): self
     {
-        if (in_array($operation, [self::OPERATION_INITIAL, self::OPERATION_WITHDRAW])) {
-            $this->operation = $operation;
+        $allowed = [self::OPERATION_INITIAL, self::OPERATION_WITHDRAW];
+
+        if (!in_array($operation, $allowed)) {
+            throw new InvalidArgumentException(
+                sprintf('Invalid operation: "%s". Allowed values: %s.', $operation, implode(', ', $allowed))
+            );
         }
+
+        $this->operation = $operation;
 
         return $this;
     }

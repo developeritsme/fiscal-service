@@ -3,6 +3,7 @@
 namespace DeveloperItsMe\FiscalService\Models;
 
 use Carbon\Carbon;
+use DeveloperItsMe\FiscalService\Exceptions\InvalidArgumentException;
 use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
 use DeveloperItsMe\FiscalService\Traits\HasSoftwareCode;
 use DeveloperItsMe\FiscalService\Traits\HasUUID;
@@ -81,9 +82,15 @@ class BusinessUnit extends Model
 
     public function setType($type): self
     {
-        if (in_array($type, [self::TYPE_REGULAR, self::TYPE_VENDING])) {
-            $this->type = $type;
+        $allowed = [self::TYPE_REGULAR, self::TYPE_VENDING];
+
+        if (!in_array($type, $allowed)) {
+            throw new InvalidArgumentException(
+                sprintf('Invalid type: "%s". Allowed values: %s.', $type, implode(', ', $allowed))
+            );
         }
+
+        $this->type = $type;
 
         return $this;
     }
