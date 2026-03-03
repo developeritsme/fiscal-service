@@ -3,13 +3,11 @@
 namespace DeveloperItsMe\FiscalService\Models;
 
 use DeveloperItsMe\FiscalService\Traits\HasDecimals;
-use DeveloperItsMe\FiscalService\Traits\HasXmlWriter;
 use DeveloperItsMe\FiscalService\Traits\Vatable;
 
 class Items extends Model
 {
     use HasDecimals;
-    use HasXmlWriter;
     use Vatable;
 
     /** @var bool */

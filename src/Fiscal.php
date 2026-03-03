@@ -2,7 +2,9 @@
 
 namespace DeveloperItsMe\FiscalService;
 
+use DeveloperItsMe\FiscalService\Contracts\Validatable;
 use DeveloperItsMe\FiscalService\Exceptions\FiscalException;
+use DeveloperItsMe\FiscalService\Models\Invoice;
 use DeveloperItsMe\FiscalService\Requests\Request;
 use DeveloperItsMe\FiscalService\Responses\Factory;
 use DeveloperItsMe\FiscalService\Responses\Response;
@@ -67,15 +69,12 @@ class Fiscal
     {
         $model = $this->request->model();
 
-        if (method_exists($model, 'validate')) {
+        if ($model instanceof Validatable) {
             $model->validate();
         }
 
-        if (method_exists($model, 'generateIIC')) {
+        if ($model instanceof Invoice) {
             $model->generateIIC($this->certificate());
-        }
-
-        if (method_exists($model, 'setQrBaseUrl')) {
             $model->setQrBaseUrl($this->qrUrl);
         }
 

@@ -2,17 +2,16 @@
 
 namespace DeveloperItsMe\FiscalService\Models;
 
+use DeveloperItsMe\FiscalService\Contracts\Validatable;
 use DeveloperItsMe\FiscalService\Exceptions\InvalidArgumentException;
 use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
 use DeveloperItsMe\FiscalService\Traits\HasDecimals;
-use DeveloperItsMe\FiscalService\Traits\HasXmlWriter;
 use DeveloperItsMe\FiscalService\Traits\Vatable;
 use DeveloperItsMe\FiscalService\Validation\ValidationHelper;
 
-class Item extends Model
+class Item extends Model implements Validatable
 {
     use HasDecimals;
-    use HasXmlWriter;
     use Vatable;
 
     public const EXEMPT_CL17 = 'VAT_CL17';

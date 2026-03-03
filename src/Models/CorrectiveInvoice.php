@@ -3,10 +3,11 @@
 namespace DeveloperItsMe\FiscalService\Models;
 
 use Carbon\Carbon;
+use DeveloperItsMe\FiscalService\Contracts\Validatable;
 use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
 use DeveloperItsMe\FiscalService\Validation\ValidationHelper;
 
-class CorrectiveInvoice extends Model
+class CorrectiveInvoice extends Model implements Validatable
 {
     public const TYPE_CORRECTIVE = 'CORRECTIVE';
     public const TYPE_ERROR_CORRECTIVE = 'ERROR_CORRECTIVE';

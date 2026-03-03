@@ -2,10 +2,11 @@
 
 namespace DeveloperItsMe\FiscalService\Models;
 
+use DeveloperItsMe\FiscalService\Contracts\Validatable;
 use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
 use DeveloperItsMe\FiscalService\Validation\ValidationHelper;
 
-class PaymentMethod extends Model
+class PaymentMethod extends Model implements Validatable
 {
     public const TYPE_BANKNOTE = 'BANKNOTE';
     public const TYPE_CARD = 'CARD';

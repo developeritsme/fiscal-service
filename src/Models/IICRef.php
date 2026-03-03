@@ -3,10 +3,11 @@
 namespace DeveloperItsMe\FiscalService\Models;
 
 use Carbon\Carbon;
+use DeveloperItsMe\FiscalService\Contracts\Validatable;
 use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
 use DeveloperItsMe\FiscalService\Validation\ValidationHelper;
 
-class IICRef extends Model
+class IICRef extends Model implements Validatable
 {
     /** @var string */
     protected $iic;

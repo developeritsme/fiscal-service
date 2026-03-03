@@ -7,9 +7,7 @@ class ValidationHelper
     public const REGISTRATION_CODE = '/^[a-z]{2}[0-9]{3}[a-z]{2}[0-9]{3}$/';
     public const TIN = '/^([0-9]{13}|[0-9]{8})$/';
     public const HEX_32 = '/^[0-9a-fA-F]{32}$/';
-    public const HEX_512 = '/^[0-9a-fA-F]{512}$/';
     public const TAX_PERIOD = '/^((0[1-9])|(1[0-2]))\/(\d{4})$/';
-    public const UUID = '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i';
     public const DATE = '/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/';
 
     public static function required(array &$errors, $value, string $field, string $label): void

@@ -3,13 +3,14 @@
 namespace DeveloperItsMe\FiscalService\Models;
 
 use Carbon\Carbon;
+use DeveloperItsMe\FiscalService\Contracts\Validatable;
 use DeveloperItsMe\FiscalService\Exceptions\InvalidArgumentException;
 use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
 use DeveloperItsMe\FiscalService\Traits\HasSubsequentDelivery;
 use DeveloperItsMe\FiscalService\Traits\HasUUID;
 use DeveloperItsMe\FiscalService\Validation\ValidationHelper;
 
-class CashDeposit extends Model
+class CashDeposit extends Model implements Validatable
 {
     use HasUUID;
     use HasSubsequentDelivery;

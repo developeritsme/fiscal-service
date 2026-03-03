@@ -2,10 +2,11 @@
 
 namespace DeveloperItsMe\FiscalService\Models;
 
+use DeveloperItsMe\FiscalService\Contracts\Validatable;
 use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
 use DeveloperItsMe\FiscalService\Validation\ValidationHelper;
 
-class SupplyPeriod extends Model
+class SupplyPeriod extends Model implements Validatable
 {
     /** @var string */
     protected $start;

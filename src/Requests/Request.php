@@ -19,7 +19,7 @@ abstract class Request
     /** @var string */
     protected $requestName;
 
-    /** @var Request */
+    /** @var Model */
     protected $model;
 
     /** @var string */

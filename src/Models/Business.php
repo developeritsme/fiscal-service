@@ -2,12 +2,13 @@
 
 namespace DeveloperItsMe\FiscalService\Models;
 
+use DeveloperItsMe\FiscalService\Contracts\Validatable;
 use DeveloperItsMe\FiscalService\Exceptions\InvalidArgumentException;
 use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
 use DeveloperItsMe\FiscalService\Traits\Vatable;
 use DeveloperItsMe\FiscalService\Validation\ValidationHelper;
 
-abstract class Business extends Model
+abstract class Business extends Model implements Validatable
 {
     use Vatable;
 

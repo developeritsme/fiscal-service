@@ -4,6 +4,7 @@ namespace DeveloperItsMe\FiscalService\Models;
 
 use Carbon\Carbon;
 use DeveloperItsMe\FiscalService\Certificate;
+use DeveloperItsMe\FiscalService\Contracts\Validatable;
 use DeveloperItsMe\FiscalService\Exceptions\InvalidArgumentException;
 use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
 use DeveloperItsMe\FiscalService\Traits\HasDecimals;
@@ -12,7 +13,7 @@ use DeveloperItsMe\FiscalService\Traits\HasSubsequentDelivery;
 use DeveloperItsMe\FiscalService\Traits\HasUUID;
 use DeveloperItsMe\FiscalService\Validation\ValidationHelper;
 
-class Invoice extends Model
+class Invoice extends Model implements Validatable
 {
     use HasDecimals;
     use HasUUID;
@@ -295,8 +296,6 @@ class Invoice extends Model
 
     public function setSupplyPeriod($start, $end = null): self
     {
-        unset($this->supplyPeriod);
-
         $this->supplyPeriod = new SupplyPeriod($start, $end);
 
         return $this;
@@ -351,11 +350,7 @@ class Invoice extends Model
 
     private function validateChild(array &$errors, $child, string $prefix): void
     {
-        if ($child === null) {
-            return;
-        }
-
-        if (!method_exists($child, 'validate')) {
+        if (!$child instanceof Validatable) {
             return;
         }
 
