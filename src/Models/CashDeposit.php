@@ -53,6 +53,7 @@ class CashDeposit extends Model
         return $this;
     }
 
+    /** @throws InvalidArgumentException */
     public function setOperation($operation): self
     {
         $allowed = [self::OPERATION_INITIAL, self::OPERATION_WITHDRAW];
@@ -75,6 +76,7 @@ class CashDeposit extends Model
         return $this;
     }
 
+    /** @throws ValidationException */
     public function validate(): void
     {
         $errors = [];

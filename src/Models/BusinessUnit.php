@@ -80,6 +80,7 @@ class BusinessUnit extends Model
         return $this;
     }
 
+    /** @throws InvalidArgumentException */
     public function setType($type): self
     {
         $allowed = [self::TYPE_REGULAR, self::TYPE_VENDING];
@@ -95,6 +96,7 @@ class BusinessUnit extends Model
         return $this;
     }
 
+    /** @throws ValidationException */
     public function validate(): void
     {
         $errors = [];

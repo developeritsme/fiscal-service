@@ -16,6 +16,7 @@ class Factory
         RegisterTCRRequest::class         => RegisterTCR::class,
     ];
 
+    /** @throws FiscalException */
     public static function make($response, $code, Request $request = null, string $connectionError = null): Response
     {
         $requestClass = get_class($request);

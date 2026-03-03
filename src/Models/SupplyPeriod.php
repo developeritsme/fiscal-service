@@ -21,6 +21,7 @@ class SupplyPeriod extends Model
         $this->end = $end;
     }
 
+    /** @throws ValidationException */
     public function validate(): void
     {
         $errors = [];

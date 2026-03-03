@@ -7,6 +7,7 @@ use DeveloperItsMe\FiscalService\Validation\ValidationHelper;
 
 class Buyer extends Business
 {
+    /** @throws ValidationException */
     public function validate(): void
     {
         $errors = [];

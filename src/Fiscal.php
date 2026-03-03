@@ -82,9 +82,7 @@ class Fiscal
         return str_replace('default:', '', $this->sign($this->request->toXML()));
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws FiscalException */
     public function send(): Response
     {
         if ($this->request) {
@@ -96,6 +94,7 @@ class Fiscal
         throw new FiscalException('No request set on Fiscal class');
     }
 
+    /** @throws FiscalException */
     protected function sign($xml): string
     {
         $XMLRequestDOMDoc = new DOMDocument();

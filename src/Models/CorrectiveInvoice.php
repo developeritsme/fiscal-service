@@ -27,6 +27,7 @@ class CorrectiveInvoice extends Model
         $this->type = $type;
     }
 
+    /** @throws ValidationException */
     public function validate(): void
     {
         $errors = [];

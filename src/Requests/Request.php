@@ -74,6 +74,7 @@ abstract class Request
         return $this->payload;
     }
 
+    /** @throws FiscalException */
     public function envelope($xml = null): string
     {
         $xmlRequestDom = new DOMDocument();

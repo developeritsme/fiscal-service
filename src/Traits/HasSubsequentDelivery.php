@@ -9,6 +9,7 @@ trait HasSubsequentDelivery
     /** @var string|null */
     protected $subsequentDeliveryType;
 
+    /** @throws InvalidArgumentException */
     public function setSubsequentDeliveryType($type): self
     {
         if (!in_array($type, $this->subsequentDeliveryTypes())) {

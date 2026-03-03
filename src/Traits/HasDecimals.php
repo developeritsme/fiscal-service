@@ -9,6 +9,7 @@ trait HasDecimals
     /** @var int */
     protected $decimals = 2;
 
+    /** @throws InvalidArgumentException */
     public function setDecimals(int $decimals): self
     {
         if (!in_array($decimals, [2, 3, 4], true)) {

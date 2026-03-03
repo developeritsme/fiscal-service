@@ -54,7 +54,7 @@ $seller = new Seller('Company Name', '12345678', true); // name, TIN, isVAT
 $seller->setAddress('Street Address')
     ->setTown('Podgorica');
 
-// Create invoice (parameter: decimal precision for items, default 2)
+// Create invoice (parameter: decimal precision for items — 2, 3, or 4; default 2)
 $invoice = (new Invoice(4))
     ->setNumber(1)
     ->setEnu('ab123cd456')           // TCR code (format: xx000xx000)
@@ -209,26 +209,130 @@ $invoice->setInvoiceType(Invoice::TYPE_CREDIT_NOTE);  // Credit note
 
 ### Payment Methods
 
+Payment methods are restricted by invoice method. Using a disallowed type throws `InvalidArgumentException`.
+
+**Cash invoices** (`TYPE_CASH`):
+
 ```php
-PaymentMethod::TYPE_BANKNOTE  // Cash
-PaymentMethod::TYPE_CARD      // Card payment
-PaymentMethod::TYPE_ACCOUNT   // Bank transfer
-PaymentMethod::TYPE_ORDER     // Order/Check
-PaymentMethod::TYPE_OTHER     // Other
+PaymentMethod::TYPE_BANKNOTE    // Cash
+PaymentMethod::TYPE_CARD        // Card payment
+PaymentMethod::TYPE_ORDER       // Order/Check
+PaymentMethod::TYPE_OTHER_CASH  // Other cash
+```
+
+**Non-cash invoices** (`TYPE_NONCASH`):
+
+```php
+PaymentMethod::TYPE_BUSINESS_CARD // Business card
+PaymentMethod::TYPE_VOUCHER       // Voucher
+PaymentMethod::TYPE_COMPANY       // Company card
+PaymentMethod::TYPE_ORDER         // Order/Check
+PaymentMethod::TYPE_ADVANCE       // Advance payment
+PaymentMethod::TYPE_ACCOUNT       // Bank transfer
+PaymentMethod::TYPE_FACTORING     // Factoring
+PaymentMethod::TYPE_OTHER         // Other
+```
+
+`TYPE_ADVANCE` and `TYPE_VOUCHER` require `setAdvIIC()`, and `TYPE_COMPANY` requires `setCompCard()`:
+
+```php
+$pm = (new PaymentMethod(100, PaymentMethod::TYPE_ADVANCE))
+    ->setAdvIIC('aabb0011ccdd2233eeff44556677aabb');
+
+$pm = (new PaymentMethod(100, PaymentMethod::TYPE_COMPANY))
+    ->setCompCard('COMP-CARD-123');
+```
+
+### Item Rebates and VAT Exemptions
+
+```php
+// Rebate (discount percentage, reduces base price by default)
+$item = (new Item('Product', 21))
+    ->setUnitPrice(100)
+    ->setRebate(10);        // 10% discount, reduces base price
+
+// Or: rebate that does not reduce base price
+$item->setRebate(10, false);
+
+// VAT exemption (only valid when VAT rate is 0)
+$item = (new Item('Exempt Product', 0))
+    ->setUnitPrice(50)
+    ->setExemptFromVAT(Item::EXEMPT_CL17); // VAT_CL17 through VAT_CL44
+```
+
+### Additional Invoice Fields
+
+```php
+// Payment deadline (format: YYYY-MM-DD)
+$invoice->setPayDeadline('2025-12-31');
+
+// Bank account number (max 50 characters)
+$invoice->setBankAccNum('550-12332-44');
+
+// Note (max 200 characters)
+$invoice->setNote('Please pay within 30 days');
+```
+
+### Subsequent Delivery
+
+For invoices sent after the fact (e.g. no internet at time of sale):
+
+```php
+$invoice->setSubsequentDeliveryType('NOINTERNET');
+// Also: BOUNDBOOK, SERVICE, TECHNICALERROR, BUSINESSNEEDS
+
+// Works on cash deposits too
+$cashDeposit->setSubsequentDeliveryType('TECHNICALERROR');
+```
+
+### IIC References (Advance Invoices)
+
+Reference previous advance invoices when issuing the final invoice:
+
+```php
+use DeveloperItsMe\FiscalService\Models\IICRef;
+
+$invoice->addIICRef(new IICRef(
+    'aabb0011ccdd2233eeff44556677aabb', // IIC of the advance invoice
+    '2025-01-15T10:00:00+01:00',        // Issue date/time
+    100.00                               // Amount (optional)
+));
 ```
 
 ### Error Handling
 
-```php
-use DeveloperItsMe\FiscalService\Exceptions\CertificateException;
+All exceptions extend `FiscalException`, so you can catch broadly or specifically.
 
+```php
+use DeveloperItsMe\FiscalService\Exceptions\FiscalException;
+use DeveloperItsMe\FiscalService\Exceptions\CertificateException;
+use DeveloperItsMe\FiscalService\Exceptions\InvalidArgumentException;
+use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
+
+// InvalidArgumentException — thrown immediately by setters on invalid input
+try {
+    $invoice->setNumber(0);          // must be > 0
+    $invoice->setMethod('INVALID');  // must be CASH or NONCASH
+} catch (InvalidArgumentException $e) {
+    // $e->getMessage()
+}
+
+// ValidationException — thrown by validate() or toArray() for missing/invalid fields
+try {
+    $invoice->validate();
+} catch (ValidationException $e) {
+    $e->getErrors();    // ['field' => ['message', ...], ...]
+    $e->getMessages();  // ['field: message', ...]
+}
+
+// CertificateException — invalid certificate or wrong password
 try {
     $fiscal = Fiscal::fromFile('/path/to/cert.pfx', 'password');
 } catch (CertificateException $e) {
-    // Invalid certificate or wrong password
     $errors = $e->getOpensslErrors();
 }
 
+// Response errors — fiscal service rejection or connection failure
 $response = $fiscal->request($request)->send();
 
 if ($response->failed()) {

@@ -18,6 +18,7 @@ class Certificate
     {
     }
 
+    /** @throws CertificateException */
     public static function fromFile(string $path, string $passphrase): self
     {
         $cert = @file_get_contents($path);
@@ -32,6 +33,7 @@ class Certificate
         return $instance;
     }
 
+    /** @throws CertificateException */
     public static function fromContent(string $content, string $passphrase): self
     {
         $instance = new self();

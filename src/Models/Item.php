@@ -112,6 +112,7 @@ class Item extends Model
         return $this->vatRate;
     }
 
+    /** @throws InvalidArgumentException */
     public function setExemptFromVAT($reason): self
     {
         if ($reason !== null && !in_array($reason, $this->exemptTypes())) {
@@ -174,6 +175,7 @@ class Item extends Model
         return $this->quantity * $this->baseUnitPrice();
     }
 
+    /** @throws ValidationException */
     public function validate(): void
     {
         $errors = [];

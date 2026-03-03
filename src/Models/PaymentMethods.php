@@ -17,6 +17,7 @@ class PaymentMethods extends Model
         return $this->methods;
     }
 
+    /** @throws InvalidArgumentException */
     public function add(PaymentMethod $method, $invoiceType): self
     {
         if (!$method->isAllowedForInvoiceType($invoiceType)) {

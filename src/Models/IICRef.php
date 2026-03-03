@@ -24,6 +24,7 @@ class IICRef extends Model
         $this->amount = $amount;
     }
 
+    /** @throws ValidationException */
     public function validate(): void
     {
         $errors = [];

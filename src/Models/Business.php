@@ -73,6 +73,7 @@ abstract class Business extends Model
         return $this;
     }
 
+    /** @throws InvalidArgumentException */
     public function setCountry($country): self
     {
         if (!in_array($country, Countries::codes())) {
@@ -119,6 +120,7 @@ abstract class Business extends Model
         return $writer->outputMemory();
     }
 
+    /** @throws ValidationException */
     public function validate(): void
     {
         $errors = [];

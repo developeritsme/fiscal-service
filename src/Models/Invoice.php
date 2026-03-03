@@ -123,6 +123,7 @@ class Invoice extends Model
         return $this->dateTime ? $this->dateTime->toIso8601String() : null;
     }
 
+    /** @throws InvalidArgumentException */
     public function setMethod(string $method): self
     {
         $allowed = [self::TYPE_CASH, self::TYPE_NONCASH];
@@ -138,6 +139,7 @@ class Invoice extends Model
         return $this;
     }
 
+    /** @throws InvalidArgumentException */
     public function setInvoiceType(string $type): self
     {
         if (!in_array($type, $this->invoiceTypes())) {
@@ -175,6 +177,7 @@ class Invoice extends Model
         ];
     }
 
+    /** @throws InvalidArgumentException */
     public function setNumber(int $number): self
     {
         if ($number <= 0) {
@@ -304,6 +307,7 @@ class Invoice extends Model
         return implode('/', [$this->businessUnitCode, $this->number, $this->dateTime->year, $this->enu]);
     }
 
+    /** @throws ValidationException */
     public function validate(): void
     {
         $errors = [];

@@ -7,6 +7,7 @@ use DeveloperItsMe\FiscalService\Validation\ValidationHelper;
 
 class Seller extends Business
 {
+    /** @throws InvalidArgumentException */
     public function setCountry($country): self
     {
         if ($country !== Countries::ME) {
@@ -16,6 +17,7 @@ class Seller extends Business
         return $this;
     }
 
+    /** @throws InvalidArgumentException */
     public function setIdNumber($id): self
     {
         if (!preg_match(ValidationHelper::TIN, (string) $id)) {

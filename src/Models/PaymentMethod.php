@@ -87,6 +87,7 @@ class PaymentMethod extends Model
         return $this;
     }
 
+    /** @throws ValidationException */
     public function validate(): void
     {
         $errors = [];
