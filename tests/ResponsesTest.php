@@ -194,4 +194,128 @@ class ResponsesTest extends TestCase
 
         $this->assertSame($response->verifier(), $response->verifier());
     }
+
+    /** @test */
+    public function failed_returns_true_for_non_200_code()
+    {
+        $faultXml = $this->soapFaultXml('env:Server', 'Internal error');
+        $request = $this->getRegisterInvoiceRequest();
+        $response = Factory::make($faultXml, 500, $request);
+
+        $this->assertTrue($response->failed());
+        $this->assertFalse($response->valid());
+        $this->assertFalse($response->ok());
+        $this->assertFalse($response->success());
+    }
+
+    /** @test */
+    public function error_returns_faultstring_from_soap_fault()
+    {
+        $faultXml = $this->soapFaultXml('env:Server', 'Invoice validation failed');
+        $request = $this->getRegisterInvoiceRequest();
+        $response = Factory::make($faultXml, 500, $request);
+
+        $this->assertSame('Invoice validation failed', $response->error());
+    }
+
+    /** @test */
+    public function errors_returns_structured_fault_data_with_details()
+    {
+        $faultXml = '<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">'
+            . '<env:Header/><env:Body>'
+            . '<env:Fault>'
+            . '<faultcode>env:Client</faultcode>'
+            . '<faultstring>Validation error</faultstring>'
+            . '<detail><ErrorCode>100</ErrorCode><Message>Invalid TIN</Message></detail>'
+            . '</env:Fault>'
+            . '</env:Body></env:Envelope>';
+
+        $request = $this->getRegisterInvoiceRequest();
+        $response = Factory::make($faultXml, 500, $request);
+
+        $errors = $response->errors();
+
+        $this->assertSame('env:Client', $errors['code']);
+        $this->assertSame('Validation error', $errors['message']);
+        $this->assertArrayHasKey('details', $errors);
+        $this->assertNotEmpty($errors['details']);
+    }
+
+    /** @test */
+    public function errors_without_detail_element_has_no_details_key()
+    {
+        $faultXml = $this->soapFaultXml('env:Server', 'Server error');
+        $request = $this->getRegisterInvoiceRequest();
+        $response = Factory::make($faultXml, 500, $request);
+
+        $errors = $response->errors();
+
+        $this->assertSame('env:Server', $errors['code']);
+        $this->assertSame('Server error', $errors['message']);
+        $this->assertArrayNotHasKey('details', $errors);
+    }
+
+    /** @test */
+    public function data_returns_errors_when_failed()
+    {
+        $faultXml = $this->soapFaultXml('env:Server', 'Some fault');
+        $request = $this->getRegisterInvoiceRequest();
+        $response = Factory::make($faultXml, 500, $request);
+
+        $data = $response->data();
+
+        $this->assertArrayHasKey('code', $data);
+        $this->assertArrayHasKey('message', $data);
+        $this->assertSame('Some fault', $data['message']);
+    }
+
+    /** @test */
+    public function error_returns_connection_error_when_no_xml()
+    {
+        $request = $this->getRegisterInvoiceRequest();
+        $response = Factory::make(false, 0, $request, 'Connection timeout');
+
+        $this->assertSame('Connection timeout', $response->error());
+    }
+
+    /** @test */
+    public function error_returns_empty_response_when_no_xml_and_no_connection_error()
+    {
+        $request = $this->getRegisterInvoiceRequest();
+        $response = Factory::make(false, 0, $request);
+
+        $this->assertSame('Empty response', $response->error());
+    }
+
+    /** @test */
+    public function body_returns_raw_response()
+    {
+        $responseContent = file_get_contents('./tests/xml/RegisterInvoiceResponse.xml');
+        $request = $this->getRegisterInvoiceRequest();
+        $response = Factory::make($responseContent, 200, $request);
+
+        $this->assertSame($responseContent, $response->body());
+    }
+
+    /** @test */
+    public function request_returns_request_payload()
+    {
+        $responseContent = file_get_contents('./tests/xml/RegisterInvoiceResponse.xml');
+        $request = $this->getRegisterInvoiceRequest();
+        $request->setPayload('<soap>signed request</soap>');
+        $response = Factory::make($responseContent, 200, $request);
+
+        $this->assertSame('<soap>signed request</soap>', $response->request());
+    }
+
+    private function soapFaultXml(string $faultCode, string $faultString): string
+    {
+        return '<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">'
+            . '<env:Header/><env:Body>'
+            . '<env:Fault>'
+            . '<faultcode>' . $faultCode . '</faultcode>'
+            . '<faultstring>' . $faultString . '</faultstring>'
+            . '</env:Fault>'
+            . '</env:Body></env:Envelope>';
+    }
 }
