@@ -208,7 +208,7 @@ class Item extends Model implements Validatable
         if ($this->code) {
             $writer->writeAttribute('C', $this->code);
         }
-        $writer->writeAttribute('N', substr($this->name, 0, 50));
+        $writer->writeAttribute('N', mb_substr($this->name, 0, 50));
         $writer->writeAttribute('PA', $this->formatNumber($this->totalPrice(), $this->decimals));
         $writer->writeAttribute('PB', $this->formatNumber($this->totalBasePrice(), $this->decimals));
         $writer->writeAttribute('Q', $this->formatNumber($this->quantity, 2));

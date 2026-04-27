@@ -255,4 +255,35 @@ class ItemTest extends TestCase
         $this->assertArrayHasKey('exempt_from_vat', $array);
         $this->assertNull($array['exempt_from_vat']);
     }
+
+    /** @test */
+    public function xml_output_truncates_long_name_to_fifty_characters()
+    {
+        $name = str_repeat('A', 60);
+        $item = (new Item($name, 21))
+            ->setIsVat(true)
+            ->setUnitPrice(121);
+
+        $xml = $item->toXML();
+
+        $this->assertStringContainsString('N="'.str_repeat('A', 50).'"', $xml);
+    }
+
+    /** @test */
+    public function xml_output_truncates_multibyte_name_without_breaking_utf8()
+    {
+        // Montenegrin characters (č, ć, š, ž, đ) are 2 bytes each in UTF-8.
+        // Byte-based substr() would slice mid-character at byte 50 and
+        // emit invalid UTF-8 — DOMDocument::loadXML rejects the result.
+        $name = str_repeat('č', 60); // 60 chars / 120 bytes
+        $item = (new Item($name, 21))
+            ->setIsVat(true)
+            ->setUnitPrice(121);
+
+        $xml = $item->toXML();
+
+        $doc = new \DOMDocument();
+        $this->assertTrue($doc->loadXML($xml), 'Generated XML must be valid UTF-8');
+        $this->assertSame(str_repeat('č', 50), $doc->documentElement->getAttribute('N'));
+    }
 }
