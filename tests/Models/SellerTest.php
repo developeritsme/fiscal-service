@@ -57,4 +57,14 @@ class SellerTest extends TestCase
 
         new Seller('Test', '123');
     }
+
+    /** @test */
+    public function optional_string_setters_accept_null()
+    {
+        $seller = new Seller('Test', '12345678');
+
+        $this->assertSame($seller, $seller->setAddress(null));
+        $this->assertSame($seller, $seller->setTown(null));
+        $this->assertSame($seller, $seller->setCountry(null));
+    }
 }

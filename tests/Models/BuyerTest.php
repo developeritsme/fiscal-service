@@ -26,4 +26,14 @@ class BuyerTest extends TestCase
         $data = $buyer->toArray();
         $this->assertSame('ALB', $data['country']);
     }
+
+    /** @test */
+    public function optional_string_setters_accept_null()
+    {
+        $buyer = new Buyer('Test', '12345678');
+
+        $this->assertSame($buyer, $buyer->setAddress(null));
+        $this->assertSame($buyer, $buyer->setTown(null));
+        $this->assertSame($buyer, $buyer->setCountry(null));
+    }
 }

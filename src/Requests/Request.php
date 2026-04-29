@@ -115,7 +115,7 @@ abstract class Request
 
     public function verifySslPeer(?bool $verify = null): bool
     {
-        if (!is_null($verify)) {
+        if ($verify !== null) {
             $this->curl_verify_peer = $verify;
         }
 

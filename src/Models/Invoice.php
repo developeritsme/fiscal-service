@@ -240,28 +240,28 @@ class Invoice extends Model implements Validatable
         return $this;
     }
 
-    public function setTaxPeriod(string $period): self
+    public function setTaxPeriod(?string $period): self
     {
         $this->taxPeriod = $period;
 
         return $this;
     }
 
-    public function setPayDeadline(string $date): self
+    public function setPayDeadline(?string $date): self
     {
         $this->payDeadline = $date;
 
         return $this;
     }
 
-    public function setBankAccNum(string $account): self
+    public function setBankAccNum(?string $account): self
     {
         $this->bankAccNum = $account;
 
         return $this;
     }
 
-    public function setNote(string $note): self
+    public function setNote(?string $note): self
     {
         $this->note = $note;
 

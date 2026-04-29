@@ -503,6 +503,17 @@ class InvoiceTest extends TestCase
     }
 
     /** @test */
+    public function optional_string_setters_accept_null()
+    {
+        $invoice = new Invoice();
+
+        $this->assertSame($invoice, $invoice->setTaxPeriod(null));
+        $this->assertSame($invoice, $invoice->setPayDeadline(null));
+        $this->assertSame($invoice, $invoice->setBankAccNum(null));
+        $this->assertSame($invoice, $invoice->setNote(null));
+    }
+
+    /** @test */
     public function toArray_includes_pay_deadline_bank_acc_num_note()
     {
         Carbon::setTestNow('2019-12-05T14:30:13+01:00');

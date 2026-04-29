@@ -55,30 +55,16 @@ abstract class Business extends Model implements Validatable
         return $this;
     }
 
-    public function setAddress(string $address): self
+    public function setAddress(?string $address): self
     {
         $this->address = $address;
 
         return $this;
     }
 
-    public function setTown(string $town): self
+    public function setTown(?string $town): self
     {
         $this->town = $town;
-
-        return $this;
-    }
-
-    /** @throws InvalidArgumentException */
-    public function setCountry(string $country): self
-    {
-        if (!in_array($country, Countries::codes())) {
-            throw new InvalidArgumentException(
-                sprintf('Invalid country: "%s".', $country)
-            );
-        }
-
-        $this->country = $country;
 
         return $this;
     }
@@ -132,6 +118,9 @@ abstract class Business extends Model implements Validatable
             throw new ValidationException($errors);
         }
     }
+
+    /** @throws InvalidArgumentException */
+    abstract public function setCountry(?string $country): self;
 
     abstract protected function getXmlNodeName(): string;
 }

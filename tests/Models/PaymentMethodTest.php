@@ -52,6 +52,16 @@ class PaymentMethodTest extends TestCase
         $this->assertSame($pm, $pm->setBankAcc('550-123-44'));
     }
 
+    /** @test */
+    public function optional_string_setters_accept_null()
+    {
+        $pm = new PaymentMethod(10);
+
+        $this->assertSame($pm, $pm->setAdvIIC(null));
+        $this->assertSame($pm, $pm->setCompCard(null));
+        $this->assertSame($pm, $pm->setBankAcc(null));
+    }
+
     // -- Validation: AdvIIC --
 
     /** @test */

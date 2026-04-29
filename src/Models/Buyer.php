@@ -2,11 +2,30 @@
 
 namespace DeveloperItsMe\FiscalService\Models;
 
+use DeveloperItsMe\FiscalService\Exceptions\InvalidArgumentException;
 use DeveloperItsMe\FiscalService\Exceptions\ValidationException;
 use DeveloperItsMe\FiscalService\Validation\ValidationHelper;
 
 class Buyer extends Business
 {
+    /** @throws InvalidArgumentException */
+    public function setCountry(?string $country): self
+    {
+        if ($country === null) {
+            return $this;
+        }
+
+        if (!in_array($country, Countries::codes())) {
+            throw new InvalidArgumentException(
+                sprintf('Invalid country: "%s".', $country)
+            );
+        }
+
+        $this->country = $country;
+
+        return $this;
+    }
+
     /** @throws ValidationException */
     public function validate(): void
     {

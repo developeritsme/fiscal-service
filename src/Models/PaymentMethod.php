@@ -60,21 +60,21 @@ class PaymentMethod extends Model implements Validatable
         $this->type = $type;
     }
 
-    public function setAdvIIC(string $advIIC): self
+    public function setAdvIIC(?string $advIIC): self
     {
         $this->advIIC = $advIIC;
 
         return $this;
     }
 
-    public function setCompCard(string $compCard): self
+    public function setCompCard(?string $compCard): self
     {
         $this->compCard = $compCard;
 
         return $this;
     }
 
-    public function setBankAcc(string $bankAcc): self
+    public function setBankAcc(?string $bankAcc): self
     {
         $this->bankAcc = $bankAcc;
 

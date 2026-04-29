@@ -270,6 +270,14 @@ class ItemTest extends TestCase
     }
 
     /** @test */
+    public function setCode_accepts_null()
+    {
+        $item = new Item('Product', 21);
+
+        $this->assertSame($item, $item->setCode(null));
+    }
+
+    /** @test */
     public function xml_output_truncates_multibyte_name_without_breaking_utf8()
     {
         // Montenegrin characters (č, ć, š, ž, đ) are 2 bytes each in UTF-8.

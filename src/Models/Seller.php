@@ -8,8 +8,12 @@ use DeveloperItsMe\FiscalService\Validation\ValidationHelper;
 class Seller extends Business
 {
     /** @throws InvalidArgumentException */
-    public function setCountry(string $country): self
+    public function setCountry(?string $country): self
     {
+        if ($country === null) {
+            return $this;
+        }
+
         if ($country !== Countries::ME) {
             throw new InvalidArgumentException('Seller country is always MNE.');
         }
